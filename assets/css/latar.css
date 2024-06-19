@@ -1,0 +1,7 @@
+.latar {
+	background: linear-gradient(
+		45deg,
+		rgba(134, 218, 246, 0.9),
+		rgba(255, 255, 255, 0.9) 100%
+	);
+}
