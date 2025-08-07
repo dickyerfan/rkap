@@ -279,4 +279,27 @@ class Usulan_inves extends CI_Controller
             redirect('admin/usulan_inves');
         }
     }
+
+    public function detail_usulan_investasi($id_usulanInvestasi)
+    {
+        $data['title'] = 'Detail Usulan Investasi';
+        $data['usulan_investasi'] = $this->db->get_where('usulan_investasi', ['id_usulanInvestasi' => $id_usulanInvestasi])->row();
+
+        if (!$data['usulan_investasi']) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Maaf,</strong> Data tidak ditemukan.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>'
+            );
+            redirect('rkap/usulan_investasi');
+        }
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/usulan_inves/detail_usulan_investasi', $data);
+        $this->load->view('templates/footer');
+    }
 }

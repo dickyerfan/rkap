@@ -8,6 +8,7 @@
                         <form action="<?= base_url('admin/usulan_barang') ?>" method="post">
                             <div style="display: flex; align-items: center;">
                                 <select name="bagian_upk" class="form-select select2" style="width: 150px; " aria-label="Default select example">
+                                    <option value="">Pilih Bagian/UPK</option>
                                     <option value="langganan" <?= isset($seleksi) && $seleksi->bagian_upk == 'langganan' ? 'selected' : '' ?>>Langganan</option>
                                     <option value="umum" <?= isset($seleksi) && $seleksi->bagian_upk == 'umum' ? 'selected' : '' ?>>Umum</option>
                                     <option value="keuangan" <?= isset($seleksi) && $seleksi->bagian_upk == 'keuangan' ? 'selected' : '' ?>>Keuangan</option>

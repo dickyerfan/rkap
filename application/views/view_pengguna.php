@@ -19,7 +19,9 @@
                         <div class="col-auto">
                             <div class="boxBiru" style="width: 15rem;">
                                 <h6>Kepala Unit</h6>
-                                <h6 class="fw-bold" style="font-size: 0.8rem;"><?= strtoupper($kaupk->nama); ?></h6>
+                                <h6 class="fw-bold" style="font-size: 0.8rem;">
+                                    <?= isset($kaupk->nama) ? strtoupper($kaupk->nama) : '-'; ?>
+                                </h6>
                             </div>
                         </div>
                     </div>

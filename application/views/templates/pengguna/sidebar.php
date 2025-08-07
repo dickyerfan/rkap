@@ -61,6 +61,7 @@
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                             <?php elseif ($uangLangSpi) : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                             <?php else : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>

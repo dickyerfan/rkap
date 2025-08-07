@@ -48,6 +48,7 @@
                             <a class="nav-link" href="<?= base_url('admin/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
                             <a class="nav-link" href="<?= base_url('admin/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
                             <a class="nav-link" href="<?= base_url('admin/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
+                            <a class="nav-link" href="<?= base_url('admin/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
                             <a class="nav-link" href="<?= base_url('admin/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                             <a class="nav-link" href="<?= base_url('admin/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                             <a class="nav-link" href="<?= base_url('admin/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>

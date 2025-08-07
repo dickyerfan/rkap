@@ -45,12 +45,12 @@ class Usulan_barang extends CI_Controller
         } else {
 
             $this->form_validation->set_rules('no_perkiraan', 'No Perkiraan', 'trim');
-            $this->form_validation->set_rules('nama_perkiraan', 'Nama Perkiraan', 'required|trim');
+            $this->form_validation->set_rules('nama_perkiraan', 'Nama Barang', 'required|trim');
             $this->form_validation->set_rules('latar_belakang', 'Latar Belakang', 'required|trim');
             $this->form_validation->set_rules('solusi', 'Solusi', 'required|trim');
             $this->form_validation->set_rules('volume', 'Volume', 'required|trim|numeric');
             $this->form_validation->set_rules('satuan', 'Satuan', 'required|trim');
-            $this->form_validation->set_rules('biaya', 'Biaya', 'trim');
+            $this->form_validation->set_rules('biaya', 'Biaya', 'trim|numeric');
             $this->form_validation->set_rules('ket', 'Keterangan', 'trim');
             $this->form_validation->set_message('required', '%s masih kosong');
             $this->form_validation->set_message('numeric', '%s harus berupa angka');
@@ -68,7 +68,7 @@ class Usulan_barang extends CI_Controller
                     // Lakukan proses upload file
                     $config['upload_path']   = './uploads/';
                     $config['allowed_types'] = 'jpg|jpeg|png|pdf';
-                    $config['max_size']      = 1000;
+                    $config['max_size']      = 2000;
                     $this->load->library('upload', $config);
                     if ($this->upload->do_upload('foto_ket')) {
                         $data_upload = $this->upload->data();
