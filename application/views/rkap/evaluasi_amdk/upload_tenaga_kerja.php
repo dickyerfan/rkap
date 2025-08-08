@@ -28,7 +28,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="uraian_evaluasi">Uraian Evaluasi :</label>
-                                    <input type="text" step="1" class="form-control" id="uraian_evaluasi" name="uraian_evaluasi" value="<?= set_value('uraian_evaluasi'); ?>">
+                                    <select name="uraian_evaluasi" id="" class="form-select">
+                                        <option value="">Pilih Uraian</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Bagian Produksi & Gudang">Bagian Produksi & Gudang</option>
+                                        <option value="Bagian Quality Kontrol">Bagian Quality Kontrol</option>
+                                        <option value="Bagian Pemasaran">Bagian Pemasaran</option>
+                                        <option value="Bagian Administrasi & Keuangan">Bagian Administrasi & Keuangan</option>
+                                    </select>
+                                    <!-- <input type="text" step="1" class="form-control" id="uraian_evaluasi" name="uraian_evaluasi" value="<?= set_value('uraian_evaluasi'); ?>"> -->
                                     <small class="form-text text-danger pl-3"><?= form_error('uraian_evaluasi'); ?></small>
                                 </div>
                                 <div class="form-group">

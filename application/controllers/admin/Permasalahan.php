@@ -28,7 +28,7 @@ class Permasalahan extends CI_Controller
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('admin/rkap/view_permasalahan', $data);
+        $this->load->view('admin/permasalahan/view_permasalahan', $data);
         $this->load->view('templates/footer');
     }
 

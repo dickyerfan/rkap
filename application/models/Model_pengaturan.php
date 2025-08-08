@@ -172,4 +172,13 @@ class Model_pengaturan extends CI_Model
         $query = $this->db->get();
         return $query->result();
     }
+
+    public function cekEvaluasiProgram()
+    {
+        $this->db->select('bagian_upk');
+        $this->db->from('evaluasi_program');
+        $this->db->where('tahun_rkap', date('Y'));
+        $query = $this->db->get();
+        return $query->result();
+    }
 }

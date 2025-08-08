@@ -45,10 +45,10 @@ class Usulan_pemeliharaan extends CI_Controller
         } else {
 
             $this->form_validation->set_rules('no_perkiraan', 'No Perkiraan', 'trim');
-            $this->form_validation->set_rules('nama_perkiraan', 'Nama Perkiraan', 'required|trim');
+            $this->form_validation->set_rules('nama_perkiraan', 'Nama Pemeliharaan', 'required|trim');
             $this->form_validation->set_rules('latar_belakang', 'Latar Belakang', 'required|trim');
             $this->form_validation->set_rules('solusi', 'Solusi', 'required|trim');
-            $this->form_validation->set_rules('volume', 'Volume', 'required|trim|numeric');
+            $this->form_validation->set_rules('volume', 'Volume', 'trim|numeric');
             $this->form_validation->set_rules('satuan', 'Satuan', 'required|trim');
             $this->form_validation->set_rules('biaya', 'Biaya', 'trim');
             $this->form_validation->set_rules('ket', 'Keterangan', 'trim');

@@ -67,8 +67,18 @@
                                     <!-- Kode untuk tombol input data potensi SR -->
                                     <li><a class="dropdown-item" href="<?= base_url('rkap/potensi_sr/upload') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload"></i> Input Potensi SR</a></li>
                                 <?php endif; ?>
-                                <li><a class="dropdown-item" href="<?= base_url('rkap/potensi_sr/upload_ket') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload"></i> Input Pemetaan Lokasi SR Baru</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url('rkap/potensi_sr/upload_tbh_airbaku') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload"></i> Input Penambahan Air Baku</a></li>
+                                <!-- Kode untuk tombol input data pemetaan lokasi SR baru -->
+                                <?php if ($statusPemetaanSR && $statusPemetaanSR->status == 1) : ?>
+                                    <li><a class="dropdown-item" href="<?= base_url('rkap/potensi_sr/upload_ket') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload"></i> Input Pemetaan Lokasi SR Baru</a></li>
+                                <?php else : ?>
+                                    <li><a class="dropdown-item" href="#" style="font-size: 0.8rem;"><i class="fas fa-edit"></i> Input Pemetaan Lokasi SR Baru</a></li>
+                                <?php endif; ?>
+                                <!-- Kode untuk tombol input data penambahan air baku -->
+                                <?php if ($statusPenambahanAirBaku && $statusPenambahanAirBaku->status == 1) : ?>
+                                    <li><a class="dropdown-item" href="<?= base_url('rkap/potensi_sr/upload_tbh_airbaku') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload"></i> Input Penambahan Air Baku</a></li>
+                                <?php else : ?>
+                                    <li><a class="dropdown-item" href="#" style="font-size: 0.8rem;"><i class="fas fa-edit"></i> Input Penambahan Air Baku</a></li>
+                                <?php endif; ?>
                             </ul>
                         </div>
                     </nav>
@@ -226,7 +236,10 @@
                                             <td>:</td>
                                             <td><?= $row->jumlah_sr ?></td>
                                             <td>SR</td>
-                                            <td><a href="<?= base_url('rkap/potensi_sr/edit_ket_potensi/' . $row->id_ket_potensi) ?>"><span class="neumorphic-button text-dark"><i class="fas fa-edit"></i> Edit</span></a></td>
+                                            <td>
+                                                <a href="<?= base_url('rkap/potensi_sr/edit_ket_potensi/' . $row->id_ket_potensi) ?>"><span class="neumorphic-button text-dark"><i class="fas fa-edit"></i> Edit</span></a>
+                                                <a href="<?= base_url('rkap/potensi_sr/hapus_ket_potensi/' . $row->id_ket_potensi) ?>"><span class="neumorphic-button text-dark"><i class="fas fa-trash"></i> Hapus</span></a>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

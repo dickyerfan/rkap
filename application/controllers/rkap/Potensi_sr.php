@@ -22,8 +22,8 @@ class Potensi_sr extends CI_Controller
         $data['airBaku'] = $this->Model_potensi_sr->getAirBaku();
         $data['totalSr'] = $this->Model_potensi_sr->getTotalSR();
         $data['statusPotensiSR'] = $this->Model_potensi_sr->getStatusUpdate('potensi_sr');
-        // $data['statusPemetaanSR'] = $this->Model_potensi_sr->getStatusUpdate('ket_potensi_sr');
-        // $data['statusPenambahanAirBaku'] = $this->Model_potensi_sr->getStatusUpdate('tambah_air_baku');
+        $data['statusPemetaanSR'] = $this->Model_potensi_sr->getStatusUpload('ket_potensi_sr');
+        $data['statusPenambahanAirBaku'] = $this->Model_potensi_sr->getStatusUpload('tambah_air_baku');
 
         $data['title'] = 'ESTIMASI KEBUTUHAN AIR BAKU DAN POTENSI PELANGGAN';
         $this->load->view('templates/pengguna/header', $data);
@@ -130,82 +130,8 @@ class Potensi_sr extends CI_Controller
             redirect('rkap/Potensi_sr');
         }
     }
+
     // Akhir Potensi SR
-
-    // public function upload()
-    // {
-    //     $data['title'] = 'Input Data Potensi SR Baru';
-
-    //     $this->form_validation->set_rules('kap_pro', 'Nama Pasien', 'trim');
-    //     $this->form_validation->set_rules('kap_manf', 'Kapasitas Dimanfaatkan', 'required|trim|numeric');
-    //     $this->form_validation->set_rules('jam_op', 'Jam Operasional', 'required|trim|numeric');
-    //     $this->form_validation->set_rules('tk_bocor', 'Tingkat Kebocoran', 'required|trim');
-    //     $this->form_validation->set_rules('plg_aktif', 'Pelanggan Aktif', 'required|trim|numeric');
-    //     $this->form_validation->set_rules('tambah_sr', 'Tambah SR', 'required|trim|numeric');
-    //     $this->form_validation->set_rules('pola_kon', 'Pola Konsumsi', 'required|trim|numeric');
-    //     $this->form_validation->set_message('required', '%s masih kosong');
-    //     $this->form_validation->set_message('numeric', '%s harus berupa angka');
-
-    //     if ($this->form_validation->run() == false) {
-    //         $this->load->view('templates/pengguna/header', $data);
-    //         $this->load->view('templates/pengguna/navbar');
-    //         $this->load->view('templates/pengguna/sidebar');
-    //         $this->load->view('rkap/upload_potensi_sr', $data);
-    //         $this->load->view('templates/pengguna/footer');
-    //     } else {
-    //         $data['tambah'] = $this->Model_potensi_sr->uploadData();
-    //         $this->session->set_flashdata(
-    //             'info',
-    //             '<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    //                 <strong>Sukses,</strong> Data RKAP berhasil di simpan
-    //                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    //                 </button>
-    //             </div>'
-    //         );
-    //         redirect('rkap/Potensi_sr');
-    //     }
-    // }
-
-    // public function upload_ket()
-    // {
-    //     $data['title'] = 'Input Data Pemetaan SR Baru';
-
-    //     $this->form_validation->set_rules('nama_wil[]', 'Nama Wilayah', 'required|trim');
-    //     $this->form_validation->set_rules('jumlah_sr[]', 'Jumlah SR', 'required|trim|numeric');
-    //     $this->form_validation->set_message('required', '%s masih kosong');
-    //     $this->form_validation->set_message('numeric', '%s harus berupa angka');
-
-    //     if ($this->form_validation->run() == false) {
-    //         $this->load->view('templates/pengguna/header', $data);
-    //         $this->load->view('templates/pengguna/navbar');
-    //         $this->load->view('templates/pengguna/sidebar');
-    //         $this->load->view('rkap/upload_ket_potensi_sr', $data);
-    //         $this->load->view('templates/pengguna/footer');
-    //     } else {
-    //         $nama_wil = $this->input->post('nama_wil');
-    //         $jumlah_sr = $this->input->post('jumlah_sr');
-
-    //         foreach ($nama_wil as $index => $wilayah) {
-    //             $data_to_insert = [
-    //                 'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
-    //                 'nama_wil' => $nama_wil[$index],
-    //                 'jumlah_sr' => (int) $jumlah_sr[$index],
-    //                 'bagian_upk' => $this->session->userdata('upk_bagian')
-    //             ];
-    //             $this->Model_potensi_sr->uploadData_ket($data_to_insert);
-    //         }
-
-    //         $this->session->set_flashdata(
-    //             'info',
-    //             '<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    //             <strong>Sukses,</strong> Data RKAP berhasil di simpan
-    //             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    //             </button>
-    //         </div>'
-    //         );
-    //         redirect('rkap/Potensi_sr');
-    //     }
-    // }
 
     // Awal Keterangan Potensi SR
     public function upload_ket()
@@ -294,6 +220,33 @@ class Potensi_sr extends CI_Controller
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                         </button>
                       </div>'
+            );
+            redirect('rkap/Potensi_sr');
+        }
+    }
+
+    public function hapus_ket_potensi($id_ket_potensi)
+    {
+        $statusUpdate = $this->Model_potensi_sr->getStatusUpdate('ket_potensi_sr');
+        if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Maaf,</strong> data sudah tidak bisa di Hapus.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>'
+            );
+            redirect('rkap/Potensi_sr');
+        } else {
+            $this->Model_potensi_sr->delete_ket_potensi($id_ket_potensi);
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Sukses,</strong> Data SR Baru berhasil di hapus
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>'
             );
             redirect('rkap/Potensi_sr');
         }
@@ -409,10 +362,8 @@ class Potensi_sr extends CI_Controller
         $upk_bagian = $this->session->userdata('upk_bagian');
         $tahun = date('Y');
 
-        // Set paper size and orientation
-        $this->pdf->setPaper('A4', 'portrait');
 
-        // $this->pdf->filename = "Potensi Sr.pdf";
+        $this->pdf->setPaper('Folio', 'portrait');
         $this->pdf->filename = "Potensi Sr-{$upk_bagian}-{$tahun}.pdf";
         $this->pdf->generate('rkap/potensi_sr/laporan_pdf', $data);
     }

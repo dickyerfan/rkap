@@ -159,6 +159,12 @@ class Model_potensi_sr extends CI_Model
         $this->db->update('potensi_sr', $data);
     }
 
+    public function delete_ket_potensi($id_ket_potensi)
+    {
+        $this->db->where('id_ket_potensi', $id_ket_potensi);
+        $this->db->delete('ket_potensi_sr');
+    }
+
     // public function getUpkBagian($upk_bagian)
     // {
     //     return $this->db->get_where('potensi_sr', ['bagian_upk' => $upk_bagian])->row();

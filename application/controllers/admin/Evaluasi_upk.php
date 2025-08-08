@@ -32,7 +32,7 @@ class Evaluasi_upk extends CI_Controller
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('admin/rkap/view_evaluasi_upk', $data);
+        $this->load->view('admin/evaluasi_upk/view_evaluasi_upk', $data);
         $this->load->view('templates/footer');
     }
 

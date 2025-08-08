@@ -271,7 +271,7 @@ class Usulan_barang extends CI_Controller
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>'
             );
-            redirect('rkap/usulan_barang');
+            redirect('admin/usulan_barang');
         }
 
         $this->load->view('templates/header', $data);

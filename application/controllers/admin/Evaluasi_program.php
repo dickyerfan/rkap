@@ -29,7 +29,7 @@ class Evaluasi_program extends CI_Controller
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('Admin/evaluasi_program/view_evaluasi_program', $data);
+        $this->load->view('admin/evaluasi_program/view_evaluasi_program', $data);
         $this->load->view('templates/footer');
     }
 

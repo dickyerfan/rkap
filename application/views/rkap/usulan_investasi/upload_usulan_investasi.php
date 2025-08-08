@@ -80,7 +80,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="nama_perkiraan">Nama Perkiraan :</label>
+                                    <label for="nama_perkiraan">Nama Investasi :</label>
                                     <input type="text" class="form-control" id="nama_perkiraan" name="nama_perkiraan" value="<?= set_value('nama_perkiraan'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('nama_perkiraan'); ?></small>
                                 </div>

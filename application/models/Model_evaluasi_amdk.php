@@ -16,6 +16,7 @@ class Model_evaluasi_amdk extends CI_Model
         $this->db->from('evaluasi_amdk');
         $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
         $this->db->where('jenis_uraian', 'Tenaga Kerja');
+        $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->result();
     }
@@ -36,6 +37,7 @@ class Model_evaluasi_amdk extends CI_Model
         $this->db->from('evaluasi_amdk');
         $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
         $this->db->where('jenis_uraian', 'Piutang Usaha');
+        $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->result();
     }
@@ -56,6 +58,7 @@ class Model_evaluasi_amdk extends CI_Model
         $this->db->from('evaluasi_amdk');
         $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
         $this->db->where('jenis_uraian', 'Pendapatan Usaha');
+        $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->result();
     }
@@ -149,6 +152,7 @@ class Model_evaluasi_amdk extends CI_Model
         $this->db->select('*');
         $this->db->from('target_pencapaian');
         $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+        $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->result();
     }
@@ -195,6 +199,7 @@ class Model_evaluasi_amdk extends CI_Model
         $this->db->select('status_update');
         $this->db->from($tableName);
         $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+        $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->row();
     }
@@ -215,6 +220,7 @@ class Model_evaluasi_amdk extends CI_Model
         $this->db->select('*');
         $this->db->from('usulan_admin');
         $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+        $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->result();
     }
@@ -263,6 +269,7 @@ class Model_evaluasi_amdk extends CI_Model
         $this->db->select('*');
         $this->db->from('usulan_teknik');
         $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+        $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->result();
     }

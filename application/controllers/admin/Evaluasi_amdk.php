@@ -15,7 +15,7 @@ class Evaluasi_amdk extends CI_Controller
     }
     public function index()
     {
-        $dataTahun = $this->input->post('tahun_rkap');
+        $dataTahun = $this->input->post('tahun_rkap') ? $this->input->post('tahun_rkap') : date('Y');
         $data['tahun'] = $dataTahun;
         $data['title'] = 'EVALUASI PENCAPAIAN TAHUN';
         $data['tenaga_kerja'] = $this->Model_evaluasi_amdk->getTenagaKerjaAmdk($dataTahun);
@@ -29,7 +29,7 @@ class Evaluasi_amdk extends CI_Controller
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('admin/rkap/view_evaluasi_amdk', $data);
+        $this->load->view('admin/evaluasi_amdk/view_evaluasi_amdk', $data);
         $this->load->view('templates/footer');
     }
 

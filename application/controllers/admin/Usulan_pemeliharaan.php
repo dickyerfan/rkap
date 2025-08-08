@@ -26,7 +26,7 @@ class Usulan_pemeliharaan extends CI_Controller
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('admin/rkap/view_usulan_pemeliharaan', $data);
+        $this->load->view('admin/usulan_pemeliharaan/view_usulan_pemeliharaan', $data);
         $this->load->view('templates/footer');
     }
 
@@ -277,5 +277,28 @@ class Usulan_pemeliharaan extends CI_Controller
 
             redirect('admin/usulan_pemeliharaan');
         }
+    }
+
+    public function detail_usulan_pemeliharaan($id_usulanPemeliharaan)
+    {
+        $data['title'] = 'Detail Usulan Pemeliharaan';
+        $data['usulan_pemeliharaan'] = $this->db->get_where('usulan_pemeliharaan', ['id_usulanPemeliharaan' => $id_usulanPemeliharaan])->row();
+
+        if (!$data['usulan_pemeliharaan']) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Maaf,</strong> Data tidak ditemukan.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>'
+            );
+            redirect('admin/usulan_pemeliharaan');
+        }
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/usulan_pemeliharaan/detail_usulan_pemeliharaan', $data);
+        $this->load->view('templates/footer');
     }
 }

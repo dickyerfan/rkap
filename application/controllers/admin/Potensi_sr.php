@@ -28,7 +28,7 @@ class Potensi_sr extends CI_Controller
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('admin/rkap/view_potensi_sr', $data);
+        $this->load->view('admin/potensi_sr/view_potensi_sr', $data);
         $this->load->view('templates/footer');
     }
 
