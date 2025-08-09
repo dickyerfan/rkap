@@ -11,7 +11,7 @@
                                             )">
                     <!-- <h4 class="card-title"><?= strtoupper($title) ?></h4> -->
                     <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">
-                        <span class="title">Selamat Datang <?= $this->session->userdata('nama_lengkap'); ?> di Website PDAM Bondowoso</span>
+                        <span class="title">Selamat Datang <?= $this->session->userdata('nama_lengkap'); ?> di Halaman RKAP PDAM Bondowoso</span>
                     </marquee>
                 </div>
 

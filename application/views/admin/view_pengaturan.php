@@ -29,7 +29,7 @@
                     <div class="row justify-content-center mb-3">
                         <div class="col-lg-2 text-center">
                             <h6 class="fw-bold">Upload Data</h6>
-                            <?php if ($upload->status == 1) : ?>
+                            <?php if ($upload && $upload->status == 1) : ?>
                                 <p class="neumorphic-button px-5 fs-5"> Aktif</p>
                             <?php else : ?>
                                 <p class="neumorphic-button px-5 fs-5"> Tidak Aktif</p>
@@ -37,7 +37,7 @@
                         </div>
                         <div class="col-lg-2 text-center">
                             <h6 class="fw-bold">Update/Hapus Data</h6>
-                            <?php if ($update->status_update == 1) : ?>
+                            <?php if ($update && $update->status_update == 1) : ?>
                                 <span class="neumorphic-button px-5 fs-5"> Aktif</span>
                             <?php else : ?>
                                 <span class="neumorphic-button px-5 fs-5"> Tidak Aktif</span>

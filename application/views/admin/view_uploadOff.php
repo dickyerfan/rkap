@@ -16,8 +16,8 @@
                             <div class="col-md-4">
                                 <label for="status" class="form-group">Menu Aktivasi Upload Data</label>
                                 <select class="form-select" name="status" aria-label="Default select example">
-                                    <option value="0" <?= $upload->status == 0 ? 'selected' : '' ?>>Non Aktif</option>
-                                    <option value="1" <?= $upload->status == 1 ? 'selected' : '' ?>>Aktif</option>
+                                    <option value="0" <?= (isset($upload) && $upload && $upload->status == 0) ? 'selected' : '' ?>>Non Aktif</option>
+                                    <option value="1" <?= (isset($upload) && $upload && $upload->status == 1) ? 'selected' : '' ?>>Aktif</option>
                                 </select>
                             </div>
                         </div>

@@ -3,7 +3,22 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Model_usulan_barang extends CI_Model
 {
-
+    public function getFiltered($bagian_upk = null, $tahun_rkap = null, $kategori = null)
+    {
+        $this->db->from('usulan_barang');
+        if ($bagian_upk) {
+            $this->db->where('bagian_upk', $bagian_upk);
+        }
+        if ($tahun_rkap) {
+            $this->db->where('tahun_rkap', $tahun_rkap);
+        } else {
+            $this->db->where('tahun_rkap', date('Y'));
+        }
+        if ($kategori) {
+            $this->db->where('kategori', $kategori);
+        }
+        return $this->db->get()->result();
+    }
     public function getData()
     {
         $this->db->select('*');
@@ -73,6 +88,7 @@ class Model_usulan_barang extends CI_Model
             'satuan' => $this->input->post('satuan', true),
             'biaya' => (int) $this->input->post('biaya', true),
             'ket' => $this->input->post('ket', true),
+            'kategori' => $this->input->post('kategori', true),
             'tgl_update' => date('Y-m-d H:i:s')
 
         ];

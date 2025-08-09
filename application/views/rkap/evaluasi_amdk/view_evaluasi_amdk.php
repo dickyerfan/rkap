@@ -116,10 +116,10 @@
                                                 <li><?= $row->uraian_evaluasi; ?></li>
                                             </td>
                                             <td class="text-center"><?= $row->satuan; ?></td>
-                                            <td class="text-center"><?= $row->rkap; ?></td>
-                                            <td class="text-center"><?= $row->realisasi; ?></td>
-                                            <td class="text-center"><?= $naikTurun; ?></td>
-                                            <td class="text-center"><?= $persen; ?></td>
+                                            <td class="text-end pe-3"><?= number_format($row->rkap, 0, ',', '.'); ?></td>
+                                            <td class="text-end pe-3"><?= number_format($row->realisasi, 0, ',', '.'); ?></td>
+                                            <td class="text-end pe-3"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
+                                            <td class="text-center"><?= number_format($persen, 2, ',', '.'); ?></td>
                                             <td class="text-center"><a href="<?= base_url('rkap/evaluasi_amdk/edit_evaluasi_amdk/') ?><?= $id ?>"><i class="fas fa-edit text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data"></i></a></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -128,11 +128,13 @@
                                         <td colspan="6"></td>
                                     </tr>
                                     <?php foreach ($pendapatan_usaha as $row) :
+                                        $naikTurun = 0;
                                         $realisasi = $row->realisasi;
                                         $rkap = $row->rkap;
                                         $id = $row->id_evaluasi_amdk;
                                         // $naikTurun = $realisasi - $rkap;
                                         // $persen = ($naikTurun / $rkap) * 100;
+                                        $naikTurun = $realisasi - $rkap;
                                         if ($naikTurun < 0) {
                                             $naikTurun = 0;
                                         }

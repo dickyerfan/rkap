@@ -32,13 +32,14 @@
                                     <tr class="text-center">
                                         <th rowspan="2" class="align-middle">No</th>
                                         <th colspan="2">Perkiraan</th>
-                                        <th colspan="5" class="align-middle">URAIAN TENTANG USULAN</th>
+                                        <th colspan="6" class="align-middle">URAIAN TENTANG USULAN</th>
                                         <th rowspan="2" class="align-middle">Keterangan</th>
                                         <th rowspan="2" class="align-middle">Action</th>
                                     </tr>
                                     <tr class="text-center">
                                         <th>No Per</th>
                                         <th>Nama</th>
+                                        <th>Kategori</th>
                                         <th>Latar Belakang</th>
                                         <th>Solusi/Usulan</th>
                                         <th>Volume</th>
@@ -59,11 +60,12 @@
                                             <td class="text-center"><?= $no++ ?></td>
                                             <td><?= $row->no_perkiraan ?></td>
                                             <td><?= $row->nama_perkiraan ?></td>
+                                            <td class="text-center"><?= $row->kategori ?></td>
                                             <td><?= $row->latar_belakang ?></td>
                                             <td><?= $row->solusi ?></td>
                                             <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
-                                            <td class="text-center"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                            <td class="text-center"><?= number_format($jumlah, 0, ',', '.') ?></td>
+                                            <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
+                                            <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td>
                                             <td><?= $row->ket ?></td>
                                             <td class="text-center">
                                                 <a href="<?= base_url('rkap/usulan_barang/edit_usulan_barang/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
@@ -72,7 +74,16 @@
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
-
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="7" class="text-end">Total</th>
+                                        <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
+                                        <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
+                                                                    return $item->biaya * $item->volume;
+                                                                }, $tampil)), 0, ',', '.') ?></th>
+                                        <th colspan="2"></th>
+                                    </tr>
                             </table>
                         </div>
                     </div>

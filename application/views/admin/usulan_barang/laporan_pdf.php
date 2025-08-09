@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RKAP</title>
+    <title>RKAP | <?= $title; ?></title>
     <link href="<?= base_url(); ?>assets/datatables/bootstrap5/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -13,7 +13,7 @@
         }
 
         main {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
 
         header p,
@@ -33,7 +33,8 @@
         .tableUtama th,
         .tableUtama td {
             border: 1px solid black;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+            padding: 3px 3px;
         }
     </style>
 
@@ -75,7 +76,7 @@
                                     <th rowspan="2" class="align-middle">No</th>
                                     <th colspan="2">Perkiraan</th>
                                     <th colspan="5" class="align-middle">URAIAN TENTANG USULAN</th>
-                                    <th rowspan="2" class="align-middle">Keterangan</th>
+                                    <!-- <th rowspan="2" class="align-middle">Keterangan</th> -->
                                     <!-- <th rowspan="2" class="align-middle">Action</th> -->
                                 </tr>
                                 <tr class="text-center">
@@ -103,10 +104,10 @@
                                         <td><?= $row->nama_perkiraan ?></td>
                                         <td><?= $row->latar_belakang ?></td>
                                         <td><?= $row->solusi ?></td>
-                                        <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
-                                        <td class="text-center"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                        <td class="text-center"><?= number_format($jumlah, 0, ',', '.') ?></td>
-                                        <td><?= $row->ket ?></td>
+                                        <td style="text-align: center;"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
+                                        <td style="text-align: right;"><?= number_format($row->biaya, 0, ',', '.') ?></td>
+                                        <td style="text-align: right;"><?= number_format($jumlah, 0, ',', '.') ?></td>
+                                        <!-- <td><?= $row->ket ?></td> -->
                                         <!-- <td class="text-center">
                                                 <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
                                                 <a href="<?= base_url('admin/usulan_barang/detail_usulan_barang/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a>
@@ -114,7 +115,17 @@
                                             </td> -->
                                     </tr>
                                 <?php endforeach; ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="6" class="text-end">Total</th>
+                                    <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
+                                    <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
+                                                                return $item->biaya * $item->volume;
+                                                            }, $tampil)), 0, ',', '.') ?></th>
 
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

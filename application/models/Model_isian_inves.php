@@ -24,7 +24,9 @@ class Model_isian_inves extends CI_Model
     {
         date_default_timezone_set('Asia/Jakarta');
         $data = [
-            'biaya' => (int) $this->input->post('biaya', true)
+            'biaya' => (int) $this->input->post('biaya', true),
+            'volume' => (int) $this->input->post('volume', true),
+            'satuan' => $this->input->post('satuan', true),
             // 'tgl_update' => date('Y-m-d H:i:s')
         ];
         $this->db->where('id_usulanInvestasi', $this->input->post('id_usulanInvestasi'));

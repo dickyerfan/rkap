@@ -49,7 +49,9 @@ class Evaluasi_amdk extends CI_Controller
             );
             redirect('rkap/evaluasi_amdk');
         } else {
-            $this->form_validation->set_rules('uraian_evaluasi', 'Uraian Evaluasi', 'required|trim|is_unique[evaluasi_amdk.uraian_evaluasi]');
+            // $this->form_validation->set_rules('uraian_evaluasi', 'Uraian Evaluasi', 'required|trim|is_unique[evaluasi_amdk.uraian_evaluasi]');
+            // $this->form_validation->set_rules('uraian_evaluasi', 'Uraian Evaluasi', 'required|trim');
+            $this->form_validation->set_rules('uraian_evaluasi', 'Uraian Evaluasi', 'required|trim|callback_cek_uraian_evaluasi');
             $this->form_validation->set_rules('rkap', 'RKAP', 'required|trim|numeric');
             $this->form_validation->set_rules('realisasi', 'Realisasi', 'required|trim|numeric');
             $this->form_validation->set_message('is_unique', '%s sudah tersedia');
@@ -91,7 +93,19 @@ class Evaluasi_amdk extends CI_Controller
         $this->uploadData('upload_pendapatan_usaha', 'Input Pendapatan Usaha');
     }
 
-
+    public function cek_uraian_evaluasi($uraian_evaluasi)
+    {
+        $tahun_rkap = $this->input->post('tahun_rkap', true);
+        $ada = $this->db->get_where('evaluasi_amdk', [
+            'uraian_evaluasi' => $uraian_evaluasi,
+            'tahun_rkap' => $tahun_rkap
+        ])->num_rows();
+        if ($ada > 0) {
+            $this->form_validation->set_message('cek_uraian_evaluasi', 'Uraian Evaluasi sudah ada di tahun tersebut');
+            return false;
+        }
+        return true;
+    }
 
 
     public function edit_evaluasi_amdk($id_evaluasi_amdk)

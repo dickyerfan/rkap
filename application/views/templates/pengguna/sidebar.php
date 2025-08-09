@@ -24,40 +24,45 @@
                     <?php
                     $upk_bagian = $this->session->userdata('upk_bagian');
                     $isAmdk = ($upk_bagian === 'amdk');
-                    $rencana = ($upk_bagian === 'rencana');
-                    $barang = ($upk_bagian === 'barang');
-                    $pelihara = ($upk_bagian === 'pelihara');
+                    $perencanaan = ($upk_bagian === 'perencanaan');
+                    $pemeliharaan = ($upk_bagian === 'pemeliharaan');
+                    $umum = ($upk_bagian === 'umum');
                     $uangLangSpi = ($upk_bagian === 'langganan' || $upk_bagian === 'keuangan' || $upk_bagian === 'spi');
-                    $pemRenUm = ($upk_bagian === 'pemeliharaan' || $upk_bagian === 'perencanaan' || $upk_bagian === 'umum');
+                    // $rencana = ($upk_bagian === 'rencana');
+                    // $barang = ($upk_bagian === 'barang');
+                    // $pelihara = ($upk_bagian === 'pelihara');
+                    // $pemRenUm = ($upk_bagian === 'pemeliharaan' || $upk_bagian === 'perencanaan' || $upk_bagian === 'umum');
                     ?>
-                    <!-- <div class="collapse" id="rkap" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="<?= $isAmdk ? 'javascript:void(0)' : base_url('rkap/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
-                            <a class="nav-link" href="<?= $isAmdk ? 'javascript:void(0)' : base_url('rkap/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
-                            <a class="nav-link" href="<?= $isAmdk ? base_url('rkap/evaluasi_amdk') : 'javascript:void(0)' ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
-                            <a class="nav-link" href="<?= $rencana ? base_url('rkap/isian_inves') : base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
-                            <a class="nav-link" href="<?= $barang ? base_url('rkap/isian_barang') : base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
-                            <a class="nav-link" href="<?= $pelihara ? base_url('rkap/isian_pemeliharaan') : base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                        </nav>
-                    </div> -->
 
                     <div class="collapse" id="rkap" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <?php if ($barang) : ?>
-                                <a class="nav-link" href="<?= base_url('rkap/isian_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
-                            <?php elseif ($rencana) : ?>
-                                <a class="nav-link" href="<?= base_url('rkap/isian_inves') ?>" style="font-size: 0.8rem;">Usulan Rencana</a>
-                            <?php elseif ($pelihara) : ?>
-                                <a class="nav-link" href="<?= base_url('rkap/isian_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
+                            <?php if ($perencanaan) : ?>
+                                <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
+                                <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
+                                <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
+                                <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
+                                <a class="nav-link" href="<?= base_url('rkap/isian_inves') ?>" style="font-size: 0.8rem;">Isian Investasi</a>
+                                <a class="nav-link" href="<?= base_url('rkap/isian_pemeliharaan') ?>" style="font-size: 0.8rem;">Isian Pemeliharaan</a>
+                            <?php elseif ($umum) : ?>
+                                <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
+                                <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
+                                <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
+                                <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
+                                <a class="nav-link" href="<?= base_url('rkap/isian_barang') ?>" style="font-size: 0.8rem;">Isian Barang</a>
                             <?php elseif ($isAmdk) : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                            <?php elseif ($pemRenUm) : ?>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
+                                <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
+                            <?php elseif ($pemeliharaan) : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                             <?php elseif ($uangLangSpi) : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
@@ -66,8 +71,8 @@
                             <?php else : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
                                 <a class="nav-link" href="<?= base_url('rkap/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
+                                <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
                             <?php endif; ?>
                         </nav>
@@ -91,6 +96,7 @@
             <div class="sb-sidenav-footer">
                 <div class="small" style="font-size: 0.7rem;">Anda Login sebagai :</div>
                 <div class="small" style="font-size: 0.7rem;"><?= $this->session->userdata('level'); ?></div>
+                <div class="small" style="font-size: 1rem;"><?= $this->session->userdata('nama_pengguna'); ?></div>
             </div>
         </nav>
     </div>

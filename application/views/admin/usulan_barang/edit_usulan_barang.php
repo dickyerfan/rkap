@@ -37,7 +37,17 @@
                                     <input type="number" step="1" class="form-control" id="volume" name="volume" value="<?= $usulan_barang->volume; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('volume'); ?></small>
                                 </div>
-
+                                <div class="form-group">
+                                    <label for="kategori">Kategori :</label>
+                                    <select name="kategori" id="" class="form-select">
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="ATK" <?= $usulan_barang->kategori == 'ATK' ? 'selected' : '' ?>>ATK</option>
+                                        <option value="Inventaris" <?= $usulan_barang->kategori == 'Inventaris' ? 'selected' : '' ?>>Inventaris</option>
+                                        <option value="Peralatan Teknik" <?= $usulan_barang->kategori == 'Peralatan Teknik' ? 'selected' : '' ?>>Peralatan Teknik</option>
+                                        <option value="Lainnya" <?= $usulan_barang->kategori == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('kategori'); ?></small>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">

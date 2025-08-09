@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="volume">volume :</label>
-                                    <input type="number" step="1" class="form-control" id="volume" name="volume" value="<?= $isian_pemeliharaan->volume; ?>" disabled>
+                                    <input type="number" step="1" class="form-control" id="volume" name="volume" value="<?= $isian_pemeliharaan->volume; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('volume'); ?></small>
                                 </div>
 
@@ -53,7 +53,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="satuan">Satuan :</label>
-                                    <select name="satuan" id="satuan" class="form-select" disabled>
+                                    <select name="satuan" id="satuan" class="form-select">
                                         <option value="Meter" <?= $isian_pemeliharaan->satuan == "Meter" ? 'selected' : '' ?>>Meter</option>
                                         <option value="Unit" <?= $isian_pemeliharaan->satuan == "Unit" ? 'selected' : '' ?>>Unit</option>
                                         <option value="Ruangan" <?= $isian_pemeliharaan->satuan == "Ruangan" ? 'selected' : '' ?>>Ruangan</option>
@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="nama_perkiraan">Nama Perkiraan :</label>
+                                    <label for="nama_perkiraan">Nama Pemeliharaan :</label>
                                     <input type="text" class="form-control" id="nama_perkiraan" name="nama_perkiraan" value="<?= $isian_pemeliharaan->nama_perkiraan; ?>" disabled>
                                     <small class="form-text text-danger pl-3"><?= form_error('nama_perkiraan'); ?></small>
                                 </div>
@@ -82,7 +82,7 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="biaya">Biaya :</label>
+                                    <label for="biaya">Harga :</label>
                                     <input type="number" step="1" class="form-control" id="biaya" name="biaya" value="<?= $isian_pemeliharaan->biaya; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('biaya'); ?></small>
                                 </div>

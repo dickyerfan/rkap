@@ -17,16 +17,32 @@ class Usulan_barang extends CI_Controller
     public function index()
     {
 
-        $dataUpk = $this->input->post('bagian_upk');
-        $dataTahun = $this->input->post('tahun_rkap');
-        if ($dataTahun === null) {
-            $dataTahun = date('Y');
+        // $dataUpk = $this->input->post('bagian_upk');
+        // $dataTahun = $this->input->post('tahun_rkap');
+        // if ($dataTahun === null) {
+        //     $dataTahun = date('Y');
+        // }
+        // $data['namaUpk'] = $dataUpk;
+        // $data['tahun'] = $dataTahun;
+        // $data['tampil'] = $this->Model_usulan_barang->getDataUpk($dataUpk, $dataTahun);
+        // $data['seleksi'] = $this->Model_usulan_barang->getNamaUpk($dataUpk, $dataTahun);
+        // $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
+
+        $bagian_upk = $this->input->get('bagian_upk');
+        $tahun_rkap = $this->input->get('tahun_rkap');
+        $kategori = $this->input->get('kategori');
+
+        // Default tahun jika kosong
+        if (!$tahun_rkap) {
+            $tahun_rkap = date('Y');
         }
-        $data['namaUpk'] = $dataUpk;
-        $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_usulan_barang->getDataUpk($dataUpk, $dataTahun);
-        $data['seleksi'] = $this->Model_usulan_barang->getNamaUpk($dataUpk, $dataTahun);
+
+        $data['tampil'] = $this->Model_usulan_barang->getFiltered($bagian_upk, $tahun_rkap, $kategori);
+        $data['bagian_upk'] = $bagian_upk;
+        $data['tahun'] = $tahun_rkap;
+        $data['kategori'] = $kategori;
         $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
+        $data['namaUpk'] = $bagian_upk ? $bagian_upk : 'SEMUA';
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
@@ -41,97 +57,18 @@ class Usulan_barang extends CI_Controller
         $dataTahun = $this->input->post('tahun_rkap');
         $data['namaUpk'] = $dataUpk;
         $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_usulan_barang->getDataUpk($dataUpk, $dataTahun);
+        // $data['tampil'] = $this->Model_usulan_barang->getDataUpk($dataUpk, $dataTahun);
+        $bagian_upk = $this->input->post('bagian_upk'); // bisa kosong
+        $tahun_rkap = $this->input->post('tahun_rkap');
+        $data['tampil'] = $this->Model_usulan_barang->getFiltered($bagian_upk, $tahun_rkap);
         $data['seleksi'] = $this->Model_usulan_barang->getNamaUpk($dataUpk, $dataTahun);
         $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
-        // Set paper size and orientation
-        $this->pdf->setPaper('A4', 'portrait');
 
-        // $this->pdf->filename = "Potensi Sr.pdf";
+        $this->pdf->setPaper('Folio', 'portrait');
         $this->pdf->filename = "Evaluasi Upk-{$dataUpk}-{$dataTahun}.pdf";
         $this->pdf->generate('admin/usulan_barang/laporan_pdf', $data);
     }
 
-    // Awal Usulan barang
-    // public function upload()
-    // {
-
-    //     $statusUpload = $this->Model_usulan_barang->getStatusUpload('usulan_barang');
-    //     if ($statusUpload !== null && $statusUpload->status == 0) {
-    //         $this->session->set_flashdata(
-    //             'info',
-    //             '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    //                 <strong>Maaf,</strong> data sudah tidak bisa di input.
-    //                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    //                 </button>
-    //             </div>'
-    //         );
-    //         redirect('rkap/usulan_barang');
-    //     } else {
-
-    //         $this->form_validation->set_rules('no_perkiraan', 'No Perkiraan', 'trim');
-    //         $this->form_validation->set_rules('nama_perkiraan', 'Nama Perkiraan', 'required|trim');
-    //         $this->form_validation->set_rules('latar_belakang', 'Latar Belakang', 'required|trim');
-    //         $this->form_validation->set_rules('solusi', 'Solusi', 'required|trim');
-    //         $this->form_validation->set_rules('volume', 'Volume', 'required|trim|numeric');
-    //         $this->form_validation->set_rules('satuan', 'Satuan', 'required|trim');
-    //         $this->form_validation->set_rules('biaya', 'Biaya', 'trim');
-    //         $this->form_validation->set_rules('ket', 'Keterangan', 'trim');
-    //         $this->form_validation->set_message('required', '%s masih kosong');
-    //         $this->form_validation->set_message('numeric', '%s harus berupa angka');
-
-    //         if ($this->form_validation->run() == false) {
-    //             $data['title'] = 'Input Usulan Permintaan Barang';
-    //             $this->load->view('templates/pengguna/header', $data);
-    //             $this->load->view('templates/pengguna/navbar');
-    //             $this->load->view('templates/pengguna/sidebar');
-    //             $this->load->view('rkap/usulan_barang/upload_usulan_barang', $data);
-    //             $this->load->view('templates/pengguna/footer');
-    //         } else {
-    //             // Cek apakah ada file yang diupload
-    //             if (!empty($_FILES['foto_ket']['name'])) {
-    //                 // Lakukan proses upload file
-    //                 $config['upload_path']   = './uploads/';
-    //                 $config['allowed_types'] = 'jpg|jpeg|png|pdf';
-    //                 $config['max_size']      = 1000;
-    //                 $this->load->library('upload', $config);
-    //                 if ($this->upload->do_upload('foto_ket')) {
-    //                     $data_upload = $this->upload->data();
-    //                     $data['foto_ket'] = $data_upload['file_name'];
-    //                 } else {
-    //                     // Jika proses upload gagal
-    //                     $error_msg = $this->upload->display_errors();
-    //                     $this->session->set_flashdata('info', $error_msg);
-    //                     redirect('rkap/usulan_barang');
-    //                 }
-    //             }
-    //             // Isi data selain file yang diupload
-    //             $data['tahun_rkap'] = (int) $this->input->post('tahun_rkap', true);
-    //             $data['no_perkiraan'] = $this->input->post('no_perkiraan', true);
-    //             $data['nama_perkiraan'] = $this->input->post('nama_perkiraan', true);
-    //             $data['latar_belakang'] = $this->input->post('latar_belakang', true);
-    //             $data['solusi'] = $this->input->post('solusi', true);
-    //             $data['volume'] = (int) $this->input->post('volume', true);
-    //             $data['satuan'] = $this->input->post('satuan', true);
-    //             $data['biaya'] = (int) $this->input->post('biaya', true);
-    //             $data['ket'] = $this->input->post('ket', true);
-    //             $data['bagian_upk'] = $this->session->userdata('upk_bagian');
-    //             $data['tgl_Upload'] = date('Y-m-d H:i:s');
-
-    //             // Simpan data ke dalam database
-    //             $this->db->insert('usulan_barang', $data);
-    //             $this->session->set_flashdata(
-    //                 'info',
-    //                 '<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    //                         <strong>Sukses,</strong> Data Usulan barang berhasil di simpan
-    //                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    //                         </button>
-    //                     </div>'
-    //             );
-    //             redirect('rkap/usulan_barang');
-    //         }
-    //     }
-    // }
 
     public function edit_usulan_barang($id_usulanBarang)
     {
@@ -280,4 +217,84 @@ class Usulan_barang extends CI_Controller
         $this->load->view('admin/usulan_barang/detail_usulan_barang', $data);
         $this->load->view('templates/footer');
     }
+
+    // public function upload()
+    // {
+
+    //     $statusUpload = $this->Model_usulan_barang->getStatusUpload('usulan_barang');
+    //     if ($statusUpload !== null && $statusUpload->status == 0) {
+    //         $this->session->set_flashdata(
+    //             'info',
+    //             '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    //                 <strong>Maaf,</strong> data sudah tidak bisa di input.
+    //                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+    //                 </button>
+    //             </div>'
+    //         );
+    //         redirect('rkap/usulan_barang');
+    //     } else {
+
+    //         $this->form_validation->set_rules('no_perkiraan', 'No Perkiraan', 'trim');
+    //         $this->form_validation->set_rules('nama_perkiraan', 'Nama Perkiraan', 'required|trim');
+    //         $this->form_validation->set_rules('latar_belakang', 'Latar Belakang', 'required|trim');
+    //         $this->form_validation->set_rules('solusi', 'Solusi', 'required|trim');
+    //         $this->form_validation->set_rules('volume', 'Volume', 'required|trim|numeric');
+    //         $this->form_validation->set_rules('satuan', 'Satuan', 'required|trim');
+    //         $this->form_validation->set_rules('biaya', 'Biaya', 'trim');
+    //         $this->form_validation->set_rules('ket', 'Keterangan', 'trim');
+    //         $this->form_validation->set_message('required', '%s masih kosong');
+    //         $this->form_validation->set_message('numeric', '%s harus berupa angka');
+
+    //         if ($this->form_validation->run() == false) {
+    //             $data['title'] = 'Input Usulan Permintaan Barang';
+    //             $this->load->view('templates/pengguna/header', $data);
+    //             $this->load->view('templates/pengguna/navbar');
+    //             $this->load->view('templates/pengguna/sidebar');
+    //             $this->load->view('rkap/usulan_barang/upload_usulan_barang', $data);
+    //             $this->load->view('templates/pengguna/footer');
+    //         } else {
+    //             // Cek apakah ada file yang diupload
+    //             if (!empty($_FILES['foto_ket']['name'])) {
+    //                 // Lakukan proses upload file
+    //                 $config['upload_path']   = './uploads/';
+    //                 $config['allowed_types'] = 'jpg|jpeg|png|pdf';
+    //                 $config['max_size']      = 1000;
+    //                 $this->load->library('upload', $config);
+    //                 if ($this->upload->do_upload('foto_ket')) {
+    //                     $data_upload = $this->upload->data();
+    //                     $data['foto_ket'] = $data_upload['file_name'];
+    //                 } else {
+    //                     // Jika proses upload gagal
+    //                     $error_msg = $this->upload->display_errors();
+    //                     $this->session->set_flashdata('info', $error_msg);
+    //                     redirect('rkap/usulan_barang');
+    //                 }
+    //             }
+    //             // Isi data selain file yang diupload
+    //             $data['tahun_rkap'] = (int) $this->input->post('tahun_rkap', true);
+    //             $data['no_perkiraan'] = $this->input->post('no_perkiraan', true);
+    //             $data['nama_perkiraan'] = $this->input->post('nama_perkiraan', true);
+    //             $data['latar_belakang'] = $this->input->post('latar_belakang', true);
+    //             $data['solusi'] = $this->input->post('solusi', true);
+    //             $data['volume'] = (int) $this->input->post('volume', true);
+    //             $data['satuan'] = $this->input->post('satuan', true);
+    //             $data['biaya'] = (int) $this->input->post('biaya', true);
+    //             $data['ket'] = $this->input->post('ket', true);
+    //             $data['bagian_upk'] = $this->session->userdata('upk_bagian');
+    //             $data['tgl_Upload'] = date('Y-m-d H:i:s');
+
+    //             // Simpan data ke dalam database
+    //             $this->db->insert('usulan_barang', $data);
+    //             $this->session->set_flashdata(
+    //                 'info',
+    //                 '<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    //                         <strong>Sukses,</strong> Data Usulan barang berhasil di simpan
+    //                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+    //                         </button>
+    //                     </div>'
+    //             );
+    //             redirect('rkap/usulan_barang');
+    //         }
+    //     }
+    // }
 }

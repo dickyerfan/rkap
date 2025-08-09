@@ -17,7 +17,12 @@ class Isian_barang extends CI_Controller
     public function index()
     {
 
-        $data['tampil'] = $this->Model_isian_barang->getData();
+        // $data['tampil'] = $this->Model_isian_barang->getData();
+        $upk_bagian = $this->input->get('upk_bagian');
+        $tahun = $this->input->get('tahun');
+        $kategori = $this->input->get('kategori');
+        $data['tampil'] = $this->Model_isian_barang->getFiltered($upk_bagian, $tahun, $kategori);
+        $data['list_upk_bagian'] = $this->Model_isian_barang->getListUpkBagian();
 
         $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
         $this->load->view('templates/pengguna/header', $data);

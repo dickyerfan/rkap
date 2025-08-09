@@ -36,7 +36,17 @@
                                     <input type="number" step="1" class="form-control" id="volume" name="volume" value="<?= set_value('volume'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('volume'); ?></small>
                                 </div>
-
+                                <div class="form-group">
+                                    <label for="kategori">Kategori :</label>
+                                    <select name="kategori" id="" class="form-select">
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="ATK">ATK</option>
+                                        <option value="Inventaris">Inventaris</option>
+                                        <option value="Peralatan Teknik">Peralatan Teknik</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('kategori'); ?></small>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">

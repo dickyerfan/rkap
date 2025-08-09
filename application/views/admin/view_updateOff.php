@@ -16,8 +16,8 @@
                             <div class="col-md-4">
                                 <label for="status_update" class="form-group">Menu Aktivasi Update Data</label>
                                 <select class="form-select" name="status_update" aria-label="Default select example">
-                                    <option value="0" <?= $update->status_update == 0 ? 'selected' : '' ?>>Non Aktif</option>
-                                    <option value="1" <?= $update->status_update == 1 ? 'selected' : '' ?>>Aktif</option>
+                                    <option value="0" <?= (isset($update) && $update && $update->status_update == 0) ? 'selected' : '' ?>>Non Aktif</option>
+                                    <option value="1" <?= (isset($update) && $update && $update->status_update == 1) ? 'selected' : '' ?>>Aktif</option>
                                 </select>
                             </div>
                         </div>

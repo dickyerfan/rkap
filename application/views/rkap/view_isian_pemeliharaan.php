@@ -22,51 +22,55 @@
                         <div class="col-lg-12">
                             <table id="example" class="table table-sm table-bordered" style="font-size: 0.7rem;">
                                 <thead>
-                                    <!-- <tr class="text-center">
-                                        <th rowspan="2" class="align-middle">No</th>
-                                        <th rowspan="2" class="align-middle">UPK/Bagian</th>
-                                        <th colspan="2">Perkiraan</th>
-                                        <th colspan="2" class="align-middle">URAIAN TENTANG USULAN</th>
-                                        <th rowspan="2" class="align-middle">Keterangan</th>
-                                        <th rowspan="2" class="align-middle">Action</th>
-                                    </tr> -->
                                     <tr>
                                         <th class="text-center">No</th>
                                         <th class="text-center">Upk/Bagian</th>
                                         <th class="text-center">No Per</th>
                                         <th class="text-center">Nama</th>
-                                        <!-- <th class="text-center">Latar Belakang</th>
-                                        <th class="text-center">Solusi/Usulan</th> -->
+                                        <th class="text-center">Latar Belakang</th>
                                         <th class="text-center">Volume</th>
                                         <th class="text-center">Harga</th>
-                                        <th class="text-center">Keterangan</th>
+                                        <th class="text-center">Biaya</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $no = 1;
+                                    $total_jumlah = 0;
                                     foreach ($tampil as $row) :
                                         $id = $row->id_usulanPemeliharaan;
+                                        $harga = $row->biaya;
+                                        $satuan = $row->volume;
+                                        $jumlah = $harga * $satuan;
+                                        $total_jumlah += $jumlah;
                                     ?>
                                         <tr>
                                             <td class="text-center"><?= $no++ ?></td>
                                             <td><?= $row->bagian_upk ?></td>
                                             <td class="text-end"><?= $row->no_perkiraan ?></td>
                                             <td><?= $row->nama_perkiraan ?></td>
-                                            <!-- <td><?= $row->latar_belakang ?></td>
-                                            <td><?= $row->solusi ?></td> -->
+                                            <td><?= $row->latar_belakang ?></td>
                                             <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
                                             <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                            <td><?= $row->ket ?></td>
+                                            <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
+                                            <!-- kode ini dipakai jika total adalah dari satuan kali harga -->
+                                            <!-- <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td> -->
                                             <td class="text-center">
-                                                <a href="<?= base_url('rkap/isian_pemeliharaan/edit_isian_pemeliharaan/') ?><?= $id ?>"><span class="text-dark neumorphic-button" style="text-decoration: none;"><i class="fas fa-edit text-success"></i> Isi Harga</span></a>
+                                                <a href="<?= base_url('rkap/isian_pemeliharaan/edit_isian_pemeliharaan/') ?><?= $id ?>"><span class="text-dark neumorphic-button" style="text-decoration: none;"><i class="fas fa-edit text-success"></i> Isi Data</span></a>
                                                 <!-- <a href="<?= base_url('rkap/isian_pemeliharaan/detail_isian_pemeliharaan/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a> -->
                                                 <!-- <a href="<?= base_url('rkap/isian_pemeliharaan/hapus_isian_pemeliharaan/') ?><?= $id ?>" class="hapus-link"><i class="fas fa-trash text-danger"></i></a> -->
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
-
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="6" class="text-end">Total</th>
+                                        <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
+                                        <th class="text-end"><?= number_format($total_jumlah, 0, ',', '.') ?></th>
+                                        <th></th>
+                                    </tr>
                             </table>
                         </div>
                     </div>

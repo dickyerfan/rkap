@@ -50,6 +50,7 @@ class Usulan_barang extends CI_Controller
             $this->form_validation->set_rules('solusi', 'Solusi', 'required|trim');
             $this->form_validation->set_rules('volume', 'Volume', 'required|trim|numeric');
             $this->form_validation->set_rules('satuan', 'Satuan', 'required|trim');
+            $this->form_validation->set_rules('kategori', 'Kategori', 'required|trim');
             $this->form_validation->set_rules('biaya', 'Biaya', 'trim|numeric');
             $this->form_validation->set_rules('ket', 'Keterangan', 'trim');
             $this->form_validation->set_message('required', '%s masih kosong');
@@ -90,6 +91,7 @@ class Usulan_barang extends CI_Controller
                 $data['satuan'] = $this->input->post('satuan', true);
                 $data['biaya'] = (int) $this->input->post('biaya', true);
                 $data['ket'] = $this->input->post('ket', true);
+                $data['kategori'] = $this->input->post('kategori', true);
                 $data['bagian_upk'] = $this->session->userdata('upk_bagian');
                 $data['tgl_Upload'] = date('Y-m-d H:i:s');
 
@@ -131,32 +133,6 @@ class Usulan_barang extends CI_Controller
             $this->load->view('templates/pengguna/footer');
         }
     }
-
-    // public function update()
-    // {
-    //     $this->Model_usulan_barang->updateData();
-    //     if ($this->db->affected_rows() <= 0) {
-    //         $this->session->set_flashdata(
-    //             'info',
-    //             '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    //                     <strong>Maaf,</strong> tidak ada perubahan data
-    //                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    //                     </button>
-    //                   </div>'
-    //         );
-    //         redirect('rkap/usulan_barang');
-    //     } else {
-    //         $this->session->set_flashdata(
-    //             'info',
-    //             '<div class="alert alert-success alert-dismissible fade show" role="alert">
-    //                     <strong>Sukses,</strong> Data usulan permintaan barang berhasil di update
-    //                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    //                     </button>
-    //                   </div>'
-    //         );
-    //         redirect('rkap/usulan_barang');
-    //     }
-    // }
 
     public function update()
     {
