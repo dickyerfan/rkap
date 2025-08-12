@@ -93,26 +93,41 @@ class Model_evaluasi_upk extends CI_Model
 
     public function getLembarAirUpk()
     {
-        if (isset($dataTahun) && isset($dataUpk)) {
-            $this->db->select('*');
-            $this->db->from('evaluasi_upk');
-            $this->db->where('bagian_upk', $dataUpk);
-            $this->db->where('uraian_evaluasi', 'Jumlah Lbr Yg Direkeningkan');
-            $this->db->where('tahun_rkap', $dataTahun);
-            $query = $this->db->get();
-            return $query->result();
-        } else {
-            $dataTahun = 2000;
-            $dataUpk = $this->input->get('bagian_upk');
-            $this->db->select('*');
-            $this->db->from('evaluasi_upk');
-            $this->db->where('bagian_upk', $dataUpk);
-            $this->db->where('uraian_evaluasi', 'Jumlah Lbr Yg Direkeningkan');
-            $this->db->where('tahun_rkap', $dataTahun);
-            $query = $this->db->get();
-            return $query->result();
-        }
+        $dataTahun = $this->input->post('tahun_rkap');
+        $dataUpk   = $this->input->post('bagian_upk');
+
+        $this->db->select('*');
+        $this->db->from('evaluasi_upk');
+        $this->db->where('bagian_upk', $dataUpk);
+        $this->db->where('uraian_evaluasi', 'Jumlah Lbr Yg Direkeningkan');
+        $this->db->where('tahun_rkap', $dataTahun);
+        $query = $this->db->get();
+        return $query->result();
     }
+
+
+    // public function getLembarAirUpk()
+    // {
+    //     if (isset($dataTahun) && isset($dataUpk)) {
+    //         $this->db->select('*');
+    //         $this->db->from('evaluasi_upk');
+    //         $this->db->where('bagian_upk', $dataUpk);
+    //         $this->db->where('uraian_evaluasi', 'Jumlah Lbr Yg Direkeningkan');
+    //         $this->db->where('tahun_rkap', $dataTahun);
+    //         $query = $this->db->get();
+    //         return $query->result();
+    //     } else {
+    //         $dataTahun = 2000;
+    //         $dataUpk = $this->input->get('bagian_upk');
+    //         $this->db->select('*');
+    //         $this->db->from('evaluasi_upk');
+    //         $this->db->where('bagian_upk', $dataUpk);
+    //         $this->db->where('uraian_evaluasi', 'Jumlah Lbr Yg Direkeningkan');
+    //         $this->db->where('tahun_rkap', $dataTahun);
+    //         $query = $this->db->get();
+    //         return $query->result();
+    //     }
+    // }
 
 
     public function upload_plgBaru()

@@ -5,7 +5,7 @@
                 <div class="card-header shadow">
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <a class="fw-bold text-dark pe-2" style="text-decoration:none;">Pilih Wilayah & Tahun</a>
-                        <form action="<?= base_url('admin/usulan_barang') ?>" method="get">
+                        <form action="<?= base_url('admin/usulan_umum') ?>" method="get">
                             <div style="display: flex; align-items: center;">
                                 <?php
                                 $bagian_upk = isset($_GET['bagian_upk']) ? $_GET['bagian_upk'] : '';
@@ -49,16 +49,15 @@
                                 </select>
                                 <select name="kategori" class="form-select" style="width: 150px; margin-left:10px;">
                                     <option value="">Pilih Kategori</option>
-                                    <option value="ATK" <?= $kategori == 'ATK' ? 'selected' : '' ?>>ATK</option>
-                                    <option value="Inventaris" <?= $kategori == 'Inventaris' ? 'selected' : '' ?>>Inventaris</option>
-                                    <option value="Peralatan Teknik" <?= $kategori == 'Peralatan Teknik' ? 'selected' : '' ?>>Peralatan Teknik</option>
-                                    <option value="Lainnya" <?= $kategori == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                                    <option value="Umum" <?= $kategori == 'Umum' ? 'selected' : '' ?>>Umum</option>
+                                    <option value="Personalia" <?= $kategori == 'Personalia' ? 'selected' : '' ?>>Personalia</option>
+                                    <option value="Administrasi" <?= $kategori == 'Administrasi' ? 'selected' : '' ?>>Administrasi</option>
                                 </select>
                                 <input type="submit" value="Tampilkan Data" style="margin-left: 10px;" class="neumorphic-button">
                             </div>
                         </form>
                         <div class="navbar-nav ms-2">
-                            <a class="nav-link fw-bold" href="<?= base_url('admin/usulan_barang') ?>" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"> Reset</button></a>
+                            <a class="nav-link fw-bold" href="<?= base_url('admin/usulan_umum') ?>" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"> Reset</button></a>
                         </div>
                         <div class="navbar-nav ms-auto">
                             <a class="nav-link fw-bold" href="#" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
@@ -74,12 +73,12 @@
                         <div class="col-lg-6 text-center">
                             <h5><?= $title . ' ' .  $tahun + 1 ?></h5>
                             <!-- <h5><?= strtoupper($this->session->userdata('nama_pengguna'));  ?></h5> -->
-                            <h5>BAGIAN/UPK <?= strtoupper($namaUpk);  ?></h5>
+                            <h5>KATEGORI <?= strtoupper($kategori);  ?></h5>
                         </div>
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
-                            <table class="table table-sm table-bordered" style="font-size: 0.7rem;" id="example">
+                            <table class="table table-sm table-bordered" style="font-size: 0.7rem;">
                                 <thead>
                                     <tr class="text-center">
                                         <th rowspan="2" class="align-middle">No</th>
@@ -103,7 +102,7 @@
                                     <?php
                                     $no = 1;
                                     foreach ($tampil as $row) :
-                                        $id = $row->id_usulanBarang;
+                                        $id = $row->id_usulanUmum;
                                         $harga = $row->biaya;
                                         $satuan = $row->volume;
                                         $jumlah = $harga * $satuan;
@@ -120,9 +119,9 @@
                                             <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td>
                                             <td><?= $row->ket ?></td>
                                             <td class="text-center">
-                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
-                                                <a href="<?= base_url('admin/usulan_barang/detail_usulan_barang/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a>
-                                                <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') ?><?= $id ?>" class="hapus-link"><i class="fas fa-trash text-danger"></i></a>
+                                                <a href="<?= base_url('admin/usulan_umum/edit_usulan_umum/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
+                                                <a href="<?= base_url('admin/usulan_umum/detail_usulan_umum/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a>
+                                                <a href="<?= base_url('admin/usulan_umum/hapus_usulan_umum/') ?><?= $id ?>" class="hapus-link"><i class="fas fa-trash text-danger"></i></a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -153,7 +152,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="<?= base_url('admin/usulan_barang/export_pdf') ?>" method="post" target="_blank">
+                        <form action="<?= base_url('admin/usulan_umum/export_pdf') ?>" method="post" target="_blank">
                             <div style="display: flex; align-items: center;">
                                 <select name="bagian_upk" class="form-select select2" style="width: 150px; margin-right: 10px;" aria-label="Default select example">
                                     <option value="">Cetak Semua Bagian/UPK</option>

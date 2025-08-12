@@ -1,14 +1,14 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Usulan_barang extends CI_Controller
+class Usulan_umum extends CI_Controller
 {
 
     public function __construct()
     {
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
-        $this->load->model('Model_usulan_barang');
+        $this->load->model('Model_usulan_umum');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -16,17 +16,6 @@ class Usulan_barang extends CI_Controller
     }
     public function index()
     {
-
-        // $dataUpk = $this->input->post('bagian_upk');
-        // $dataTahun = $this->input->post('tahun_rkap');
-        // if ($dataTahun === null) {
-        //     $dataTahun = date('Y');
-        // }
-        // $data['namaUpk'] = $dataUpk;
-        // $data['tahun'] = $dataTahun;
-        // $data['tampil'] = $this->Model_usulan_barang->getDataUpk($dataUpk, $dataTahun);
-        // $data['seleksi'] = $this->Model_usulan_barang->getNamaUpk($dataUpk, $dataTahun);
-        // $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
 
         $bagian_upk = $this->input->get('bagian_upk');
         $tahun_rkap = $this->input->get('tahun_rkap');
@@ -37,17 +26,18 @@ class Usulan_barang extends CI_Controller
             $tahun_rkap = date('Y');
         }
 
-        $data['tampil'] = $this->Model_usulan_barang->getFiltered($bagian_upk, $tahun_rkap, $kategori);
+        $data['tampil'] = $this->Model_usulan_umum->getFiltered($bagian_upk, $tahun_rkap, $kategori);
         $data['bagian_upk'] = $bagian_upk;
         $data['tahun'] = $tahun_rkap;
         $data['kategori'] = $kategori;
-        $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
+        $data['title'] = 'USULAN PERMINTAAN BAGIAN UMUM (RKAP) TAHUN ';
         $data['namaUpk'] = $bagian_upk ? $bagian_upk : 'SEMUA';
+        $data['kategori'] = $kategori ? $kategori : 'SEMUA';
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('admin/usulan_barang/view_usulan_barang', $data);
+        $this->load->view('admin/usulan_umum/view_usulan_umum', $data);
         $this->load->view('templates/footer');
     }
 
@@ -55,25 +45,27 @@ class Usulan_barang extends CI_Controller
     {
         $dataUpk = $this->input->post('bagian_upk');
         $dataTahun = $this->input->post('tahun_rkap');
+        $datakategori = $this->input->post('kategori');
+        $data['kategori'] = $datakategori ? $datakategori : 'SEMUA';
         $data['namaUpk'] = $dataUpk;
         $data['tahun'] = $dataTahun;
         // $data['tampil'] = $this->Model_usulan_barang->getDataUpk($dataUpk, $dataTahun);
         $bagian_upk = $this->input->post('bagian_upk'); // bisa kosong
         $tahun_rkap = $this->input->post('tahun_rkap');
-        $data['tampil'] = $this->Model_usulan_barang->getFiltered($bagian_upk, $tahun_rkap);
-        $data['seleksi'] = $this->Model_usulan_barang->getNamaUpk($dataUpk, $dataTahun);
-        $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
+        $data['tampil'] = $this->Model_usulan_umum->getFiltered($bagian_upk, $tahun_rkap);
+        $data['seleksi'] = $this->Model_usulan_umum->getNamaUpk($dataUpk, $dataTahun);
+        $data['title'] = 'USULAN PERMINTAAN BAGIAN UMUM (RKAP) TAHUN ';
 
         $this->pdf->setPaper('Folio', 'portrait');
-        $this->pdf->filename = "Usulan_barang-{$dataUpk}-{$dataTahun}.pdf";
-        $this->pdf->generate('admin/usulan_barang/laporan_pdf', $data);
+        $this->pdf->filename = "usulan_umum-{$dataUpk}-{$dataTahun}.pdf";
+        $this->pdf->generate('admin/usulan_umum/laporan_pdf', $data);
     }
 
 
-    public function edit_usulan_barang($id_usulanBarang)
+    public function edit_usulan_umum($id_usulanUmum)
     {
-        $data['title'] = 'Update Usulan barang';
-        $statusUpdate = $this->Model_usulan_barang->getStatusUpdate('usulan_barang');
+        $data['title'] = 'Update Usulan Umum';
+        $statusUpdate = $this->Model_usulan_umum->getStatusUpdate('usulan_umum');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -83,20 +75,20 @@ class Usulan_barang extends CI_Controller
                     </button>
                 </div>'
             );
-            redirect('admin/usulan_barang');
+            redirect('admin/usulan_umum');
         } else {
-            $data['usulan_barang'] = $this->Model_usulan_barang->getUsulanBarang($id_usulanBarang);
+            $data['usulan_umum'] = $this->Model_usulan_umum->getUsulanUmum($id_usulanUmum);
             $this->load->view('templates/pengguna/header', $data);
             $this->load->view('templates/pengguna/navbar');
             $this->load->view('templates/pengguna/sidebar');
-            $this->load->view('admin/usulan_barang/edit_usulan_barang', $data);
+            $this->load->view('admin/usulan_umum/edit_usulan_umum', $data);
             $this->load->view('templates/pengguna/footer');
         }
     }
 
     public function update()
     {
-        $this->Model_usulan_barang->updateData();
+        $this->Model_usulan_umum->updateData();
         $updated_rows = $this->db->affected_rows();
 
         if ($updated_rows <= 0) {
@@ -108,7 +100,7 @@ class Usulan_barang extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('admin/usulan_barang');
+            redirect('admin/usulan_umum');
         } else {
             // Cek apakah ada file yang diupload
             if (!empty($_FILES['foto_ket']['name'])) {
@@ -120,14 +112,14 @@ class Usulan_barang extends CI_Controller
 
                 if ($this->upload->do_upload('foto_ket')) {
                     // Mendapatkan nama file lama dari database
-                    $usulanBarang = $this->Model_usulan_barang->getUsulanBarang($this->input->post('id_usulanBarang'));
-                    $namaFileLama = $usulanBarang->foto_ket;
+                    $usulanUmum = $this->Model_usulan_umum->getUsulanUmum($this->input->post('id_usulanUmum'));
+                    $namaFileLama = $usulanUmum->foto_ket;
 
                     // Lakukan proses upload file baru
                     $data_upload = $this->upload->data();
                     $data['foto_ket'] = $data_upload['file_name'];
-                    $data['id_usulanBarang'] = $this->input->post('id_usulanBarang');
-                    $this->Model_usulan_barang->updateFoto($data);
+                    $data['id_usulanUmum'] = $this->input->post('id_usulanUmum');
+                    $this->Model_usulan_umum->updateFoto($data);
 
 
                     // Hapus file lama dari folder "uploads"
@@ -141,7 +133,7 @@ class Usulan_barang extends CI_Controller
                     // Jika proses upload gagal
                     $error_msg = $this->upload->display_errors();
                     $this->session->set_flashdata('info', $error_msg);
-                    redirect('admin/usulan_barang');
+                    redirect('admin/usulan_umum');
                 }
             }
 
@@ -153,7 +145,7 @@ class Usulan_barang extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('admin/usulan_barang');
+            redirect('admin/usulan_umum');
         }
     }
 
@@ -171,12 +163,12 @@ class Usulan_barang extends CI_Controller
                     </button>
                 </div>'
             );
-            redirect('admin/usulan_barang');
+            redirect('admin/usulan_Umum');
         } else {
             // Ambil informasi file yang ingin dihapus (misalnya nama file) dari database
             $this->db->select('foto_ket');
-            $this->db->where('id_usulanBarang', $id_usulanBarang);
-            $query = $this->db->get('usulan_barang');
+            $this->db->where('id_usulanUmum', $id_usulanUmum);
+            $query = $this->db->get('usulan_umum');
             $row = $query->row();
 
             // Hapus file jika ada
@@ -195,12 +187,12 @@ class Usulan_barang extends CI_Controller
         }
     }
 
-    public function detail_usulan_barang($id_usulanBarang)
+    public function detail_usulan_umum($id_usulanUmum)
     {
-        $data['title'] = 'Detail Usulan Barang';
-        $data['usulan_barang'] = $this->db->get_where('usulan_barang', ['id_usulanBarang' => $id_usulanBarang])->row();
+        $data['title'] = 'Detail Usulan Umum';
+        $data['usulan_umum'] = $this->db->get_where('usulan_umum', ['id_usulanUmum' => $id_usulanUmum])->row();
 
-        if (!$data['usulan_barang']) {
+        if (!$data['usulan_umum']) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -208,13 +200,13 @@ class Usulan_barang extends CI_Controller
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>'
             );
-            redirect('admin/usulan_barang');
+            redirect('admin/usulan_umum');
         }
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('admin/usulan_barang/detail_usulan_barang', $data);
+        $this->load->view('admin/usulan_umum/detail_usulan_umum', $data);
         $this->load->view('templates/footer');
     }
 

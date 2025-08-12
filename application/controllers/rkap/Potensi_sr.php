@@ -8,6 +8,7 @@ class Potensi_sr extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Model_potensi_sr');
+        date_default_timezone_set('Asia/Jakarta');
         $this->load->library('form_validation');
         $this->load->library('pdf');
         if (!$this->session->userdata('level')) {
@@ -51,9 +52,9 @@ class Potensi_sr extends CI_Controller
         } else {
 
             $this->form_validation->set_rules('kap_pro', 'Nama Pasien', 'trim');
-            $this->form_validation->set_rules('kap_manf', 'Kapasitas Dimanfaatkan', 'required|trim|numeric');
+            // $this->form_validation->set_rules('kap_manf', 'Kapasitas Dimanfaatkan', 'required|trim|numeric');
             $this->form_validation->set_rules('jam_op', 'Jam Operasional', 'required|trim|numeric');
-            $this->form_validation->set_rules('tk_bocor', 'Tingkat Kebocoran', 'required|trim');
+            // $this->form_validation->set_rules('tk_bocor', 'Tingkat Kebocoran', 'required|trim');
             $this->form_validation->set_rules('plg_aktif', 'Pelanggan Aktif', 'required|trim|numeric');
             $this->form_validation->set_rules('tambah_sr', 'Tambah SR', 'required|trim|numeric');
             $this->form_validation->set_rules('pola_kon', 'Pola Konsumsi', 'required|trim|numeric');

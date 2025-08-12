@@ -104,16 +104,26 @@ class Model_potensi_sr extends CI_Model
     // Awal Potensi SR
     public function uploadData()
     {
+        $kap_pro = $this->input->post('kap_pro');
+        $jam_op = $this->input->post('jam_op');
+        $produksi_air = $kap_pro * $jam_op * 108;
+        $pelanggan_aktif = $this->input->post('plg_aktif');
+        $pola_kon = $this->input->post('pola_kon');
+        $kap_manfaat = $pelanggan_aktif * $pola_kon;
+        $kebocoran_air_persen = ($produksi_air - $kap_manfaat) / $produksi_air * 100;
+        $kap_manf = $kap_manfaat / (3.6 * 30 * $jam_op);
+
         $data = [
             'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
             'kap_pro' => (float) $this->input->post('kap_pro', true),
-            'kap_manf' => (float) $this->input->post('kap_manf', true),
+            'kap_manf' => $kap_manf,
             'jam_op' => (float) $this->input->post('jam_op', true),
-            'tk_bocor' => (float) $this->input->post('tk_bocor', true),
+            'tk_bocor' => $kebocoran_air_persen,
             'plg_aktif' => (int) $this->input->post('plg_aktif', true),
             'tambah_sr' => (int) $this->input->post('tambah_sr', true),
             'pola_kon' => (float) $this->input->post('pola_kon', true),
-            'bagian_upk' => $this->session->userdata('upk_bagian')
+            'bagian_upk' => $this->session->userdata('upk_bagian'),
+            'tgl_upload' => date('Y-m-d H:i:s')
         ];
         $this->db->insert('potensi_sr', $data);
     }

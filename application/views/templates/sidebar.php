@@ -53,6 +53,7 @@
                             <a class="nav-link" href="<?= base_url('admin/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                             <a class="nav-link" href="<?= base_url('admin/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                             <a class="nav-link" href="<?= base_url('admin/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
+                            <a class="nav-link" href="<?= base_url('admin/usulan_umum') ?>" style="font-size: 0.8rem;">Usulan Umum</a>
                             <a class="nav-link" href="<?= base_url('admin/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                         </nav>
                     </div>

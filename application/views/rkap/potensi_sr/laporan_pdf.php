@@ -73,12 +73,22 @@
         <div class="container-fluid">
             <?php
             foreach ($tampil as $row) :
-                $produksi_air = $row->kap_manf * $row->jam_op * 108;
-                $kebocoran_air = $produksi_air * $row->tk_bocor / 100;
+                $produksi_air = $row->kap_pro * $row->jam_op * 108;
+                // $kebocoran_air = $produksi_air * $row->tk_bocor / 100;
+                $pelanggan_aktif = $row->plg_aktif;
+                $pola_kon = $row->pola_kon;
+                $kap_manf = $pelanggan_aktif * $pola_kon;
+                $kebocoran_air_persen = $row->tk_bocor;
+                $kebocoran_air = $produksi_air * $kebocoran_air_persen / 100;
+
                 $air_pelanggan = $produksi_air - $kebocoran_air;
                 $kebutuhan_air = $row->pola_kon * ($row->plg_aktif + $row->tambah_sr);
                 $sisa_air = $air_pelanggan - $kebutuhan_air;
-                $potensi = $sisa_air / $row->pola_kon;
+                if ($row->pola_kon != 0) {
+                    $potensi = $sisa_air / $row->pola_kon;
+                } else {
+                    $potensi = 0;
+                }
 
             ?>
                 <div class="card-body">
@@ -100,12 +110,12 @@
                                         <td><?= number_format($row->kap_pro, 2, ',', '.'); ?></td>
                                         <td>liter/detik</td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td>Kapasitas yang Dimanfaatkan</td>
                                         <td>:</td>
                                         <td><?= number_format($row->kap_manf, 2, ',', '.'); ?></td>
                                         <td>liter/detik</td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td>Jam Operasional</td>
                                         <td>:</td>

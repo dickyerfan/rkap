@@ -33,8 +33,8 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('kap_pro'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="kap_manf">Kapasitas Dimanfaatkan :</label>
-                                    <input type="number" step="0.01" class="form-control" id="kap_manf" name="kap_manf" value="<?= $potensiSr->kap_manf; ?>">
+                                    <!-- <label for="kap_manf">Kapasitas Dimanfaatkan :</label> -->
+                                    <input type="hidden" step="0.01" class="form-control" id="kap_manf" name="kap_manf" value="<?= $potensiSr->kap_manf; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('kap_manf'); ?></small>
                                 </div>
                             </div>

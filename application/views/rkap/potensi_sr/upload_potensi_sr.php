@@ -36,11 +36,11 @@
                                     <input type="number" step="0.01" class="form-control" id="kap_pro" name="kap_pro" value="<?= set_value('kap_pro'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('kap_pro'); ?></small>
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="kap_manf">Kapasitas Dimanfaatkan :</label>
                                     <input type="number" step="0.01" class="form-control" id="kap_manf" name="kap_manf" value="<?= set_value('kap_manf'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('kap_manf'); ?></small>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
@@ -48,11 +48,11 @@
                                     <input type="number" step="0.01" class="form-control" id="jam_op" name="jam_op" value="<?= set_value('jam_op'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('jam_op'); ?></small>
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="tk_bocor">Tingkat Kebocoran :</label>
                                     <input type="number" step="0.01" class="form-control" id="tk_bocor" name="tk_bocor" value="<?= set_value('tk_bocor'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('tk_bocor'); ?></small>
-                                </div>
+                                </div> -->
                                 <div class="form-group">
                                     <label for="plg_aktif">Jumlah Pelanggan aktif :</label>
                                     <input type="number" class="form-control" id="plg_aktif" name="plg_aktif" value="<?= set_value('plg_aktif'); ?>">
@@ -66,7 +66,7 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('tambah_sr'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pola_kon">Pola Konsumsi rata2 :</label>
+                                    <label for="pola_kon">Pola Konsumsi Bulan Juli :</label>
                                     <input type="number" step="0.01" class="form-control" id="pola_kon" name="pola_kon" value="<?= set_value('pola_kon'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('pola_kon'); ?></small>
                                 </div>

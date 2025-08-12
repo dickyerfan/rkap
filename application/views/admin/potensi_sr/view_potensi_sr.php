@@ -56,8 +56,13 @@
                     </div>
                     <?php
                     foreach ($tampil as $row) :
-                        $produksi_air = $row->kap_manf * $row->jam_op * 108;
-                        $kebocoran_air = $produksi_air * $row->tk_bocor / 100;
+                        $produksi_air = $row->kap_pro * $row->jam_op * 108;
+                        $pelanggan_aktif = $row->plg_aktif;
+                        $pola_kon = $row->pola_kon;
+                        $kap_manf = $pelanggan_aktif * $pola_kon;
+                        $kebocoran_air_persen = $row->tk_bocor;
+                        $kebocoran_air = $produksi_air * $kebocoran_air_persen / 100;
+
                         $air_pelanggan = $produksi_air - $kebocoran_air;
                         $kebutuhan_air = $row->pola_kon * ($row->plg_aktif + $row->tambah_sr);
                         $sisa_air = $air_pelanggan - $kebutuhan_air;
@@ -73,12 +78,12 @@
                                             <td><?= number_format($row->kap_pro, 2, ',', '.'); ?></td>
                                             <td>liter/detik</td>
                                         </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <td>Kapasitas yang Dimanfaatkan</td>
                                             <td>:</td>
                                             <td><?= number_format($row->kap_manf, 2, ',', '.'); ?></td>
                                             <td>liter/detik</td>
-                                        </tr>
+                                        </tr> -->
                                         <tr>
                                             <td>Jam Operasional</td>
                                             <td>:</td>
@@ -88,7 +93,7 @@
                                         <tr>
                                             <td>Tingkat Kebocoran</td>
                                             <td>:</td>
-                                            <td><?= number_format($row->tk_bocor, 0, ',', '.'); ?></td>
+                                            <td><?= number_format($row->tk_bocor, 2, ',', '.'); ?></td>
                                             <td>% (Persentase)</td>
                                         </tr>
                                         <tr>
@@ -119,22 +124,22 @@
                                 <table class="table table-borderless table-sm">
                                     <tbody>
                                         <tr>
-                                            <td>Produksi air 1 tahun</td>
-                                            <td><?= number_format($row->kap_manf, 2, ',', '.'); ?> x <?= number_format($row->jam_op, 1, ',', '.'); ?> x 30 x 3.600 / 1.000</td>
+                                            <td>Produksi air 1 bulan</td>
+                                            <td><?= number_format($row->kap_pro, 2, ',', '.'); ?> x <?= number_format($row->jam_op, 1, ',', '.'); ?> x 30 x 3.600 / 1.000</td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($produksi_air, 2, ',', '.');  ?></td>
                                             <td>M3</td>
                                         </tr>
                                         <tr>
                                             <td>Kebocoran air (....%)</td>
-                                            <td><?= number_format($row->tk_bocor, 0, ',', '.')  ?> %</td>
+                                            <td><?= number_format($row->tk_bocor, 2, ',', '.')  ?> %</td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($kebocoran_air, 2, ',', '.'); ?></td>
                                             <td>M3</td>
                                         </tr>
                                         <tr>
                                             <td>Air yang didistribusikan ke pelanggan</td>
-                                            <td>-</td>
+                                            <td><?= number_format($produksi_air, 2, ',', '.') ?> - <?= number_format($kebocoran_air, 2, ',', '.') ?></td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($air_pelanggan, 2, ',', '.'); ?></td>
                                             <td>M3</td>
@@ -148,13 +153,13 @@
                                         </tr>
                                         <tr>
                                             <td>Sisa Air</td>
-                                            <td>-</td>
+                                            <td><?= number_format($air_pelanggan, 2, ',', '.') ?> - <?= number_format($kebutuhan_air, 2, ',', '.') ?></td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($sisa_air, 2, ',', '.'); ?></td>
                                             <td>M3</td>
                                         </tr>
                                         <tr>
-                                            <td>Potensi penambahan pelanggan tahun 2024</td>
+                                            <td>Potensi penambahan pelanggan tahun <?= $row->tahun_rkap + 1 ?></td>
                                             <td><?= number_format($sisa_air, 2, ',', '.')  ?> / <?= number_format($row->pola_kon, 2, ',', '.'); ?></td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($potensi, 0, ',', '.')  ?></td>
