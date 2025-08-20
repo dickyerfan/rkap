@@ -119,6 +119,7 @@ class Model_potensi_sr extends CI_Model
             'kap_manf' => $kap_manf,
             'jam_op' => (float) $this->input->post('jam_op', true),
             'tk_bocor' => $kebocoran_air_persen,
+            'tk_bocor2' => $kebocoran_air_persen,
             'plg_aktif' => (int) $this->input->post('plg_aktif', true),
             'tambah_sr' => (int) $this->input->post('tambah_sr', true),
             'pola_kon' => (float) $this->input->post('pola_kon', true),
@@ -271,4 +272,45 @@ class Model_potensi_sr extends CI_Model
     }
 
     // Akhir Keterangan Potensi SR
+
+    // Awal Biaya Usulan
+    public function getBiayaUsulanBarang($upk_bagian, $tahun_rkap)
+    {
+        return $this->db->select_sum('biaya')
+            ->where('bagian_upk', $upk_bagian)
+            ->where('tahun_rkap', $tahun_rkap)
+            ->get('usulan_barang')
+            ->row()
+            ->biaya;
+    }
+
+    public function getBiayaUsulanPemeliharaan($upk_bagian, $tahun_rkap)
+    {
+        return $this->db->select_sum('biaya')
+            ->where('bagian_upk', $upk_bagian)
+            ->where('tahun_rkap', $tahun_rkap)
+            ->get('usulan_pemeliharaan')
+            ->row()
+            ->biaya;
+    }
+
+    public function getBiayaUsulanInvestasi($upk_bagian, $tahun_rkap)
+    {
+        return $this->db->select_sum('biaya')
+            ->where('bagian_upk', $upk_bagian)
+            ->where('tahun_rkap', $tahun_rkap)
+            ->get('usulan_investasi')
+            ->row()
+            ->biaya;
+    }
+
+    public function getBiayaUsulanUmum($upk_bagian, $tahun_rkap)
+    {
+        return $this->db->select_sum('biaya')
+            ->where('bagian_upk', $upk_bagian)
+            ->where('tahun_rkap', $tahun_rkap)
+            ->get('usulan_umum')
+            ->row()
+            ->biaya;
+    }
 }

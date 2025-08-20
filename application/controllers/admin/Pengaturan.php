@@ -192,6 +192,8 @@ class Pengaturan extends CI_Controller
         $data['potensiSr'] = $this->Model_pengaturan->cekPotensiSr();
         $data['evaluasiUpk'] = $this->Model_pengaturan->cekEvaluasiUpk();
         $data['evaluasiAmdk'] = $this->Model_pengaturan->cekEvaluasiAmdk();
+        $data['potensiAmdk'] = $this->Model_pengaturan->cekPotensiAmdk();
+        $data['usulanUmum'] = $this->Model_pengaturan->cekUsulanUmum();
         $data['usulanBarang'] = $this->Model_pengaturan->cekUsulanBarang();
         $data['usulanInvestasi'] = $this->Model_pengaturan->cekUsulanInvestasi();
         $data['usulanPemeliharaan'] = $this->Model_pengaturan->cekUsulanPemeliharaan();
@@ -204,4 +206,28 @@ class Pengaturan extends CI_Controller
         $this->load->view('admin/view_kumpul_data', $data);
         $this->load->view('templates/footer');
     }
+
+    // public function kumpul_data()
+    // {
+    //     $data['title'] = 'Cek Pengumpulan Data';
+    //     $bagian_upk = $this->session->userdata('upk_bagian'); // contoh
+    //     $data['namaUpk'] = $this->Model_pengaturan->cekNamaUpk();
+    //     $data['namaBagian'] = $this->Model_pengaturan->cekNamaBagian();
+    //     $data['potensiSr'] = $this->Model_pengaturan->cekPotensiSr($bagian_upk);
+    //     $data['evaluasiUpk'] = $this->Model_pengaturan->cekEvaluasiUpk($bagian_upk);
+    //     $data['evaluasiAmdk'] = $this->Model_pengaturan->cekEvaluasiAmdk($bagian_upk);
+    //     $data['potensiAmdk'] = $this->Model_pengaturan->cekPotensiAmdk($bagian_upk);
+    //     $data['usulanUmum'] = $this->Model_pengaturan->cekUsulanUmum($bagian_upk);
+    //     $data['usulanBarang'] = $this->Model_pengaturan->cekUsulanBarang($bagian_upk);
+    //     $data['usulanInvestasi'] = $this->Model_pengaturan->cekUsulanInvestasi($bagian_upk);
+    //     $data['usulanPemeliharaan'] = $this->Model_pengaturan->cekUsulanPemeliharaan($bagian_upk);
+    //     $data['permasalahan'] = $this->Model_pengaturan->cekPermasalahan($bagian_upk);
+    //     $data['evaluasiProgram'] = $this->Model_pengaturan->cekEvaluasiProgram($bagian_upk);
+
+    //     $this->load->view('templates/header', $data);
+    //     $this->load->view('templates/navbar');
+    //     $this->load->view('templates/sidebar');
+    //     $this->load->view('admin/view_kumpul_data', $data);
+    //     $this->load->view('templates/footer');
+    // }
 }

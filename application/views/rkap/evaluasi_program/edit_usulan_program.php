@@ -4,17 +4,17 @@
             <div class="card">
                 <div class="card-header shadow">
                     <a class="fw-bold text-dark" style="text-decoration:none ;"><?= strtoupper($title) ?></a>
-                    <a href="<?= base_url('admin/Evaluasi_program') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
+                    <a href="<?= base_url('rkap/Evaluasi_program') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
                 </div>
                 <div class="p-2">
                     <?= $this->session->flashdata('info'); ?>
                     <?= $this->session->unset_userdata('info'); ?>
                 </div>
                 <div class="card-body">
-                    <form class="user" action="<?= base_url('admin/evaluasi_program/update') ?>" method="POST">
+                    <form class="user" action="<?= base_url('rkap/evaluasi_program/update_usulan') ?>" method="POST">
                         <div class="row justify-content-center">
                             <div class="col-md-6">
-                                <input type="hidden" name="id_evaluasi_program" id="id_evaluasi_program" value="<?= $evaluasi_program->id_evaluasi_program; ?>">
+                                <input type="hidden" name="id_usulan" id="id_usulan" value="<?= $evaluasi_usulan->id_usulan; ?>">
                                 <div class="form-group">
                                     <label for="tahun_rkap">Tahun Pembuatan RKAP :</label>
                                     <select name="tahun_rkap" class="form-select" disabled>
@@ -29,18 +29,18 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('tahun_rkap'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="evaluasi">Evaluasi :</label>
-                                    <textarea name="evaluasi" id="evaluasi" cols="30" rows="8" class="form-control"><?= $evaluasi_program->evaluasi; ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('evaluasi'); ?></small>
+                                    <label for="usulan">Usulan :</label>
+                                    <textarea name="usulan" id="usulan" cols="30" rows="8" class="form-control"><?= set_value('usulan', $evaluasi_usulan->usulan); ?></textarea>
+                                    <small class="form-text text-danger pl-3"><?= form_error('usulan'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="tindak_lanjut">Tindak Lanjut :</label>
-                                    <textarea name="tindak_lanjut" id="tindak_lanjut" cols="30" rows="8" class="form-control"><?= $evaluasi_program->tindak_lanjut; ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('tindak_lanjut'); ?></small>
+                                    <label for="solusi">Solusi :</label>
+                                    <textarea name="solusi" id="solusi" cols="30" rows="8" class="form-control"><?= set_value('solusi', $evaluasi_usulan->solusi); ?></textarea>
+                                    <small class="form-text text-danger pl-3"><?= form_error('solusi'); ?></small>
                                 </div>
                                 <div class="form-group">
                                     <label for="keterangan">Keterangan :</label>
-                                    <textarea name="keterangan" id="keterangan" cols="30" rows="8" class="form-control"><?= $evaluasi_program->keterangan; ?></textarea>
+                                    <textarea name="keterangan" id="keterangan" cols="30" rows="8" class="form-control"><?= set_value('keterangan', $evaluasi_usulan->keterangan); ?></textarea>
                                     <small class="form-text text-danger pl-3"><?= form_error('keterangan'); ?></small>
                                 </div>
 

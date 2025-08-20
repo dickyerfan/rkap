@@ -40,7 +40,7 @@
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                                 <a class="nav-link" href="<?= base_url('rkap/isian_inves') ?>" style="font-size: 0.8rem;">Isian Investasi</a>
                                 <a class="nav-link" href="<?= base_url('rkap/isian_pemeliharaan') ?>" style="font-size: 0.8rem;">Isian Pemeliharaan</a>
@@ -49,25 +49,26 @@
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_umum') ?>" style="font-size: 0.8rem;">Usulan Umum</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                                 <a class="nav-link" href="<?= base_url('rkap/isian_barang') ?>" style="font-size: 0.8rem;">Isian Barang</a>
                             <?php elseif ($isAmdk) : ?>
+                                <a class="nav-link" href="<?= base_url('rkap/potensi_amdk') ?>" style="font-size: 0.8rem;">Potensi AMDK</a>
                                 <a class="nav-link" href="<?= base_url('rkap/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                             <?php elseif ($pemeliharaan) : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                             <?php elseif ($uangLangSpi) : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Program</a>
+                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                             <?php else : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>

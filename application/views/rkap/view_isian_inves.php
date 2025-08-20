@@ -29,8 +29,8 @@
                                         <th class="text-center">Nama</th>
                                         <th class="text-center">Latar Belakang</th>
                                         <th class="text-center">Volume</th>
-                                        <th class="text-center">Harga</th>
-                                        <th class="text-center">Biaya</th>
+                                        <!-- <th class="text-center">Harga</th> -->
+                                        <th class="text-center">Total Biaya</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -53,11 +53,11 @@
                                             <td><?= $row->latar_belakang ?></td>
                                             <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
                                             <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                            <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
+                                            <!-- <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td> -->
                                             <!-- kode ini dipakai jika total adalah dari satuan kali harga -->
                                             <!-- <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td> -->
                                             <td class="text-center">
-                                                <a href="<?= base_url('rkap/isian_inves/edit_isian_inves/') ?><?= $id ?>"><span class="text-dark neumorphic-button" style="text-decoration: none;"><i class="fas fa-edit text-success"></i> Isi Data</span></a>
+                                                <a href="<?= base_url('rkap/isian_inves/edit_isian_inves/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
                                                 <!-- <a href="<?= base_url('rkap/isian_inves/detail_isian_inves/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a> -->
                                                 <!-- <a href="<?= base_url('rkap/isian_inves/hapus_isian_inves/') ?><?= $id ?>" class="hapus-link"><i class="fas fa-trash text-danger"></i></a> -->
                                             </td>
@@ -68,7 +68,7 @@
                                     <tr>
                                         <th colspan="6" class="text-end">Total</th>
                                         <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
-                                        <th class="text-end"><?= number_format($total_jumlah, 0, ',', '.') ?></th>
+                                        <!-- <th class="text-end"><?= number_format($total_jumlah, 0, ',', '.') ?></th> -->
                                         <th></th>
                                     </tr>
                                 </tfoot>

@@ -26,6 +26,9 @@
                                 </select>
                                 <select name="tahun_rkap" class="form-select" style="width: 100px;">
                                     <?php
+
+                                    use SebastianBergmann\CodeCoverage\Report\Xml\Totals;
+
                                     $mulai = date('Y') - 2;
                                     for ($i = $mulai; $i < $mulai + 11; $i++) {
                                         $sel = $i == date('Y') ? ' selected="selected"' : '';
@@ -38,6 +41,9 @@
                         </form>
                         <div class="navbar-nav ms-auto">
                             <a class="nav-link fw-bold" href="#" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
+                        </div>
+                        <div class="navbar-nav ms-2">
+                            <a class="nav-link fw-bold" href="#" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button" data-bs-toggle="modal" data-bs-target="#labaRugi"><i class="fa-solid fa-file-invoice"></i> Asumsi Laba Rugi</button></a>
                         </div>
                     </nav>
                 </div>
@@ -55,7 +61,8 @@
                         </div>
                     </div>
                     <?php
-                    foreach ($tampil as $row) :
+                    foreach ($tampil as $row) : ?>
+                        <?php
                         $produksi_air = $row->kap_pro * $row->jam_op * 108;
                         $pelanggan_aktif = $row->plg_aktif;
                         $pola_kon = $row->pola_kon;
@@ -64,10 +71,10 @@
                         $kebocoran_air = $produksi_air * $kebocoran_air_persen / 100;
 
                         $air_pelanggan = $produksi_air - $kebocoran_air;
-                        $kebutuhan_air = $row->pola_kon * ($row->plg_aktif + $row->tambah_sr);
+                        $kebutuhan_air = $row->pola_kon * ($row->plg_aktif);
                         $sisa_air = $air_pelanggan - $kebutuhan_air;
                         $potensi = $sisa_air / $row->pola_kon;
-                    ?>
+                        ?>
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
                                 <table class="table table-borderless table-sm">
@@ -90,14 +97,14 @@
                                             <td><?= number_format($row->jam_op, 1, ',', '.'); ?></td>
                                             <td>jam/hari</td>
                                         </tr>
-                                        <tr>
+                                        <tr class="fw-bold text-danger">
                                             <td>Tingkat Kebocoran</td>
                                             <td>:</td>
                                             <td><?= number_format($row->tk_bocor, 2, ',', '.'); ?></td>
                                             <td>% (Persentase)</td>
                                         </tr>
                                         <tr>
-                                            <td>Jumlah Pelanggan Aktif (DRD Juli <?= $row->tahun_rkap ?>)</td>
+                                            <td>Jumlah Pelanggan Direkeningkan (DRD Juli <?= $row->tahun_rkap ?>)</td>
                                             <td>:</td>
                                             <td><?= number_format($row->plg_aktif, 0, ',', '.'); ?></td>
                                             <td>SR (Sambungan Rumah)</td>
@@ -130,7 +137,7 @@
                                             <td class="text-end"><?= number_format($produksi_air, 2, ',', '.');  ?></td>
                                             <td>M3</td>
                                         </tr>
-                                        <tr>
+                                        <tr class="fw-bold text-danger">
                                             <td>Kebocoran air (....%)</td>
                                             <td><?= number_format($row->tk_bocor, 2, ',', '.')  ?> %</td>
                                             <td>:</td>
@@ -146,7 +153,7 @@
                                         </tr>
                                         <tr>
                                             <td>Kebutuhan air</td>
-                                            <td><?= number_format($row->plg_aktif + $row->tambah_sr, 0, ',', '.') ?> x <?= number_format($row->pola_kon, 2, ',', '.') ?></td>
+                                            <td><?= number_format($row->plg_aktif, 0, ',', '.') ?> x <?= number_format($row->pola_kon, 2, ',', '.') ?></td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($kebutuhan_air, 2, ',', '.'); ?></td>
                                             <td>M3</td>
@@ -170,8 +177,210 @@
                             </div>
                         </div>
                 </div>
-            <?php endforeach; ?>
 
+                <h6 class="text-center mt-4">Simulasi Potensi SR Jika Kebocoran Dikurangi</h6>
+                <div class="row justify-content-center p-3">
+                    <div class="col-lg-10">
+                        <table class="table table-bordered table-sm text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Pengurangan Kebocoran</th>
+                                    <th>Kebocoran Baru (%)</th>
+                                    <th>Kebutuhan Air Baku</th>
+                                    <th>Potensi SR Tambahan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                for ($i = 1; $i <= 15; $i++) {
+                                    // Hitung kebocoran baru
+                                    $kebocoran_baru = $row->tk_bocor - $i;
+                                    // Air pelanggan baru jika kebocoran turun
+                                    $air_pelanggan_baru = $produksi_air * (1 - $kebocoran_baru / 100);
+                                    // Sisa air setelah kebutuhan saat ini
+                                    $sisa_air_baru = $air_pelanggan_baru - $kebutuhan_air;
+                                    // Potensi SR baru
+                                    $potensi_sr_baru = ($sisa_air_baru > 0) ? $sisa_air_baru / $row->pola_kon : 0;
+                                ?>
+                                    <tr>
+                                        <td><?= $i ?>%</td>
+                                        <td><?= number_format($kebocoran_baru, 2, ',', '.') ?></td>
+                                        <td><?= number_format($sisa_air_baru, 0, ',', '.') ?></td>
+                                        <td class="fw-bold"><?= number_format($potensi_sr_baru, 0, ',', '.') ?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- <h6 class="text-center">Estimasi Laba Rugi Per Tahun</h6>
+                <div class="row justify-content-center p-3">
+                    <div class="col-lg-10">
+                        <table class="table table-bordered table-sm text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Uraian</th>
+                                    <th>Keterangan</th>
+                                    <th>Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-start">Pendapatan</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <?php
+                                    $pendapatan_air = ($row->plg_aktif + $row->tambah_sr) * 56150 * 12; // Asumsi tarif Rp 56.150 per m3
+                                    $pendapatan_non_air = $totalSr * 1000000;
+                                    $total_pendapatan = $pendapatan_air + $pendapatan_non_air;
+                                    $total_biaya = $biayaUsulanBarang + $biayaUsulanInvestasi + $biayaUsulanPemeliharaan + $biayaUsulanUmum;
+                                    ?>
+                                    <td class="text-start">Pendapatan Air</td>
+                                    <td>(<?= number_format($row->plg_aktif, 0, ',', '.') ?>+ <?= number_format($row->tambah_sr, 0, ',', '.') ?>) x 56.150 x 12</td>
+                                    <td class="text-end"><?= number_format($pendapatan_air, 0, ',', '.') ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">Pendapatan Non Air</td>
+                                    <td><?= $totalSr ?> x 1.000.000</td>
+                                    <td class="text-end"><?= number_format($pendapatan_non_air, 0, ',', '.') ?> </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start fw-bold">Jumlah Pendapatan</td>
+                                    <td></td>
+                                    <td class="text-end fw-bold"><?= number_format($total_pendapatan, 0, ',', '.') ?> </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">Beban</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">Usulan Barang</td>
+                                    <td>Asumsi Biaya Usulan Barang</td>
+                                    <td class="text-end"><?= number_format($biayaUsulanBarang, 0, ',', '.'); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">Usulan Investasi</td>
+                                    <td>Asumsi Biaya Investasi</td>
+                                    <td class="text-end"><?= number_format($biayaUsulanInvestasi, 0, ',', '.'); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">Usulan Pemeliharaan</td>
+                                    <td>Asumsi Biaya Pemeliharaan</td>
+                                    <td class="text-end"><?= number_format($biayaUsulanPemeliharaan, 0, ',', '.'); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">Usulan Umum</td>
+                                    <td>Asumsi Biaya Umum</td>
+                                    <td class="text-end"><?= number_format($biayaUsulanUmum, 0, ',', '.'); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start fw-bold">Jumlah Beban</td>
+                                    <td></td>
+                                    <td class="text-end fw-bold"><?= number_format($total_biaya, 0, ',', '.'); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start fw-bold">Laba Rugi</td>
+                                    <td></td>
+                                    <td class="text-end fw-bold"><?= number_format($total_pendapatan - $total_biaya, 0, ',', '.'); ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> -->
+                <!-- modal asumsi laba rugi -->
+                <div class="modal fade" id="labaRugi" tabindex="-1" aria-labelledby="labaRugiLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="labaRugiLabel"> <a class="fw-bold text-dark pe-2" style="text-decoration:none; ">ASUMSI LABA RUGI PER TAHUN UPK <?= strtoupper($namaUpk);  ?> </a></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row justify-content-center p-3">
+                                    <div class="col-lg-10">
+                                        <table class="table table-bordered table-sm text-center">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Uraian</th>
+                                                    <th>Keterangan</th>
+                                                    <th>Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-start">Pendapatan</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <?php
+                                                    $pendapatan_air = ($row->plg_aktif + $row->tambah_sr) * 56150 * 12; // Asumsi tarif Rp 56.150 per m3
+                                                    $pendapatan_non_air = $totalSr * 1000000;
+                                                    $total_pendapatan = $pendapatan_air + $pendapatan_non_air;
+                                                    $total_biaya = $biayaUsulanBarang + $biayaUsulanInvestasi + $biayaUsulanPemeliharaan + $biayaUsulanUmum;
+                                                    ?>
+                                                    <td class="text-start">Pendapatan Air</td>
+                                                    <td>(<?= number_format($row->plg_aktif, 0, ',', '.') ?>+ <?= number_format($row->tambah_sr, 0, ',', '.') ?>) x 56.150 x 12</td>
+                                                    <td class="text-end"><?= number_format($pendapatan_air, 0, ',', '.') ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start">Pendapatan Non Air</td>
+                                                    <td><?= $totalSr ?> x 1.000.000</td>
+                                                    <td class="text-end"><?= number_format($pendapatan_non_air, 0, ',', '.') ?> </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start fw-bold">Jumlah Pendapatan</td>
+                                                    <td></td>
+                                                    <td class="text-end fw-bold"><?= number_format($total_pendapatan, 0, ',', '.') ?> </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start">Beban</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start">Usulan Barang</td>
+                                                    <td>Asumsi Biaya Usulan Barang</td>
+                                                    <td class="text-end"><?= number_format($biayaUsulanBarang, 0, ',', '.'); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start">Usulan Investasi</td>
+                                                    <td>Asumsi Biaya Investasi</td>
+                                                    <td class="text-end"><?= number_format($biayaUsulanInvestasi, 0, ',', '.'); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start">Usulan Pemeliharaan</td>
+                                                    <td>Asumsi Biaya Pemeliharaan</td>
+                                                    <td class="text-end"><?= number_format($biayaUsulanPemeliharaan, 0, ',', '.'); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start">Usulan Umum</td>
+                                                    <td>Asumsi Biaya Umum</td>
+                                                    <td class="text-end"><?= number_format($biayaUsulanUmum, 0, ',', '.'); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start fw-bold">Jumlah Beban</td>
+                                                    <td></td>
+                                                    <td class="text-end fw-bold"><?= number_format($total_biaya, 0, ',', '.'); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start fw-bold">Laba Rugi</td>
+                                                    <td></td>
+                                                    <td class="text-end fw-bold"><?= number_format($total_pendapatan - $total_biaya, 0, ',', '.'); ?></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- akhir modal laba rugi -->
+            <?php endforeach; ?>
             <div class="card-body">
                 <div class="row justify-content-center px-3">
                     <div class="col-lg-9">
@@ -239,6 +448,7 @@
             </div>
         </div>
         <!-- Modal -->
+
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

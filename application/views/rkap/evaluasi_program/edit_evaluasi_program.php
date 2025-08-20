@@ -30,17 +30,17 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="evaluasi">Evaluasi :</label>
-                                    <input type="text" step="1" class="form-control" id="evaluasi" name="evaluasi" value="<?= $evaluasi_program->evaluasi; ?>">
+                                    <textarea name="evaluasi" id="evaluasi" cols="30" rows="8" class="form-control"><?= set_value('evaluasi', $evaluasi_program->evaluasi); ?></textarea>
                                     <small class="form-text text-danger pl-3"><?= form_error('evaluasi'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="program">Program :</label>
-                                    <input type="text" step="1" class="form-control" id="program" name="program" value="<?= $evaluasi_program->program; ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('program'); ?></small>
+                                    <label for="tindak_lanjut">Tindak Lanjut :</label>
+                                    <textarea name="tindak_lanjut" id="tindak_lanjut" cols="30" rows="8" class="form-control"><?= set_value('tindak_lanjut', $evaluasi_program->tindak_lanjut); ?></textarea>
+                                    <small class="form-text text-danger pl-3"><?= form_error('tindak_lanjut'); ?></small>
                                 </div>
                                 <div class="form-group">
                                     <label for="keterangan">Keterangan :</label>
-                                    <input type="text" step="1" class="form-control" id="keterangan" name="keterangan" value="<?= $evaluasi_program->keterangan; ?>">
+                                    <textarea name="keterangan" id="keterangan" cols="30" rows="8" class="form-control"><?= set_value('keterangan', $evaluasi_program->keterangan); ?></textarea>
                                     <small class="form-text text-danger pl-3"><?= form_error('keterangan'); ?></small>
                                 </div>
 

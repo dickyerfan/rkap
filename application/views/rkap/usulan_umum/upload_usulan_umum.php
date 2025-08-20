@@ -99,11 +99,39 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="biaya">Harga :</label>
+                                    <label for="biaya">Biaya :</label>
                                     <input type="number" step="1" class="form-control" id="biaya" name="biaya" value="<?= set_value('biaya'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('biaya'); ?></small>
                                 </div>
-
+                                <div class="form-group">
+                                    <label for="bagian_upk">Bagian UPK:</label>
+                                    <select name="bagian_upk" id="bagian_upk" class="form-select">
+                                        <option value="">Pilih Bagian UPK</option>
+                                        <option value="pusat">pusat</option>
+                                        <option value="bondowoso">bondowoso</option>
+                                        <option value="sukosari1">sukosari1</option>
+                                        <option value="maesan">maesan</option>
+                                        <option value="tegalampel">tegalampel</option>
+                                        <option value="tapen">tapen</option>
+                                        <option value="prajekan">prajekan</option>
+                                        <option value="tlogosari">tlogosari</option>
+                                        <option value="wringin">wringin</option>
+                                        <option value="curahdami">curahdami</option>
+                                        <option value="tamanan">tamanan</option>
+                                        <option value="tenggarang">tenggarang</option>
+                                        <option value="tamankrocok">tamankrocok</option>
+                                        <option value="wonosari">wonosari</option>
+                                        <option value="klabang">klabang</option>
+                                        <option value="sukosari2">sukosari2</option>
+                                        <option value="amdk">amdk</option>
+                                        <!-- <?php
+                                                foreach ($upk as $row) {
+                                                    echo '<option value="' . $row->upk_bagian . '">' . $row->upk_bagian . '</option>';
+                                                }
+                                                ?> -->
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('bagian_upk'); ?></small>
+                                </div>
                             </div>
                         </div>
                         <div class="row justify-content-center">

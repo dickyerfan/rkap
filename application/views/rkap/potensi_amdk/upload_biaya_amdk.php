@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-header shadow">
                     <a class="fw-bold text-dark" style="text-decoration:none ;"><?= strtoupper($title) ?></a>
-                    <a href="<?= base_url('rkap/evaluasi_program') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
+                    <a href="<?= base_url('rkap/Potensi_amdk') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
                 </div>
                 <div class="p-2">
                     <?= $this->session->flashdata('info'); ?>
@@ -16,7 +16,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="tahun_rkap">Tahun Pembuatan RKAP :</label>
-                                    <select name="tahun_rkap" class="form-select">
+                                    <select name="tahun_rkap" class="form-select" disabled>
                                         <?php
                                         $mulai = date('Y') - 2;
                                         for ($i = $mulai; $i < $mulai + 11; $i++) {
@@ -26,28 +26,35 @@
                                         ?>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="evaluasi">Evaluasi :</label>
-                                    <textarea name="evaluasi" id="evaluasi" cols="30" rows="8" class="form-control"><?= set_value('evaluasi'); ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('evaluasi'); ?></small>
+                                    <label for="tipe_biaya">Tipe Biaya :</label>
+                                    <select name="tipe_biaya" id="" class="form-select">
+                                        <option value="">Pilih Tipe Biaya</option>
+                                        <option value="Biaya Pegawai">Biaya Pegawai</option>
+                                        <option value="Biaya Operasional">Biaya Operasional</option>
+                                        <option value="Biaya Lain2">Biaya Lain2</option>
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('tipe_biaya'); ?></small>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="tindak_lanjut">Tindak Lanjut :</label>
-                                    <textarea name="tindak_lanjut" id="tindak_lanjut" cols="30" rows="8" class="form-control"><?= set_value('tindak_lanjut'); ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('tindak_lanjut'); ?></small>
+                                    <label for="nama_biaya">Nama Biaya :</label>
+                                    <input type="text" step="0.01" class="form-control" id="nama_biaya" name="nama_biaya" value="<?= set_value('nama_biaya'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('nama_biaya'); ?></small>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="rincian_biaya">Rincian Biaya :</label>
+                                    <input type="text" step="0.01" class="form-control" id="rincian_biaya" name="rincian_biaya" value="<?= set_value('rincian_biaya'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('rincian_biaya'); ?></small>
+                                </div>
                                 <div class="form-group">
                                     <label for="keterangan">Keterangan :</label>
-                                    <textarea name="keterangan" id="keterangan" cols="30" rows="8" class="form-control"><?= set_value('keterangan'); ?></textarea>
+                                    <input type="text" step="0.01" class="form-control" id="keterangan" name="keterangan" value="<?= set_value('keterangan'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('keterangan'); ?></small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="jumlah">Jumlah Biaya :</label>
+                                    <input type="number" class="form-control" id="jumlah" name="jumlah" value="<?= set_value('jumlah'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('jumlah'); ?></small>
                                 </div>
                             </div>
                         </div>

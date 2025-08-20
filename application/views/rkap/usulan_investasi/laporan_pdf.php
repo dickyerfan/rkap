@@ -73,7 +73,7 @@
                                 <tr class="text-center">
                                     <th rowspan="2" class="align-middle">No</th>
                                     <th colspan="2">Perkiraan</th>
-                                    <th colspan="5" class="align-middle">URAIAN TENTANG USULAN</th>
+                                    <th colspan="4" class="align-middle">URAIAN TENTANG USULAN</th>
                                     <th rowspan="2" class="align-middle">Keterangan</th>
                                 </tr>
                                 <tr class="text-center">
@@ -82,7 +82,7 @@
                                     <th>Latar Belakang</th>
                                     <th>Solusi/Usulan</th>
                                     <th>Volume</th>
-                                    <th>Harga</th>
+                                    <!-- <th>Harga</th> -->
                                     <th>Biaya</th>
                                 </tr>
                             </thead>
@@ -103,7 +103,7 @@
                                         <td><?= $row->solusi ?></td>
                                         <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
                                         <td class="text-center"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                        <td class="text-center"><?= number_format($jumlah, 0, ',', '.') ?></td>
+                                        <!-- <td class="text-center"><?= number_format($jumlah, 0, ',', '.') ?></td> -->
                                         <td><?= $row->ket ?></td>
                                     </tr>
                                 <?php endforeach; ?>

@@ -70,14 +70,20 @@
                     </div>
                 </div>
                 <?php
-                foreach ($tampil as $row) :
-                    $produksi_air = $row->kap_manf * $row->jam_op * 108;
-                    $kebocoran_air = $produksi_air * $row->tk_bocor / 100;
+                foreach ($tampil as $row) : ?>
+                    <?php
+                    $produksi_air = $row->kap_pro * $row->jam_op * 108;
+                    $pelanggan_aktif = $row->plg_aktif;
+                    $pola_kon = $row->pola_kon;
+                    $kap_manf = $pelanggan_aktif * $pola_kon;
+                    $kebocoran_air_persen = $row->tk_bocor;
+                    $kebocoran_air = $produksi_air * $kebocoran_air_persen / 100;
+
                     $air_pelanggan = $produksi_air - $kebocoran_air;
-                    $kebutuhan_air = $row->pola_kon * ($row->plg_aktif + $row->tambah_sr);
+                    $kebutuhan_air = $row->pola_kon * ($row->plg_aktif);
                     $sisa_air = $air_pelanggan - $kebutuhan_air;
                     $potensi = $sisa_air / $row->pola_kon;
-                ?>
+                    ?>
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
                             <table class="table table-borderless table-sm">
@@ -88,22 +94,22 @@
                                         <td><?= number_format($row->kap_pro, 2, ',', '.'); ?></td>
                                         <td>liter/detik</td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td>Kapasitas yang Dimanfaatkan</td>
                                         <td>:</td>
                                         <td><?= number_format($row->kap_manf, 2, ',', '.'); ?></td>
                                         <td>liter/detik</td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td>Jam Operasional</td>
                                         <td>:</td>
                                         <td><?= number_format($row->jam_op, 1, ',', '.'); ?></td>
                                         <td>jam/hari</td>
                                     </tr>
-                                    <tr>
+                                    <tr class="fw-bold">
                                         <td>Tingkat Kebocoran</td>
                                         <td>:</td>
-                                        <td><?= number_format($row->tk_bocor, 0, ',', '.'); ?></td>
+                                        <td><?= number_format($row->tk_bocor, 2, ',', '.'); ?></td>
                                         <td>% (Persentase)</td>
                                     </tr>
                                     <tr>
@@ -140,9 +146,9 @@
                                         <td class="text-end"><?= number_format($produksi_air, 2, ',', '.');  ?></td>
                                         <td>M3</td>
                                     </tr>
-                                    <tr>
+                                    <tr class="fw-bold">
                                         <td>Kebocoran air (....%)</td>
-                                        <td><?= number_format($row->tk_bocor, 0, ',', '.')  ?> %</td>
+                                        <td><?= number_format($row->tk_bocor, 2, ',', '.')  ?> %</td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($kebocoran_air, 2, ',', '.'); ?></td>
                                         <td>M3</td>
@@ -175,6 +181,41 @@
                                         <td class="text-end"><?= number_format($potensi, 0, ',', '.')  ?></td>
                                         <td>SR</td>
                                     </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="text-center text-uppercase">Simulasi Potensi SR Jika Kebocoran Dikurangi</p>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                            <table class="table table-sm table-bordered tableUtama">
+                                <thead class="table-light">
+                                    <tr class="text-center">
+                                        <th>Pengurangan Kebocoran</th>
+                                        <th>Kebocoran Baru (%)</th>
+                                        <th>Kebutuhan Air Baku</th>
+                                        <th>Potensi SR Tambahan</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                    <?php
+                                    for ($i = 1; $i <= 15; $i++) {
+                                        // Hitung kebocoran baru
+                                        $kebocoran_baru = $row->tk_bocor - $i;
+                                        // Air pelanggan baru jika kebocoran turun
+                                        $air_pelanggan_baru = $produksi_air * (1 - $kebocoran_baru / 100);
+                                        // Sisa air setelah kebutuhan saat ini
+                                        $sisa_air_baru = $air_pelanggan_baru - $kebutuhan_air;
+                                        // Potensi SR baru
+                                        $potensi_sr_baru = ($sisa_air_baru > 0) ? $sisa_air_baru / $row->pola_kon : 0;
+                                    ?>
+                                        <tr>
+                                            <td><?= $i ?>%</td>
+                                            <td><?= number_format($kebocoran_baru, 2, ',', '.') ?></td>
+                                            <td><?= number_format($sisa_air_baru, 0, ',', '.') ?></td>
+                                            <td class="fw-bold"><?= number_format($potensi_sr_baru, 0, ',', '.') ?></td>
+                                        </tr>
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>

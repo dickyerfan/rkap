@@ -4,19 +4,19 @@
             <div class="card">
                 <div class="card-header shadow">
                     <a class="fw-bold text-dark" style="text-decoration:none ;"><?= strtoupper($title) ?></a>
-                    <a href="<?= base_url('rkap/evaluasi_amdk') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
+                    <a href="<?= base_url('rkap/Potensi_amdk') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
                 </div>
                 <div class="p-2">
                     <?= $this->session->flashdata('info'); ?>
                     <?= $this->session->unset_userdata('info'); ?>
                 </div>
                 <div class="card-body">
-                    <form class="user" action="" method="POST" enctype="multipart/form-data">
+                    <form class="user" action="" method="POST">
                         <div class="row justify-content-center">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="tahun_rkap">Tahun Pembuatan RKAP :</label>
-                                    <select name="tahun_rkap" class="form-select">
+                                    <select name="tahun_rkap" class="form-select" disabled>
                                         <?php
                                         $mulai = date('Y') - 2;
                                         for ($i = $mulai; $i < $mulai + 11; $i++) {
@@ -27,28 +27,40 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="uraian_evaluasi">Uraian Evaluasi :</label>
-                                    <select name="uraian_evaluasi" id="" class="form-select">
+                                    <label for="uraian">Uraian :</label>
+                                    <select name="uraian" id="" class="form-select">
                                         <option value="">Pilih Uraian</option>
-                                        <option value="Galon">Galon</option>
+                                        <option value="Galon 19 ml">Galon 19 ml</option>
                                         <option value="Air Gelas 220 ml">Air Gelas 220 ml</option>
                                         <option value="Air Botol 330 ml">Air Botol 330 ml</option>
                                         <option value="Air Botol 500 ml">Air Botol 500 ml</option>
                                         <option value="Air Botol 1500 ml">Air Botol 1500 ml</option>
                                         <option value="Air Gelas 250 ml">Air Gelas 250 ml</option>
+                                        <option value="Galon Baru / Non Air">Galon Baru / Non Air</option>
                                     </select>
-                                    <!-- <input type="text" step="1" class="form-control" id="uraian_evaluasi" name="uraian_evaluasi" value="<?= set_value('uraian_evaluasi'); ?>"> -->
-                                    <small class="form-text text-danger pl-3"><?= form_error('uraian_evaluasi'); ?></small>
+                                    <small class="form-text text-danger pl-3"><?= form_error('uraian'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="rkap">R K A P :</label>
-                                    <input type="number" step="1" class="form-control" id="rkap" name="rkap" value="<?= set_value('rkap'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('rkap'); ?></small>
+                                    <label for="tarif">Tarif :</label>
+                                    <select name="tarif" id="" class="form-select">
+                                        <option value="">Pilih tarif</option>
+                                        <option value="User">User</option>
+                                        <option value="Retail">Retail</option>
+                                        <option value="Grosir">Grosir</option>
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('tarif'); ?></small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="harga">Harga :</label>
+                                    <input type="number" step="0.01" class="form-control" id="harga" name="harga" value="<?= set_value('harga'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('harga'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="realisasi">Realisasi :</label>
-                                    <input type="number" step="1" class="form-control" id="realisasi" name="realisasi" value="<?= set_value('realisasi'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('realisasi'); ?></small>
+                                    <label for="jumlah">Jumlah Produksi :</label>
+                                    <input type="number" class="form-control" id="jumlah" name="jumlah" value="<?= set_value('jumlah'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('jumlah'); ?></small>
                                 </div>
                             </div>
                         </div>

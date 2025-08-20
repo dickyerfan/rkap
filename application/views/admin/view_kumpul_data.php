@@ -112,7 +112,9 @@
                                         <th>Usulan Barang</th>
                                         <th>Usulan Pemeliharaan</th>
                                         <th>Permasalahan</th>
-                                        <th>Evaluasi & Program</th>
+                                        <th>Evaluasi & Usulan</th>
+                                        <th>Evaluasi AMDK</th>
+                                        <th>Potensi AMDK</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -124,6 +126,8 @@
                                         $pemeliharaanMatched = false;
                                         $masalahMatched = false;
                                         $evaluasiProgramMatched = false;
+                                        $evaluasiAmdkMatched = false;
+                                        $potensiAmdkMatched = false;
                                         foreach ($usulanBarang as $barang) {
                                             if ($barang->bagian_upk == $row->upk_bagian) {
                                                 $barangMatched = true;
@@ -158,6 +162,18 @@
                                                 break;
                                             }
                                         }
+                                        foreach ($evaluasiAmdk as $evaamdk) {
+                                            if ($evaamdk->bagian_upk == $row->upk_bagian) {
+                                                $evaluasiAmdkMatched = true;
+                                                break;
+                                            }
+                                        }
+                                        foreach ($potensiAmdk as $potamdk) {
+                                            if ($potamdk->bagian_upk == $row->upk_bagian) {
+                                                $potensiAmdkMatched = true;
+                                                break;
+                                            }
+                                        }
                                     ?>
                                         <tr>
                                             <td class="text-center"><?= $no++ ?></td>
@@ -167,6 +183,8 @@
                                             <td class="text-center fw-bold <?= $pemeliharaanMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $pemeliharaanMatched ? 'Sudah' : 'Belum'; ?></td>
                                             <td class="text-center fw-bold <?= $masalahMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $masalahMatched ? 'Sudah' : 'Belum'; ?></td>
                                             <td class="text-center fw-bold <?= $evaluasiProgramMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $evaluasiProgramMatched ? 'Sudah' : 'Belum'; ?></td>
+                                            <td class="text-center fw-bold <?= $evaluasiAmdkMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $evaluasiAmdkMatched ? 'Sudah' : 'Belum'; ?></td>
+                                            <td class="text-center fw-bold <?= $potensiAmdkMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $potensiAmdkMatched ? 'Sudah' : 'Belum'; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

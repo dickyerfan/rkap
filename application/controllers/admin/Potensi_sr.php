@@ -23,6 +23,10 @@ class Potensi_sr extends CI_Controller
         $data['keterangan'] = $this->Model_potensi_sr->getKeteranganUpk($dataUpk, $dataTahun);
         $data['airBaku'] = $this->Model_potensi_sr->getAirBakuUpk($dataUpk, $dataTahun);
         $data['totalSr'] = $this->Model_potensi_sr->getTotalSRUpk($dataUpk);
+        $data['biayaUsulanBarang'] = $this->Model_potensi_sr->getBiayaUsulanBarang($dataUpk, $dataTahun);
+        $data['biayaUsulanPemeliharaan'] = $this->Model_potensi_sr->getBiayaUsulanPemeliharaan($dataUpk, $dataTahun);
+        $data['biayaUsulanInvestasi'] = $this->Model_potensi_sr->getBiayaUsulanInvestasi($dataUpk, $dataTahun);
+        $data['biayaUsulanUmum'] = $this->Model_potensi_sr->getBiayaUsulanUmum($dataUpk, $dataTahun);
 
         $data['title'] = 'ESTIMASI KEBUTUHAN AIR BAKU DAN POTENSI PELANGGAN';
         $this->load->view('templates/header', $data);
@@ -44,14 +48,8 @@ class Potensi_sr extends CI_Controller
         $data['totalSr'] = $this->Model_potensi_sr->getTotalSRUpk($dataUpk);
 
         $data['title'] = 'ESTIMASI KEBUTUHAN AIR BAKU DAN POTENSI PELANGGAN';
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('admin/rkap/view_potensi_sr', $data);
-        $this->load->view('templates/footer');
-
         // Set paper size and orientation
-        $this->pdf->setPaper('A4', 'portrait');
+        $this->pdf->setPaper('folio', 'portrait');
 
         // $this->pdf->filename = "Potensi Sr.pdf";
         $this->pdf->filename = "Potensi SR-{$dataUpk}-{$dataTahun}.pdf";

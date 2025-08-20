@@ -45,8 +45,8 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('jam_op'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="tk_bocor">Tingkat Kebocoran :</label>
-                                    <input type="number" step="0.01" class="form-control" id="tk_bocor" name="tk_bocor" value="<?= $potensiSr->tk_bocor; ?>">
+                                    <!-- <label for="tk_bocor">Tingkat Kebocoran :</label> -->
+                                    <input type="hidden" step="0.01" class="form-control" id="tk_bocor" name="tk_bocor" value="<?= $potensiSr->tk_bocor; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('tk_bocor'); ?></small>
                                 </div>
                                 <div class="form-group">

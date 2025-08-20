@@ -38,11 +38,11 @@
                             <tr class="text-center">
                                 <th>No</th>
                                 <th>Nama UPK</th>
-                                <th>Total SR</th>
-                                <th>Detail</th>
+                                <th>Total Potensi SR</th>
+                                <th>Asumsi SR <?= $tahun; ?></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <!-- <tbody>
                             <?php
                             $no = 1;
                             foreach ($rekap_sr as $row) : ?>
@@ -59,6 +59,30 @@
                                 <th colspan="2">Total</th>
                                 <th><?= number_format(array_sum(array_column($rekap_sr, 'total_sr')), 0, ',', '.'); ?></th>
                                 <th></th>
+                            </tr>
+                        </tfoot> -->
+                        <tbody>
+                            <?php
+                            $no = 1;
+                            $total_sr = 0;
+                            $total_asumsi = 0;
+                            foreach ($rekap_sr as $row) :
+                                $total_sr += $row->total_sr;
+                                $total_asumsi += $row->asumsi_sr;
+                            ?>
+                                <tr>
+                                    <td class="text-center"><?= $no++; ?></td>
+                                    <td class="text-left"><?= htmlspecialchars(strtoupper($row->bagian_upk)); ?></td>
+                                    <td class="text-center"><?= number_format($row->total_sr, 0, ',', '.'); ?></td>
+                                    <td class="text-center"><?= number_format($row->asumsi_sr, 0, ',', '.'); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                        <tfoot>
+                            <tr class="text-center">
+                                <th colspan="2">Total</th>
+                                <th><?= number_format($total_sr, 0, ',', '.'); ?></th>
+                                <th><?= number_format($total_asumsi, 0, ',', '.'); ?></th>
                             </tr>
                         </tfoot>
                     </table>

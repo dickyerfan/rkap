@@ -23,7 +23,7 @@ class Model_usulan_umum extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('usulan_umum');
-        $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+        // $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
         $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->result();
@@ -89,6 +89,7 @@ class Model_usulan_umum extends CI_Model
             'biaya' => (int) $this->input->post('biaya', true),
             'ket' => $this->input->post('ket', true),
             'kategori' => $this->input->post('kategori', true),
+            'bagian_upk' => $this->input->post('bagian_upk', true),
             'tgl_update' => date('Y-m-d H:i:s')
 
         ];
@@ -114,6 +115,13 @@ class Model_usulan_umum extends CI_Model
         $this->db->where('tahun_rkap', date('Y'));
         $this->db->limit(1);
         $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function getUpk()
+    {
+        $this->db->where('tipe', 'upk');
+        $query = $this->db->get('user');
         return $query->result();
     }
 }

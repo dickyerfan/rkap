@@ -60,7 +60,6 @@
     </header>
     <main>
         <div class="container-fluid">
-
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div class="col-lg-6 text-center mb-2">
@@ -75,7 +74,7 @@
                                 <tr class="text-center">
                                     <th>No</th>
                                     <th>Evaluasi RKAP Tahun <?= date('Y') ?> </th>
-                                    <th>Program Tahun <?= date('Y') + 1; ?></th>
+                                    <th>Tindak Lanjut</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
@@ -88,7 +87,41 @@
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= htmlspecialchars($row->evaluasi); ?></td>
-                                        <td><?= htmlspecialchars($row->program); ?></td>
+                                        <td><?= htmlspecialchars($row->tindak_lanjut); ?></td>
+                                        <td><?= htmlspecialchars($row->keterangan); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 text-center mb-2">
+                        <p><?= $title2 . ' ' .  $tahun ?></p>
+                        <p>BAGIAN <?= strtoupper($this->session->userdata('upk_bagian'));  ?></p>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-12">
+                        <table class="table table-sm table-bordered tableUtama">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>No</th>
+                                    <th>Usulan Program RKAP <?= date('Y') + 1 ?> </th>
+                                    <th>Solusi</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $no = 1;
+                                foreach ($usulan as $row) :
+                                    $id = $row->id_usulan;
+                                ?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= htmlspecialchars($row->usulan); ?></td>
+                                        <td><?= htmlspecialchars($row->solusi); ?></td>
                                         <td><?= htmlspecialchars($row->keterangan); ?></td>
                                     </tr>
                                 <?php endforeach; ?>

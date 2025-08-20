@@ -110,16 +110,6 @@ class Model_pengaturan extends CI_Model
         return $query->result();
     }
 
-    public function cekNamaBagian()
-    {
-        $this->db->select('upk_bagian');
-        $this->db->from('user');
-        $this->db->where('tipe', 'bagian');
-        $this->db->order_by('upk_bagian', 'ASC');
-        $query = $this->db->get();
-        return $query->result();
-    }
-
     public function cekPotensiSr()
     {
         $this->db->select('bagian_upk');
@@ -181,6 +171,15 @@ class Model_pengaturan extends CI_Model
         $this->db->select('bagian_upk');
         $this->db->from('usulan_pemeliharaan');
         $this->db->where('tahun_rkap', date('Y'));
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function cekNamaBagian()
+    {
+        $this->db->select('upk_bagian');
+        $this->db->from('user');
+        $this->db->where('tipe', 'bagian');
         $query = $this->db->get();
         return $query->result();
     }

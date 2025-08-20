@@ -99,11 +99,40 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="biaya">Harga :</label>
+                                    <label for="biaya">Biaya :</label>
                                     <input type="number" step="1" class="form-control" id="biaya" name="biaya" value="<?= $usulan_umum->biaya; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('biaya'); ?></small>
                                 </div>
-
+                                <div class="form-group">
+                                    <label for="bagian_upk">Bagian UPK:</label>
+                                    <select name="bagian_upk" id="bagian_upk" class="form-select">
+                                        <option value="">Pilih Bagian UPK</option>
+                                        <option value="pusat" <?= $usulan_umum->bagian_upk == "pusat" ? 'selected' : '' ?>>pusat</option>
+                                        <option value="bondowoso" <?= $usulan_umum->bagian_upk == "bondowoso" ? 'selected' : '' ?>>bondowoso</option>
+                                        <option value="sukosari1" <?= $usulan_umum->bagian_upk == "sukosari1" ? 'selected' : '' ?>>sukosari1</option>
+                                        <option value="maesan" <?= $usulan_umum->bagian_upk == "maesan" ? 'selected' : '' ?>>maesan</option>
+                                        <option value="tegalampel" <?= $usulan_umum->bagian_upk == "tegalampel" ? 'selected' : '' ?>>tegalampel</option>
+                                        <option value="tapen" <?= $usulan_umum->bagian_upk == "tapen" ? 'selected' : '' ?>>tapen</option>
+                                        <option value="prajekan" <?= $usulan_umum->bagian_upk == "prajekan" ? 'selected' : '' ?>>prajekan</option>
+                                        <option value="tlogosari" <?= $usulan_umum->bagian_upk == "tlogosari" ? 'selected' : '' ?>>tlogosari</option>
+                                        <option value="wringin" <?= $usulan_umum->bagian_upk == "wringin" ? 'selected' : '' ?>>wringin</option>
+                                        <option value="curahdami" <?= $usulan_umum->bagian_upk == "curahdami" ? 'selected' : '' ?>>curahdami</option>
+                                        <option value="tamanan" <?= $usulan_umum->bagian_upk == "tamanan" ? 'selected' : '' ?>>tamanan</option>
+                                        <option value="tenggarang" <?= $usulan_umum->bagian_upk == "tenggarang" ? 'selected' : '' ?>>tenggarang</option>
+                                        <option value="tamankrocok" <?= $usulan_umum->bagian_upk == "tamankrocok" ? 'selected' : '' ?>>tamankrocok</option>
+                                        <option value="wonosari" <?= $usulan_umum->bagian_upk == "wonosari" ? 'selected' : '' ?>>wonosari</option>
+                                        <option value="klabang" <?= $usulan_umum->bagian_upk == "klabang" ? 'selected' : '' ?>>klabang</option>
+                                        <option value="sukosari2" <?= $usulan_umum->bagian_upk == "sukosari2" ? 'selected' : '' ?>>sukosari2</option>
+                                        <option value="amdk" <?= $usulan_umum->bagian_upk == "amdk" ? 'selected' : '' ?>>amdk</option>
+                                        <!-- <?php
+                                                $upk = $this->Model_usulan_umum->getUpk();
+                                                foreach ($upk as $row) {
+                                                    echo '<option value="' . $row->upk_bagian . '" ' . ($usulan_umum->bagian_upk == $row->upk_bagian ? 'selected' : '') . '>' . $row->upk_bagian . '</option>';
+                                                }
+                                                ?> -->
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('bagian_upk'); ?></small>
+                                </div>
                             </div>
                         </div>
                         <div class="row justify-content-center">

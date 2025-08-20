@@ -91,7 +91,7 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="biaya">Biaya :</label>
+                                    <label for="biaya">Total Biaya :</label>
                                     <input type="number" step="1" class="form-control" id="biaya" name="biaya" value="<?= set_value('biaya'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('biaya'); ?></small>
                                 </div>
