@@ -77,6 +77,8 @@
                                         <option value="Set">Set</option>
                                         <option value="Ls">Ls</option>
                                         <option value="Orang">Orang</option>
+                                        <option value="Bulan">Bulan</option>
+                                        <option value="Tahun">Tahun</option>
                                     </select>
                                     <small class="form-text text-danger pl-3"><?= form_error('satuan'); ?></small>
                                 </div>

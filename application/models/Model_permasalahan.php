@@ -3,6 +3,21 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Model_permasalahan extends CI_Model
 {
+    public function getFiltered($bagian_upk = null, $tahun_rkap = null)
+    {
+        $this->db->select('*');
+        $this->db->from('permasalahan'); // ganti dengan nama tabel kamu
+
+        if ($bagian_upk && $bagian_upk != 'SEMUA') {
+            $this->db->where('bagian_upk', $bagian_upk);
+        }
+
+        if ($tahun_rkap) {
+            $this->db->where('tahun_rkap', $tahun_rkap);
+        }
+        $this->db->order_by('bagian_upk', 'ASC');
+        return $this->db->get()->result();
+    }
 
     public function getData()
     {

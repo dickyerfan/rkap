@@ -77,6 +77,8 @@
                                         <option value="Set" <?= $usulan_umum->satuan == "Set" ? 'selected' : '' ?>>Set</option>
                                         <option value="Ls" <?= $usulan_umum->satuan == "Ls" ? 'selected' : '' ?>>Ls</option>
                                         <option value="Orang" <?= $usulan_umum->satuan == "Orang" ? 'selected' : '' ?>>Orang</option>
+                                        <option value="Bulan" <?= $usulan_umum->satuan == "Bulan" ? 'selected' : '' ?>>Bulan</option>
+                                        <option value="Tahun" <?= $usulan_umum->satuan == "Tahun" ? 'selected' : '' ?>>Tahun</option>
                                     </select>
                                     <small class="form-text text-danger pl-3"><?= form_error('satuan'); ?></small>
                                 </div>

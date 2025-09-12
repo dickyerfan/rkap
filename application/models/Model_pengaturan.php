@@ -13,6 +13,7 @@ class Model_pengaturan extends CI_Model
         $this->db->update('tambah_air_baku', $data);
         $this->db->update('evaluasi_upk', $data);
         $this->db->update('evaluasi_amdk', $data);
+        $this->db->update('evaluasi_program', $data);
         $this->db->update('potensi_amdk', $data);
         $this->db->update('target_pencapaian', $data);
         $this->db->update('usulan_admin', $data);
@@ -34,6 +35,7 @@ class Model_pengaturan extends CI_Model
         $this->db->update('tambah_air_baku', $data);
         $this->db->update('evaluasi_upk', $data);
         $this->db->update('evaluasi_amdk', $data);
+        $this->db->update('evaluasi_program', $data);
         $this->db->update('potensi_amdk', $data);
         $this->db->update('target_pencapaian', $data);
         $this->db->update('usulan_admin', $data);
@@ -63,43 +65,63 @@ class Model_pengaturan extends CI_Model
         return $query->row();
     }
 
-    public function cekStatusPengguna()
+    public function cekStatusPenggunaUpk()
     {
         $this->db->select('status');
         $this->db->from('user');
-        $this->db->where_in('tipe', ['upk', 'bagian']);
+        $this->db->where('tipe', 'upk');
+        // $this->db->where_in('tipe', ['upk', 'bagian']);
         $query = $this->db->get();
         return $query->row();
     }
 
-    public function penggunaOff()
+    public function penggunaOffUpk()
     {
         $data = [
             'status' => $this->input->post('status', true),
         ];
 
-        $this->db->where_in('tipe', ['upk', 'bagian']);
+        $this->db->where('tipe', 'upk');
         $this->db->update('user', $data);
     }
 
-    public function cekStatusPengisi()
+    public function cekStatusPenggunaBagian()
     {
         $this->db->select('status');
         $this->db->from('user');
-        $this->db->where('level', 'Pengguna');
+        $this->db->where('tipe', 'bagian');
         $query = $this->db->get();
         return $query->row();
     }
 
-    public function pengisiOff()
+    public function penggunaOffBagian()
     {
         $data = [
             'status' => $this->input->post('status', true),
         ];
 
-        $this->db->where('level', 'Pengguna');
+        $this->db->where('tipe', 'bagian');
         $this->db->update('user', $data);
     }
+
+    // public function cekStatusPengisi()
+    // {
+    //     $this->db->select('status');
+    //     $this->db->from('user');
+    //     $this->db->where('level', 'Pengguna');
+    //     $query = $this->db->get();
+    //     return $query->row();
+    // }
+
+    // public function pengisiOff()
+    // {
+    //     $data = [
+    //         'status' => $this->input->post('status', true),
+    //     ];
+
+    //     $this->db->where('level', 'Pengguna');
+    //     $this->db->update('user', $data);
+    // }
 
     public function cekNamaUpk()
     {

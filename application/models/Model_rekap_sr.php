@@ -45,4 +45,72 @@ class Model_rekap_sr extends CI_Model
     ";
         return $this->db->query($sql, [$tahun, $tahun])->result();
     }
+
+    public function getDataUpk($dataTahun)
+    {
+        $this->db->select('*');
+        $this->db->from('potensi_sr');
+        $this->db->where('tahun_rkap', $dataTahun);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function getTotalSRUpk()
+    {
+        $this->db->where('tahun_rkap', date('Y'));
+        $query = $this->db->select_sum('jumlah_sr')->get('ket_potensi_sr');
+        return $query->row()->jumlah_sr;
+    }
+
+    public function getBiayaUsulanBarang($tahun_rkap)
+    {
+        return $this->db->select_sum('biaya')
+            ->where('tahun_rkap', $tahun_rkap)
+            ->get('usulan_barang')
+            ->row()
+            ->biaya;
+    }
+
+    public function getBiayaUsulanPemeliharaan($tahun_rkap)
+    {
+        return $this->db->select_sum('biaya')
+            ->where('tahun_rkap', $tahun_rkap)
+            ->get('usulan_pemeliharaan')
+            ->row()
+            ->biaya;
+    }
+
+    public function getBiayaUsulanInvestasi($tahun_rkap)
+    {
+        return $this->db->select_sum('biaya')
+            ->where('tahun_rkap', $tahun_rkap)
+            ->get('usulan_investasi')
+            ->row()
+            ->biaya;
+    }
+    public function getBiayaUsulanUmum($tahun_rkap)
+    {
+        $result = $this->db->select_sum('(biaya * volume)', 'total_biaya')
+            ->where('tahun_rkap', $tahun_rkap)
+            ->get('usulan_umum')
+            ->row();
+
+        return $result && $result->total_biaya !== null ? $result->total_biaya : 0;
+    }
+
+    // pendapatan dan biaya amdk
+    public function getPendAmdk($dataTahun)
+    {
+        return $this->db->where('tahun_rkap', $dataTahun)
+            ->get('potensi_amdk')
+            ->result();
+    }
+
+
+    public function getBiayaAmdk($dataTahun)
+    {
+        return $this->db->where('tahun_rkap', $dataTahun)
+            ->get('biaya_amdk')
+            ->result();
+    }
 }

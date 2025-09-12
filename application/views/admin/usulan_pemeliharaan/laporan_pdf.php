@@ -73,6 +73,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th rowspan="2" class="align-middle">No</th>
+                                    <th rowspan="2" class="align-middle">Bagian/UPK</th>
                                     <th colspan="2">Perkiraan</th>
                                     <th colspan="4" class="align-middle">URAIAN TENTANG USULAN</th>
                                     <th rowspan="2" class="align-middle">Keterangan</th>
@@ -99,6 +100,7 @@
                                 ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= $row->bagian_upk ?></td>
                                         <td><?= $row->no_perkiraan ?></td>
                                         <td><?= $row->nama_perkiraan ?></td>
                                         <td><?= $row->latar_belakang ?></td>
@@ -114,6 +116,17 @@
                                         </td> -->
                                     </tr>
                                 <?php endforeach; ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="6" class="text-end">Total</th>
+                                    <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
+                                    <!-- <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
+                                                                    return $item->biaya;
+                                                                }, $tampil)), 0, ',', '.') ?></th> -->
+                                    <th colspan="2"></th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

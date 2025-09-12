@@ -33,7 +33,7 @@
         .tableUtama th,
         .tableUtama td {
             border: 1px solid black;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
     </style>
 
@@ -73,6 +73,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>No</th>
+                                    <th>Bagian</th>
                                     <th>Evaluasi RKAP Tahun <?= date('Y') ?> </th>
                                     <th>Tindak Lanjut</th>
                                     <th>Keterangan</th>
@@ -86,6 +87,7 @@
                                 ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($row->bagian_upk); ?></td>
                                         <td><?= htmlspecialchars($row->evaluasi); ?></td>
                                         <td><?= htmlspecialchars($row->tindak_lanjut); ?></td>
                                         <td><?= htmlspecialchars($row->keterangan); ?></td>
@@ -99,7 +101,7 @@
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div class="col-lg-6 text-center mb-2">
-                        <p><?= $title2 . ' ' .  $tahun ?></p>
+                        <p><?= $title2 . ' ' .  ($tahun + 1) ?></p>
                         <p>BAGIAN <?= strtoupper($bagian);  ?></p>
                     </div>
                 </div>
@@ -109,6 +111,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>No</th>
+                                    <th>Bagian</th>
                                     <th>Usulan Program RKAP <?= date('Y') + 1 ?></th>
                                     <th>Tindak Lanjut</th>
                                     <th>Keterangan</th>
@@ -122,6 +125,7 @@
                                 ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($row->bagian_upk); ?></td>
                                         <td><?= htmlspecialchars($row->usulan); ?></td>
                                         <td><?= htmlspecialchars($row->solusi); ?></td>
                                         <td><?= htmlspecialchars($row->keterangan); ?></td>

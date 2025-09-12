@@ -11,13 +11,13 @@
                     <?= $this->session->unset_userdata('info'); ?>
                 </div>
                 <div class="card-body">
-                    <form class="user" action="<?= base_url('admin/pengaturan/pengisiOff') ?>" method="POST">
+                    <form class="user" action="<?= base_url('admin/pengaturan/penggunaOffBagian') ?>" method="POST">
                         <div class="row justify-content-center">
                             <div class="col-md-4">
-                                <label for="status" class="form-group">Menu Aktivasi User / Pengguna</label>
+                                <label for="status" class="form-group">Menu Aktivasi User Bagian</label>
                                 <select class="form-select" name="status" aria-label="Default select example">
-                                    <option value="0" <?= $statusPengisi->status == 0 ? 'selected' : '' ?>>Non Aktif</option>
-                                    <option value="1" <?= $statusPengisi->status == 1 ? 'selected' : '' ?>>Aktif</option>
+                                    <option value="0" <?= $statusPenggunaBagian->status == 0 ? 'selected' : '' ?>>Non Aktif</option>
+                                    <option value="1" <?= $statusPenggunaBagian->status == 1 ? 'selected' : '' ?>>Aktif</option>
                                 </select>
                             </div>
                         </div>

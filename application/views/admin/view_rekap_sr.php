@@ -20,8 +20,10 @@
                             </div>
                         </form>
                         <div class="navbar-nav ms-auto">
-                            <!-- <a class="nav-link fw-bold" href="#" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a> -->
                             <a class="nav-link fw-bold" target="_blank" href="<?= base_url('admin/rekap_sr/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
+                        </div>
+                        <div class="navbar-nav ms-2">
+                            <a class="nav-link fw-bold" href="<?= base_url('admin/rekap_sr/rekap_rkap') ?>" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"> Rekap RKAP</button></a>
                         </div>
                         <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 </div>

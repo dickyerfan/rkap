@@ -4,34 +4,68 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Model_evaluasi_program extends CI_Model
 {
 
-    public function getData()
+    // public function getData()
+    // {
+    //     $this->db->select('*');
+    //     $this->db->from('evaluasi_program');
+    //     $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+    //     $this->db->where('tahun_rkap', date('Y'));
+    //     $query = $this->db->get();
+    //     return $query->result();
+    // }
+
+    public function getFilteredEvaluasi($bagian_upk = null, $tahun_rkap = null)
     {
         $this->db->select('*');
-        $this->db->from('evaluasi_program');
-        $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
-        $this->db->where('tahun_rkap', date('Y'));
-        $query = $this->db->get();
-        return $query->result();
+        $this->db->from('evaluasi_program'); // ganti dengan nama tabel kamu
+
+        if ($bagian_upk && $bagian_upk != 'SEMUA') {
+            $this->db->where('bagian_upk', $bagian_upk);
+        }
+
+        if ($tahun_rkap) {
+            $this->db->where('tahun_rkap', $tahun_rkap);
+        }
+        $this->db->order_by('bagian_upk', 'ASC');
+        return $this->db->get()->result();
     }
-    public function getData_usulan()
+    public function getFilteredUsulan($bagian_upk = null, $tahun_rkap = null)
     {
         $this->db->select('*');
-        $this->db->from('evaluasi_usulan');
-        $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
-        $this->db->where('tahun_rkap', date('Y'));
-        $query = $this->db->get();
-        return $query->result();
+        $this->db->from('evaluasi_usulan'); // ganti dengan nama tabel kamu
+
+        if ($bagian_upk && $bagian_upk != 'SEMUA') {
+            $this->db->where('bagian_upk', $bagian_upk);
+        }
+
+        if ($tahun_rkap) {
+            $this->db->where('tahun_rkap', $tahun_rkap);
+        }
+        $this->db->order_by('bagian_upk', 'ASC');
+        return $this->db->get()->result();
     }
 
-    public function getData_admin($bagian, $dataTahun)
-    {
-        $this->db->select('*');
-        $this->db->from('evaluasi_program');
-        $this->db->where('bagian_upk', $bagian);
-        $this->db->where('tahun_rkap', $dataTahun);
-        $query = $this->db->get();
-        return $query->result();
-    }
+
+    // public function getData_usulan()
+    // {
+    //     $this->db->select('*');
+    //     $this->db->from('evaluasi_usulan');
+    //     $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+    //     $this->db->where('tahun_rkap', date('Y'));
+    //     $query = $this->db->get();
+    //     return $query->result();
+    // }
+
+    // public function getData_admin($bagian, $dataTahun)
+    // {
+    //     $this->db->select('*');
+    //     $this->db->from('evaluasi_program');
+    //     $this->db->where('bagian_upk', $bagian);
+    //     $this->db->where('tahun_rkap', $dataTahun);
+    //     $query = $this->db->get();
+    //     return $query->result();
+    // }
+
     public function getData_usulan_admin($bagian, $dataTahun)
     {
         $this->db->select('*');

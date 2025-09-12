@@ -61,7 +61,8 @@
                             <a class="nav-link fw-bold" href="<?= base_url('admin/usulan_barang') ?>" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"> Reset</button></a>
                         </div>
                         <div class="navbar-nav ms-auto">
-                            <a class="nav-link fw-bold" href="#" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
+                            <a class="nav-link fw-bold" href="<?= site_url('admin/usulan_barang/export_pdf'); ?>" target="_blank" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
+                            <!-- <a class="nav-link fw-bold" href="#" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a> -->
                         </div>
                     </nav>
                 </div>
@@ -83,6 +84,7 @@
                                 <thead>
                                     <tr class="text-center">
                                         <th rowspan="2" class="align-middle">No</th>
+                                        <th rowspan="2" class="align-middle">Bagian/UPK</th>
                                         <th colspan="2">Perkiraan</th>
                                         <th colspan="6" class="align-middle">URAIAN TENTANG USULAN</th>
                                         <th rowspan="2" class="align-middle">Keterangan</th>
@@ -110,6 +112,7 @@
                                     ?>
                                         <tr>
                                             <td class="text-center"><?= $no++ ?></td>
+                                            <td><?= $row->bagian_upk ?></td>
                                             <td><?= $row->no_perkiraan ?></td>
                                             <td><?= $row->nama_perkiraan ?></td>
                                             <td class="text-center"><?= $row->kategori ?></td>
@@ -119,17 +122,45 @@
                                             <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
                                             <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td>
                                             <td><?= $row->ket ?></td>
+                                            <?php
+                                            $username = $this->session->userdata('nama_pengguna');
+                                            $tahun_sekarang = date('Y');
+                                            $tahun_data = $row->tahun_rkap;
+                                            ?>
                                             <td class="text-center">
-                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
-                                                <a href="<?= base_url('admin/usulan_barang/detail_usulan_barang/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a>
-                                                <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') ?><?= $id ?>" class="hapus-link"><i class="fas fa-trash text-danger"></i></a>
+                                                <a href="<?= base_url('admin/usulan_barang/detail_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                    <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
+                                                </a>
+
+                                                <?php if ($username === 'administrator') : ?>
+                                                    <!-- Administrator bisa edit & hapus selama tahun = tahun sekarang dan tidak dikunci -->
+                                                    <?php if ($tahun_data == $tahun_sekarang) : ?>
+                                                        <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+
+                                                <?php else : ?>
+                                                    <!-- User biasa hanya bisa edit & hapus jika tahun = tahun sekarang dan tidak dikunci -->
+                                                    <?php if ($tahun_data == $tahun_sekarang && !$is_locked) : ?>
+                                                        <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="7" class="text-end">Total</th>
+                                        <th colspan="8" class="text-end">Total</th>
                                         <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
                                         <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
                                                                     return $item->biaya * $item->volume;

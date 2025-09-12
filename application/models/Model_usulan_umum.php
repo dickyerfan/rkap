@@ -5,8 +5,9 @@ class Model_usulan_umum extends CI_Model
 {
     public function getFiltered($bagian_upk = null, $tahun_rkap = null, $kategori = null)
     {
+        $this->db->select('*');
         $this->db->from('usulan_umum');
-        if ($bagian_upk) {
+        if ($bagian_upk && $bagian_upk != 'SEMUA') {
             $this->db->where('bagian_upk', $bagian_upk);
         }
         if ($tahun_rkap) {
@@ -14,6 +15,16 @@ class Model_usulan_umum extends CI_Model
         } else {
             $this->db->where('tahun_rkap', date('Y'));
         }
+        if ($kategori && $kategori != 'SEMUA') {
+            $this->db->where('kategori', $kategori);
+        }
+        $this->db->order_by('bagian_upk', 'ASC');
+        return $this->db->get()->result();
+    }
+    public function getKategori($kategori = null)
+    {
+        $this->db->from('usulan_umum');
+
         if ($kategori) {
             $this->db->where('kategori', $kategori);
         }

@@ -9,6 +9,7 @@ class Usulan_pemeliharaan extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_pemeliharaan');
+        $this->load->model('Model_setting');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -16,13 +17,20 @@ class Usulan_pemeliharaan extends CI_Controller
     }
     public function index()
     {
-        $dataUpk = $this->input->post('bagian_upk');
-        $dataTahun = $this->input->post('tahun_rkap');
-        $data['namaUpk'] = $dataUpk;
-        $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_usulan_pemeliharaan->getDataUpk($dataUpk, $dataTahun);
-        $data['seleksi'] = $this->Model_usulan_pemeliharaan->getNamaUpk($dataUpk, $dataTahun);
+        $bagian_upk = $this->input->get('bagian_upk');
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: date('Y');
+        $is_locked = $this->Model_setting->cekLock($tahun_rkap);
+
+        // Simpan ke session
+        $this->session->set_userdata('bagian_upk', $bagian_upk ?: 'SEMUA');
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        $data['tampil'] = $this->Model_usulan_pemeliharaan->getFiltered($bagian_upk, $tahun_rkap);
+        $data['bagian_upk'] = $bagian_upk;
+        $data['tahun'] = $tahun_rkap;
         $data['title'] = 'USULAN PEMELIHARAAN (RKAP) TAHUN ';
+        $data['namaUpk'] = $bagian_upk ? $bagian_upk : 'SEMUA';
+        $data['is_locked'] = $is_locked;
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -30,20 +38,36 @@ class Usulan_pemeliharaan extends CI_Controller
         $this->load->view('templates/footer');
     }
 
+    // public function index()
+    // {
+    //     $dataUpk = $this->input->post('bagian_upk');
+    //     $dataTahun = $this->input->post('tahun_rkap');
+    //     $data['namaUpk'] = $dataUpk;
+    //     $data['tahun'] = $dataTahun;
+    //     $data['tampil'] = $this->Model_usulan_pemeliharaan->getDataUpk($dataUpk, $dataTahun);
+    //     $data['seleksi'] = $this->Model_usulan_pemeliharaan->getNamaUpk($dataUpk, $dataTahun);
+    //     $data['title'] = 'USULAN PEMELIHARAAN (RKAP) TAHUN ';
+    //     $this->load->view('templates/header', $data);
+    //     $this->load->view('templates/navbar');
+    //     $this->load->view('templates/sidebar');
+    //     $this->load->view('admin/usulan_pemeliharaan/view_usulan_pemeliharaan', $data);
+    //     $this->load->view('templates/footer');
+    // }
+
     public function export_pdf()
     {
-        $dataUpk = $this->input->post('bagian_upk');
-        $dataTahun = $this->input->post('tahun_rkap');
-        $data['namaUpk'] = $dataUpk;
-        $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_usulan_pemeliharaan->getDataUpk($dataUpk, $dataTahun);
-        $data['seleksi'] = $this->Model_usulan_pemeliharaan->getNamaUpk($dataUpk, $dataTahun);
-        $data['title'] = 'USULAN PEMELIHARAAN (RKAP) TAHUN ';
-        // Set paper size and orientation
-        $this->pdf->setPaper('A4', 'portrait');
+        $dataUpk   = $this->session->userdata('bagian_upk');
+        $dataTahun = $this->session->userdata('tahun_rkap') ?: date('Y');
 
-        // $this->pdf->filename = "Potensi Sr.pdf";
-        $this->pdf->filename = "Evaluasi Upk-{$dataUpk}-{$dataTahun}.pdf";
+        $data['tampil'] = $this->Model_usulan_pemeliharaan->getFiltered($dataUpk, $dataTahun);
+        $data['namaUpk'] = (empty($dataUpk) || $dataUpk === 'SEMUA') ? 'SEMUA' : $dataUpk;
+        $data['tahun'] = $dataTahun;
+        $data['title'] = 'USULAN PEMELIHARAAN (RKAP) TAHUN ';
+
+        $this->pdf->setPaper('Folio', 'portrait');
+
+        $safeUpk = preg_replace('/[^A-Za-z0-9_\-]/', '_', $data['namaUpk']);
+        $this->pdf->filename = "Usulan_pemel-{$safeUpk}-{$dataTahun}.pdf";
         $this->pdf->generate('admin/usulan_pemeliharaan/laporan_pdf', $data);
     }
 

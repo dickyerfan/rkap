@@ -129,57 +129,12 @@ class Model_potensi_sr extends CI_Model
         $this->db->insert('potensi_sr', $data);
     }
 
-    // public function uploadData()
-    // {
-    //     $data = [
-    //         'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
-    //         'kap_pro' => (float) $this->input->post('kap_pro', true),
-    //         'kap_manf' => (float) $this->input->post('kap_manf', true),
-    //         'jam_op' => (float) $this->input->post('jam_op', true),
-    //         'tk_bocor' => (float) $this->input->post('tk_bocor', true),
-    //         'plg_aktif' => (int) $this->input->post('plg_aktif', true),
-    //         'tambah_sr' => (int) $this->input->post('tambah_sr', true),
-    //         'pola_kon' => (float) $this->input->post('pola_kon', true),
-    //         'bagian_upk' => $this->session->userdata('upk_bagian')
-    //     ];
-    //     $this->db->insert('potensi_sr', $data);
-    // }
-
-    // public function uploadData_ket($data)
-    // {
-    //     $this->db->insert('ket_potensi_sr', $data);
-    // }
-
-    public function editPotensiSr()
-    {
-        $data = [
-            // 'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
-            'kap_pro' => (float) $this->input->post('kap_pro', true),
-            'kap_manf' => (float) $this->input->post('kap_manf', true),
-            'jam_op' => (float) $this->input->post('jam_op', true),
-            'tk_bocor' => (float) $this->input->post('tk_bocor', true),
-            'plg_aktif' => (int) $this->input->post('plg_aktif', true),
-            'tambah_sr' => (int) $this->input->post('tambah_sr', true),
-            'pola_kon' => (float) $this->input->post('pola_kon', true),
-            'bagian_upk' => $this->session->userdata('upk_bagian'),
-            'tgl_update' => date('Y-m-d H:i:s')
-        ];
-
-        $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
-        $this->db->where('tahun_rkap', date('Y'));
-        $this->db->update('potensi_sr', $data);
-    }
-
     public function delete_ket_potensi($id_ket_potensi)
     {
         $this->db->where('id_ket_potensi', $id_ket_potensi);
         $this->db->delete('ket_potensi_sr');
     }
 
-    // public function getUpkBagian($upk_bagian)
-    // {
-    //     return $this->db->get_where('potensi_sr', ['bagian_upk' => $upk_bagian])->row();
-    // }
 
     public function getUpkBagian($upk_bagian)
     {
@@ -191,15 +146,25 @@ class Model_potensi_sr extends CI_Model
 
     public function updateData()
     {
+        $kap_pro = $this->input->post('kap_pro');
+        $jam_op = $this->input->post('jam_op');
+        $produksi_air = $kap_pro * $jam_op * 108;
+        $pelanggan_aktif = $this->input->post('plg_aktif');
+        $pola_kon = $this->input->post('pola_kon');
+        $kap_manfaat = $pelanggan_aktif * $pola_kon;
+        $kebocoran_air_persen = ($produksi_air - $kap_manfaat) / $produksi_air * 100;
+        $kap_manf = $kap_manfaat / (3.6 * 30 * $jam_op);
+
         $data = [
             // 'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
             'kap_pro' => (float) $this->input->post('kap_pro', true),
-            'kap_manf' => (float) $this->input->post('kap_manf', true),
+            'kap_manf' => $kap_manf,
             'jam_op' => (float) $this->input->post('jam_op', true),
-            'tk_bocor' => (float) $this->input->post('tk_bocor', true),
+            'tk_bocor' => $kebocoran_air_persen,
             'plg_aktif' => (int) $this->input->post('plg_aktif', true),
             'tambah_sr' => (int) $this->input->post('tambah_sr', true),
             'pola_kon' => (float) $this->input->post('pola_kon', true),
+            'bagian_upk' => $this->session->userdata('upk_bagian'),
             'tgl_update' => date('Y-m-d H:i:s')
         ];
         $this->db->where('bagian_upk', $this->input->post('bagian_upk'));
@@ -274,15 +239,27 @@ class Model_potensi_sr extends CI_Model
     // Akhir Keterangan Potensi SR
 
     // Awal Biaya Usulan
+    // public function getBiayaUsulanBarang($upk_bagian, $tahun_rkap)
+    // {
+    //     return $this->db->select_sum('biaya')
+    //         ->where('bagian_upk', $upk_bagian)
+    //         ->where('tahun_rkap', $tahun_rkap)
+    //         ->get('usulan_barang')
+    //         ->row()
+    //         ->biaya;
+    // }
+
     public function getBiayaUsulanBarang($upk_bagian, $tahun_rkap)
     {
-        return $this->db->select_sum('biaya')
+        return $this->db->select('SUM(biaya * volume) AS total_biaya', false) // false supaya tidak di-escape
             ->where('bagian_upk', $upk_bagian)
             ->where('tahun_rkap', $tahun_rkap)
             ->get('usulan_barang')
             ->row()
-            ->biaya;
+            ->total_biaya ?? 0; // fallback kalau NULL
     }
+
+
 
     public function getBiayaUsulanPemeliharaan($upk_bagian, $tahun_rkap)
     {
@@ -304,13 +281,24 @@ class Model_potensi_sr extends CI_Model
             ->biaya;
     }
 
+    // public function getBiayaUsulanUmum($upk_bagian, $tahun_rkap)
+    // {
+    //     return $this->db->select_sum('biaya')
+    //         ->where('bagian_upk', $upk_bagian)
+    //         ->where('tahun_rkap', $tahun_rkap)
+    //         ->get('usulan_umum')
+    //         ->row()
+    //         ->biaya;
+    // }
+
     public function getBiayaUsulanUmum($upk_bagian, $tahun_rkap)
     {
-        return $this->db->select_sum('biaya')
+        $result = $this->db->select_sum('(biaya * volume)', 'total_biaya')
             ->where('bagian_upk', $upk_bagian)
             ->where('tahun_rkap', $tahun_rkap)
             ->get('usulan_umum')
-            ->row()
-            ->biaya;
+            ->row();
+
+        return $result && $result->total_biaya !== null ? $result->total_biaya : 0;
     }
 }

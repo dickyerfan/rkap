@@ -8,6 +8,7 @@ class Pengaturan extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Model_pengaturan');
+        $this->load->model('Model_setting');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -102,8 +103,9 @@ class Pengaturan extends CI_Controller
     public function aktivasiUser()
     {
         $data['title'] = 'Aktivasi User / Pengguna ';
-        $data['statusPengguna'] = $this->Model_pengaturan->cekStatusPengguna();
-        $data['statusPengisi'] = $this->Model_pengaturan->cekStatusPengisi();
+        $data['statusPenggunaUpk'] = $this->Model_pengaturan->cekStatusPenggunaUpk();
+        $data['statusPenggunaBagian'] = $this->Model_pengaturan->cekStatusPenggunaBagian();
+        // $data['statusPengisi'] = $this->Model_pengaturan->cekStatusPengisi();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -111,10 +113,10 @@ class Pengaturan extends CI_Controller
         $this->load->view('templates/footer');
     }
 
-    public function matikanUser()
+    public function matikanUserUpk()
     {
         $data['title'] = 'PENGATURAN ';
-        $data['statusPengguna'] = $this->Model_pengaturan->cekStatusPengguna();
+        $data['statusPenggunaUpk'] = $this->Model_pengaturan->cekStatusPenggunaUpk();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -122,9 +124,9 @@ class Pengaturan extends CI_Controller
         $this->load->view('templates/footer');
     }
 
-    public function penggunaOff()
+    public function penggunaOffUpk()
     {
-        $this->Model_pengaturan->penggunaOff();
+        $this->Model_pengaturan->penggunaOffUpk();
         if ($this->db->affected_rows() <= 0) {
             $this->session->set_flashdata(
                 'info',
@@ -148,20 +150,20 @@ class Pengaturan extends CI_Controller
         }
     }
 
-    public function matikanPengisi()
+    public function matikanUserBagian()
     {
         $data['title'] = 'PENGATURAN ';
-        $data['statusPengisi'] = $this->Model_pengaturan->cekStatusPengisi();
+        $data['statusPenggunaBagian'] = $this->Model_pengaturan->cekStatusPenggunaBagian();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('admin/view_matikan_pengisi', $data);
+        $this->load->view('admin/view_matikan_user_bagian', $data);
         $this->load->view('templates/footer');
     }
 
-    public function pengisiOff()
+    public function penggunaOffBagian()
     {
-        $this->Model_pengaturan->pengisiOff();
+        $this->Model_pengaturan->penggunaOffBagian();
         if ($this->db->affected_rows() <= 0) {
             $this->session->set_flashdata(
                 'info',
@@ -205,6 +207,31 @@ class Pengaturan extends CI_Controller
         $this->load->view('templates/sidebar');
         $this->load->view('admin/view_kumpul_data', $data);
         $this->load->view('templates/footer');
+    }
+
+    public function aktivasiAdmin()
+    {
+        $data['title'] = 'Aktivasi Administrator ';
+        $tahun = date('Y');
+        $data['tahun'] = $tahun;
+        $data['is_locked'] = $this->Model_setting->cekLock($tahun);
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/view_pengaturan_admin', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function lock($tahun)
+    {
+        $this->Model_setting->setLock($tahun, 1);
+        redirect('admin/pengaturan/aktivasiAdmin');
+    }
+
+    public function unlock($tahun)
+    {
+        $this->Model_setting->setLock($tahun, 0);
+        redirect('admin/pengaturan/aktivasiAdmin');
     }
 
     // public function kumpul_data()

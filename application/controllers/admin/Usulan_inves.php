@@ -9,6 +9,7 @@ class Usulan_inves extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_inves');
+        $this->load->model('Model_setting');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -16,14 +17,20 @@ class Usulan_inves extends CI_Controller
     }
     public function index()
     {
+        $bagian_upk = $this->input->get('bagian_upk');
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: date('Y');
+        $is_locked = $this->Model_setting->cekLock($tahun_rkap);
 
-        $dataUpk = $this->input->post('bagian_upk');
-        $dataTahun = $this->input->post('tahun_rkap');
-        $data['namaUpk'] = $dataUpk;
-        $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_usulan_inves->getDataUpk($dataUpk, $dataTahun);
-        $data['seleksi'] = $this->Model_usulan_inves->getNamaUpk($dataUpk, $dataTahun);
+        // Simpan ke session
+        $this->session->set_userdata('bagian_upk', $bagian_upk ?: 'SEMUA');
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        $data['tampil'] = $this->Model_usulan_inves->getFiltered($bagian_upk, $tahun_rkap);
+        $data['bagian_upk'] = $bagian_upk;
+        $data['tahun'] = $tahun_rkap;
         $data['title'] = 'USULAN INVESTASI (RKAP) TAHUN ';
+        $data['namaUpk'] = $bagian_upk ? $bagian_upk : 'SEMUA';
+        $data['is_locked'] = $is_locked;
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -33,20 +40,58 @@ class Usulan_inves extends CI_Controller
 
     public function export_pdf()
     {
-        $dataUpk = $this->input->post('bagian_upk');
-        $dataTahun = $this->input->post('tahun_rkap');
-        $data['namaUpk'] = $dataUpk;
-        $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_usulan_inves->getDataUpk($dataUpk, $dataTahun);
-        $data['seleksi'] = $this->Model_usulan_inves->getNamaUpk($dataUpk, $dataTahun);
-        $data['title'] = 'USULAN INVESTASI (RKAP) TAHUN ';
-        // Set paper size and orientation
-        $this->pdf->setPaper('A4', 'portrait');
+        $dataUpk   = $this->session->userdata('bagian_upk');
+        $dataTahun = $this->session->userdata('tahun_rkap') ?: date('Y');
 
-        // $this->pdf->filename = "Potensi Sr.pdf";
-        $this->pdf->filename = "Evaluasi Upk-{$dataUpk}-{$dataTahun}.pdf";
+        // Cukup satu panggilan
+        $data['tampil']  = $this->Model_usulan_inves->getFiltered($dataUpk, $dataTahun);
+        $data['namaUpk'] = (empty($dataUpk) || $dataUpk === 'SEMUA') ? 'SEMUA' : $dataUpk;
+        $data['tahun']   = $dataTahun;
+        $data['title']   = 'USULAN INVESTASI (RKAP) TAHUN ';
+
+        $this->pdf->setPaper('Folio', 'portrait');
+
+        $safeUpk = preg_replace('/[^A-Za-z0-9_\-]/', '_', $data['namaUpk']);
+        $this->pdf->filename = "Usulan_inves-{$safeUpk}-{$dataTahun}.pdf";
+
         $this->pdf->generate('admin/usulan_inves/laporan_pdf', $data);
     }
+
+
+    // public function index()
+    // {
+
+    //     $dataUpk = $this->input->post('bagian_upk');
+    //     $dataTahun = $this->input->post('tahun_rkap');
+    //     $data['namaUpk'] = $dataUpk;
+    //     $data['tahun'] = $dataTahun;
+    //     $data['tampil'] = $this->Model_usulan_inves->getDataUpk($dataUpk, $dataTahun);
+    //     $data['seleksi'] = $this->Model_usulan_inves->getNamaUpk($dataUpk, $dataTahun);
+    //     $data['title'] = 'USULAN INVESTASI (RKAP) TAHUN ';
+    //     $this->load->view('templates/header', $data);
+    //     $this->load->view('templates/navbar');
+    //     $this->load->view('templates/sidebar');
+    //     $this->load->view('admin/usulan_inves/view_usulan_investasi', $data);
+    //     $this->load->view('templates/footer');
+    // }
+
+
+    // public function export_pdf()
+    // {
+    //     $dataUpk = $this->input->post('bagian_upk');
+    //     $dataTahun = $this->input->post('tahun_rkap');
+    //     $data['namaUpk'] = $dataUpk;
+    //     $data['tahun'] = $dataTahun;
+    //     $data['tampil'] = $this->Model_usulan_inves->getDataUpk($dataUpk, $dataTahun);
+    //     $data['seleksi'] = $this->Model_usulan_inves->getNamaUpk($dataUpk, $dataTahun);
+    //     $data['title'] = 'USULAN INVESTASI (RKAP) TAHUN ';
+    //     // Set paper size and orientation
+    //     $this->pdf->setPaper('A4', 'portrait');
+
+    //     // $this->pdf->filename = "Potensi Sr.pdf";
+    //     $this->pdf->filename = "Evaluasi Upk-{$dataUpk}-{$dataTahun}.pdf";
+    //     $this->pdf->generate('admin/usulan_inves/laporan_pdf', $data);
+    // }
 
     public function edit_usulan_investasi($id_usulanInvestasi)
     {

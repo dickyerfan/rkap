@@ -5,7 +5,7 @@
                 <div class="card-header shadow">
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <a class="fw-bold text-dark pe-2" style="text-decoration:none;">Pilih Wilayah & Tahun</a>
-                        <form action="<?= base_url('admin/evaluasi_program') ?>" method="post">
+                        <form action="<?= base_url('admin/evaluasi_program') ?>" method="get">
                             <div style="display: flex; align-items: center;">
                                 <select name="bagian" class="form-select" style="width: 150px; margin-right: 10px;" aria-label="Default select example">
                                     <option value="">Pilih Bagian</option>
@@ -29,8 +29,11 @@
                                 <input type="submit" value="Tampilkan Data" style="margin-left: 10px;" class="neumorphic-button">
                             </div>
                         </form>
+                        <div class="navbar-nav ms-2">
+                            <a class="nav-link fw-bold" href="<?= base_url('admin/evaluasi_program') ?>" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"> Reset</button></a>
+                        </div>
                         <div class="navbar-nav ms-auto">
-                            <a class="nav-link neumorphic-button fw-bold" target="_blank" href="<?= base_url('admin/evaluasi_program/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><i class="fa-solid fa-file-pdf"></i> Export PDF</a>
+                            <a class="nav-link fw-bold" href="<?= site_url('admin/evaluasi_program/export_pdf'); ?>" target="_blank" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
                         </div>
                     </nav>
                 </div>
@@ -51,6 +54,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
+                                        <th class="text-center">Bagian</th>
                                         <th class="text-center">Evaluasi RKAP Tahun <?= date('Y') ?> </th>
                                         <th class="text-center">Tindak Lanjut</th>
                                         <th class="text-center">Keterangan</th>
@@ -65,6 +69,7 @@
                                     ?>
                                         <tr>
                                             <td class="text-center"><?= $no++ ?></td>
+                                            <td class="text-center"><?= htmlspecialchars($row->bagian_upk); ?></td>
                                             <td><?= htmlspecialchars($row->evaluasi); ?></td>
                                             <td><?= htmlspecialchars($row->tindak_lanjut); ?></td>
                                             <td><?= htmlspecialchars($row->keterangan); ?></td>
@@ -81,7 +86,7 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-6 text-center">
-                            <h5><?= $title2 . ' ' .  date('Y') ?></h5>
+                            <h5><?= $title2 . ' ' .  (date('Y') + 1) ?></h5>
                             <h5>BAGIAN <?= strtoupper($bagian);  ?></h5>
                         </div>
                     </div>
@@ -91,6 +96,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
+                                        <th class="text-center">Bagian</th>
                                         <th class="text-center">Usulan Program RKAP <?= date('Y') + 1 ?> </th>
                                         <th class="text-center">Solusi</th>
                                         <th class="text-center">Keterangan</th>
@@ -105,6 +111,7 @@
                                     ?>
                                         <tr>
                                             <td class="text-center"><?= $no++ ?></td>
+                                            <td><?= htmlspecialchars($row->bagian_upk); ?></td>
                                             <td><?= htmlspecialchars($row->usulan); ?></td>
                                             <td><?= htmlspecialchars($row->solusi); ?></td>
                                             <td><?= htmlspecialchars($row->keterangan); ?></td>

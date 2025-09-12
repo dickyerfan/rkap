@@ -16,15 +16,17 @@ class Evaluasi_program extends CI_Controller
     }
     public function index()
     {
-        $bagian = $this->input->post('bagian');
-        $dataTahun = $this->input->post('tahun_rkap');
+        $bagian = $this->input->get('bagian') ?: 'SEMUA';
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: date('Y');
         // Set session
-        $this->session->set_userdata('bagian', $bagian);
-        $this->session->set_userdata('tahun_rkap', $dataTahun);
+
+        $this->session->set_userdata('bagian', $bagian ?: 'SEMUA');
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap ?: date('Y'));
+
         $data['bagian'] = $bagian;
-        $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_evaluasi_program->getData_admin($bagian, $dataTahun);
-        $data['usulan'] = $this->Model_evaluasi_program->getData_usulan_admin($bagian, $dataTahun);
+        $data['tahun'] = $tahun_rkap;
+        $data['tampil'] = $this->Model_evaluasi_program->getFilteredEvaluasi($bagian, $tahun_rkap);
+        $data['usulan'] = $this->Model_evaluasi_program->getFilteredUsulan($bagian, $tahun_rkap);
         $data['title'] = 'EVALUASI RKAP TAHUN ';
         $data['title2'] = 'USULAN PROGRAM RKAP TAHUN ';
 
@@ -33,6 +35,23 @@ class Evaluasi_program extends CI_Controller
         $this->load->view('templates/sidebar');
         $this->load->view('admin/evaluasi_program/view_evaluasi_program', $data);
         $this->load->view('templates/footer');
+    }
+
+    public function export_pdf()
+    {
+        $bagian = $this->session->userdata('bagian');
+        $tahun_rkap = $this->session->userdata('tahun_rkap');
+
+        $data['bagian'] = $bagian;
+        $data['tahun'] = $tahun_rkap;
+        $data['tampil'] = $this->Model_evaluasi_program->getFilteredEvaluasi($bagian, $tahun_rkap);
+        $data['usulan'] = $this->Model_evaluasi_program->getFilteredUsulan($bagian, $tahun_rkap);
+        $data['title'] = 'EVALUASI RKAP TAHUN ';
+        $data['title2'] = 'USULAN PROGRAM RKAP TAHUN ';
+
+        $this->pdf->setPaper('folio', 'portrait');
+        $this->pdf->filename = "evaluasi_program-{$bagian}-{$tahun_rkap}.pdf";
+        $this->pdf->generate('admin/evaluasi_program/laporan_pdf', $data);
     }
 
     public function edit_evaluasi_program($id_evaluasi_program)
@@ -135,22 +154,5 @@ class Evaluasi_program extends CI_Controller
             );
             redirect('admin/evaluasi_program');
         }
-    }
-
-    public function export_pdf()
-    {
-        $bagian = $this->session->userdata('bagian');
-        $tahun = $this->session->userdata('tahun_rkap');
-
-        $data['bagian'] = $bagian;
-        $data['tahun'] = $tahun;
-        $data['tampil'] = $this->Model_evaluasi_program->getData_admin($bagian, $tahun);
-        $data['usulan'] = $this->Model_evaluasi_program->getData_usulan_admin($bagian, $tahun);
-        $data['title'] = 'EVALUASI RKAP TAHUN ';
-        $data['title2'] = 'USULAN PROGRAM RKAP TAHUN ';
-
-        $this->pdf->setPaper('folio', 'portrait');
-        $this->pdf->filename = "evaluasi_program-{$bagian}-{$tahun}.pdf";
-        $this->pdf->generate('admin/evaluasi_program/laporan_pdf', $data);
     }
 }

@@ -17,8 +17,22 @@ class Usulan_Umum extends CI_Controller
     public function index()
     {
 
-        $data['tampil'] = $this->Model_usulan_umum->getData();
-        $data['title'] = 'USULAN PERMINTAAN UMUM (RKAP) TAHUN ';
+        $bagian_upk = $this->input->get('bagian_upk');
+        $tahun_rkap = $this->input->get('tahun_rkap');
+        $kategori = $this->input->get('kategori');
+
+        // Default tahun jika kosong
+        if (!$tahun_rkap) {
+            $tahun_rkap = date('Y');
+        }
+
+        $data['tampil'] = $this->Model_usulan_umum->getFiltered($bagian_upk, $tahun_rkap, $kategori);
+        $data['bagian_upk'] = $bagian_upk;
+        $data['tahun'] = $tahun_rkap;
+        $data['kategori'] = $kategori;
+        $data['title'] = 'USULAN PERMINTAAN BAGIAN UMUM (RKAP) TAHUN ';
+        $data['namaUpk'] = $bagian_upk ? $bagian_upk : 'SEMUA';
+        $data['kategori'] = $kategori ? $kategori : 'SEMUA';
         $this->load->view('templates/pengguna/header', $data);
         $this->load->view('templates/pengguna/navbar');
         $this->load->view('templates/pengguna/sidebar');

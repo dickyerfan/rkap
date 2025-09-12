@@ -317,13 +317,13 @@
                                                 </tr>
                                                 <tr>
                                                     <?php
-                                                    $pendapatan_air = ($row->plg_aktif + $row->tambah_sr) * 56150 * 12; // Asumsi tarif Rp 56.150 per m3
+                                                    $pendapatan_air = ($row->plg_aktif + $row->tambah_sr + $totalSr) * 67170 * 12; // Asumsi tarif Rp 67.170 per m3
                                                     $pendapatan_non_air = $totalSr * 1000000;
                                                     $total_pendapatan = $pendapatan_air + $pendapatan_non_air;
                                                     $total_biaya = $biayaUsulanBarang + $biayaUsulanInvestasi + $biayaUsulanPemeliharaan + $biayaUsulanUmum;
                                                     ?>
                                                     <td class="text-start">Pendapatan Air</td>
-                                                    <td>(<?= number_format($row->plg_aktif, 0, ',', '.') ?>+ <?= number_format($row->tambah_sr, 0, ',', '.') ?>) x 56.150 x 12</td>
+                                                    <td>(<?= number_format($row->plg_aktif, 0, ',', '.') ?>+ <?= number_format($row->tambah_sr, 0, ',', '.') ?> ) x 67.170 x 12</td>
                                                     <td class="text-end"><?= number_format($pendapatan_air, 0, ',', '.') ?></td>
                                                 </tr>
                                                 <tr>

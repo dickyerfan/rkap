@@ -33,7 +33,7 @@
         .tableUtama th,
         .tableUtama td {
             border: 1px solid black;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
     </style>
 
@@ -73,6 +73,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>No</th>
+                                    <th>Bagian UPK</th>
                                     <th>Sub Bagian</th>
                                     <th>Permasalahan</th>
                                     <th>Penyebab</th>
@@ -88,6 +89,7 @@
                                 ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= strtoupper($row->bagian_upk) ?></td>
                                         <td><?= $row->sub_bagian ?></td>
                                         <td><?= $row->permasalahan ?></td>
                                         <td><?= $row->penyebab ?></td>

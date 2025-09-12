@@ -9,6 +9,7 @@ class Usulan_barang extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_barang');
+        $this->load->model('Model_setting');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -16,26 +17,15 @@ class Usulan_barang extends CI_Controller
     }
     public function index()
     {
-
-        // $dataUpk = $this->input->post('bagian_upk');
-        // $dataTahun = $this->input->post('tahun_rkap');
-        // if ($dataTahun === null) {
-        //     $dataTahun = date('Y');
-        // }
-        // $data['namaUpk'] = $dataUpk;
-        // $data['tahun'] = $dataTahun;
-        // $data['tampil'] = $this->Model_usulan_barang->getDataUpk($dataUpk, $dataTahun);
-        // $data['seleksi'] = $this->Model_usulan_barang->getNamaUpk($dataUpk, $dataTahun);
-        // $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
-
         $bagian_upk = $this->input->get('bagian_upk');
-        $tahun_rkap = $this->input->get('tahun_rkap');
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: date('Y');
+        $is_locked = $this->Model_setting->cekLock($tahun_rkap);
         $kategori = $this->input->get('kategori');
 
-        // Default tahun jika kosong
-        if (!$tahun_rkap) {
-            $tahun_rkap = date('Y');
-        }
+        // Simpan ke session
+        $this->session->set_userdata('bagian_upk', $bagian_upk ?: 'SEMUA');
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+        $this->session->set_userdata('kategori', $kategori);
 
         $data['tampil'] = $this->Model_usulan_barang->getFiltered($bagian_upk, $tahun_rkap, $kategori);
         $data['bagian_upk'] = $bagian_upk;
@@ -43,6 +33,7 @@ class Usulan_barang extends CI_Controller
         $data['kategori'] = $kategori;
         $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
         $data['namaUpk'] = $bagian_upk ? $bagian_upk : 'SEMUA';
+        $data['is_locked'] = $is_locked;
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
@@ -53,19 +44,20 @@ class Usulan_barang extends CI_Controller
 
     public function export_pdf()
     {
-        $dataUpk = $this->input->post('bagian_upk');
-        $dataTahun = $this->input->post('tahun_rkap');
-        $data['namaUpk'] = $dataUpk;
+        $dataUpk   = $this->session->userdata('bagian_upk');
+        $dataTahun = $this->session->userdata('tahun_rkap') ?: date('Y');
+        $kategori = $this->session->userdata('kategori');
+
+        $data['tampil'] = $this->Model_usulan_barang->getFiltered($dataUpk, $dataTahun, $kategori);
+        $data['namaUpk'] = (empty($dataUpk) || $dataUpk === 'SEMUA') ? 'SEMUA' : $dataUpk;
         $data['tahun'] = $dataTahun;
-        // $data['tampil'] = $this->Model_usulan_barang->getDataUpk($dataUpk, $dataTahun);
-        $bagian_upk = $this->input->post('bagian_upk'); // bisa kosong
-        $tahun_rkap = $this->input->post('tahun_rkap');
-        $data['tampil'] = $this->Model_usulan_barang->getFiltered($bagian_upk, $tahun_rkap);
-        $data['seleksi'] = $this->Model_usulan_barang->getNamaUpk($dataUpk, $dataTahun);
+        $data['kategori'] = $kategori;
         $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
 
         $this->pdf->setPaper('Folio', 'portrait');
-        $this->pdf->filename = "Usulan_barang-{$dataUpk}-{$dataTahun}.pdf";
+
+        $safeUpk = preg_replace('/[^A-Za-z0-9_\-]/', '_', $data['namaUpk']);
+        $this->pdf->filename = "Usulan_barang-{$safeUpk}-{$dataTahun}.pdf";
         $this->pdf->generate('admin/usulan_barang/laporan_pdf', $data);
     }
 

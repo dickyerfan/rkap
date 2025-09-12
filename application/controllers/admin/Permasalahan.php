@@ -17,14 +17,19 @@ class Permasalahan extends CI_Controller
     public function index()
     {
 
-        $dataUpk = $this->input->post('bagian_upk');
-        $dataTahun = $this->input->post('tahun_rkap');
-        $data['namaUpk'] = $dataUpk;
-        $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_permasalahan->getDataUpk($dataUpk, $dataTahun);
-        $data['seleksi'] = $this->Model_permasalahan->getNamaUpk($dataUpk, $dataTahun);
+        $bagian_upk = $this->input->get('bagian_upk');
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: date('Y');
 
+        // Simpan ke session
+        $this->session->set_userdata('bagian_upk', $bagian_upk ?: 'SEMUA');
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+
+        $data['tampil'] = $this->Model_permasalahan->getFiltered($bagian_upk, $tahun_rkap);
+        $data['bagian_upk'] = $bagian_upk;
+        $data['tahun'] = $tahun_rkap;
         $data['title'] = 'PERMASALAHAN YANG PERLU DITINDAK LANJUTI TAHUN ';
+        $data['namaUpk'] = $bagian_upk ? $bagian_upk : 'SEMUA';
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -35,19 +40,21 @@ class Permasalahan extends CI_Controller
     public function export_pdf()
     {
 
-        $dataUpk = $this->input->post('bagian_upk');
-        $dataTahun = $this->input->post('tahun_rkap');
-        $data['namaUpk'] = $dataUpk;
-        $data['tahun'] = $dataTahun;
-        $data['tampil'] = $this->Model_permasalahan->getDataUpk($dataUpk, $dataTahun);
-        $data['seleksi'] = $this->Model_permasalahan->getNamaUpk($dataUpk, $dataTahun);
+        $dataUpk   = $this->session->userdata('bagian_upk');
+        $dataTahun = $this->session->userdata('tahun_rkap') ?: date('Y');
+
+        // Cukup satu panggilan
+        $data['tampil']  = $this->Model_permasalahan->getFiltered($dataUpk, $dataTahun);
+        $data['namaUpk'] = (empty($dataUpk) || $dataUpk === 'SEMUA') ? 'SEMUA' : $dataUpk;
+        $data['tahun']   = $dataTahun;
         $data['title'] = 'PERMASALAHAN YANG PERLU DITINDAK LANJUTI TAHUN ';
 
         // Set paper size and orientation
-        $this->pdf->setPaper('A4', 'portrait');
+        $this->pdf->setPaper('folio', 'portrait');
 
         // $this->pdf->filename = "Potensi Sr.pdf";
-        $this->pdf->filename = "Evaluasi Upk-{$dataUpk}-{$dataTahun}.pdf";
+        $safeUpk = preg_replace('/[^A-Za-z0-9_\-]/', '_', $data['namaUpk']);
+        $this->pdf->filename = "Evaluasi Upk-{$safeUpk}-{$dataTahun}.pdf";
         $this->pdf->generate('admin/permasalahan/laporan_pdf', $data);
     }
 
