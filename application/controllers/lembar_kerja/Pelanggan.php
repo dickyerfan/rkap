@@ -9,38 +9,35 @@ class Pelanggan extends CI_Controller
         parent::__construct();
         $this->load->library('form_validation');
         $this->load->model('Model_pelanggan');
+        date_default_timezone_set('Asia/Jakarta');
         if (!$this->session->userdata('level')) {
             redirect('auth');
         }
     }
-    // public function index()
-    // {
-    //     $upk = $this->input->get('upk');
-    //     $tahun_rkap = $this->input->get('tahun_rkap') ?: date('Y');
-    //     $data['tahun'] = $tahun_rkap;
-    //     $data['upk'] = $upk;
-    //     $data['title'] = 'RENCANA PERKEMBANGAN SAMBUNGAN PELANGGAN UPK ' . strtoupper($upk) . ' <br> TAHUN ANGGARAN ';
-    //     $data['data_pelanggan'] = $this->Model_pelanggan->getDataPelanggan($tahun_rkap, $upk);
-    //     $data['jenis_pelanggan'] = $this->db->select('nama_jp')->get('rkap_jenis_plgn')->result_array();
-
-    //     $this->load->view('templates/header', $data);
-    //     $this->load->view('templates/navbar');
-    //     $this->load->view('templates/sidebar');
-    //     $this->load->view('lembar_kerja/view_pelanggan', $data);
-    //     $this->load->view('templates/footer');
-    // }
 
     public function index()
     {
         $upk = $this->input->get('upk');
-        $tahun = $this->input->get('tahun') ?: date('Y');
+        $tahun = $this->input->get('tahun_rkap') ?: date('Y');
         $data['tahun'] = $tahun;
         $data['upk'] = $upk;
-        $data['title'] = 'RENCANA PERKEMBANGAN SAMBUNGAN PELANGGAN UPK ' . strtoupper($upk) . ' <br> TAHUN ANGGARAN ';
+        $data['list_upk'] = $this->db->get('rkap_nama_upk')->result();
 
+        // simpan ke session utk keperluan export PDF
+        $this->session->set_userdata('upk', $upk);
+        $this->session->set_userdata('tahun_rkap', $tahun);
 
-        // data yang sudah ada (baris per kategori, jenis, bulan)
-        $data['data_pelanggan'] = $this->Model_pelanggan->getDataPelanggan($tahun);
+        if ($upk) {
+            $data['data_pelanggan'] = $this->Model_pelanggan->getDataPelanggan($tahun, $upk);
+            // ambil nama_upk dari data hasil query
+            $nama_upk = $data['data_pelanggan'][0]['nama_upk'] ?? '';
+
+            $data['title'] = 'RENCANA PERKEMBANGAN SAMBUNGAN PELANGGAN UPK '
+                . strtoupper($nama_upk) . ' <br> TAHUN ANGGARAN ';
+        } else {
+            $data['data_pelanggan'] = $this->Model_pelanggan->getDataPelanggan($tahun);
+            $data['title'] = 'RENCANA PERKEMBANGAN SAMBUNGAN PELANGGAN (KONSOLIDASI) <br> TAHUN ANGGARAN ';
+        }
 
         // master daftar kategori (kategori_data)
         $kategori_rows = $this->db->order_by('id_kd')->get('rkap_kategori_data')->result_array();
@@ -77,236 +74,226 @@ class Pelanggan extends CI_Controller
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/view_pelanggan', $data);
+        $this->load->view('lembar_kerja/perkembangan_pelanggan/view_pelanggan', $data);
         $this->load->view('templates/footer');
+    }
+
+    public function export_pdf()
+    {
+        // Ambil dari session, bukan dari post
+        $upk   = $this->session->userdata('upk');
+        $tahun = $this->session->userdata('tahun_rkap');
+
+        $data['upk']   = $upk;
+        $data['tahun'] = $tahun;
+
+        if ($upk && $upk !== 'SEMUA') {
+            $data['data_pelanggan'] = $this->Model_pelanggan->getDataPelanggan($tahun, $upk);
+
+            $nama_upk = $data['data_pelanggan'][0]['nama_upk'] ?? '';
+            $data['title'] = 'RENCANA PERKEMBANGAN SAMBUNGAN PELANGGAN UPK '
+                . strtoupper($nama_upk) . ' <br> TAHUN ANGGARAN ';
+        } else {
+            $data['data_pelanggan'] = $this->Model_pelanggan->getDataPelanggan($tahun);
+            $data['title'] = 'RENCANA PERKEMBANGAN SAMBUNGAN PELANGGAN (KONSOLIDASI) <br> TAHUN ANGGARAN ';
+        }
+
+        // Ambil master kategori & jenis (sama seperti di index)
+        $kategori_rows = $this->db->order_by('id_kd')->get('rkap_kategori_data')->result_array();
+        $data['kategori_list'] = !empty($kategori_rows)
+            ? array_map(fn ($r) => trim($r['nama_kd']), $kategori_rows)
+            : [
+                'Samb Aktif Awal Bulan', 'Jumlah Sambungan Baru', 'Jumlah Penutupan Pelanggan',
+                'Penyamb Kembali Pelanggan', 'Jumlah Pencabutan Pelanggan', 'Samb Aktif Akhir Bulan'
+            ];
+
+        $jenis_rows = $this->db->order_by('id_jp')->get('rkap_jenis_plgn')->result_array();
+        $data['jenis_list'] = !empty($jenis_rows)
+            ? array_map(fn ($r) => trim($r['nama_jp']), $jenis_rows)
+            : [
+                'Sosial A', 'Sosial B', 'Rumah Tangga A', 'Rumah Tangga B', 'Rumah Tangga C',
+                'Instansi Pemerintah A', 'Instansi Pemerintah B', 'ABRI', 'Niaga A', 'Niaga B', 'Khusus 2'
+            ];
+
+        // Setting PDF
+        $this->pdf->setPaper('Folio', 'landscape');
+        $this->pdf->filename = "Lap_perkembangan_Pelanggan_{$tahun}_" . ($upk ?: 'Konsolidasi') . ".pdf";
+
+        // Generate dari view khusus PDF
+        $this->pdf->generate('lembar_kerja/perkembangan_pelanggan/laporan_pdf', $data);
     }
 
     public function tambah()
     {
-        if ($this->input->post()) {
-            $id_upk = $this->input->post('id_upk');
-            $id_jp  = $this->input->post('id_jp');
-            $tahun  = $this->input->post('tahun');
-            $input  = $this->input->post('data'); // data[bulan][id_kd] = jumlah
-
-            foreach ($input as $bulan => $kategoriData) {
-                foreach ($kategoriData as $id_kd => $jumlah) {
-                    // kosongkan jika tidak diisi
-                    $jumlah = $jumlah !== "" ? (int)$jumlah : 0;
-
-                    $this->Model_pelanggan->insert_rkap([
-                        'id_upk'     => $id_upk,
-                        'id_jp'      => $id_jp,
-                        'id_kd'      => $id_kd,
-                        'tahun'      => $tahun,
-                        'bulan'      => $bulan,
-                        'jumlah'     => $jumlah,
-                        // 'tgl_upload' => date('Y-m-d H:i:s'),
-                        // 'tgl_update' => date('Y-m-d H:i:s')
-                    ]);
-                }
-            }
-
-            $this->session->set_flashdata('success', "Data RKAP pelanggan berhasil disimpan");
-            redirect('lembar_kerja/pelanggan/index?tahun=' . $tahun);
-        }
-
-        $data['title'] = "Form Input Data Perkembangan Pelanggan";
-        $data['kategori_list'] = $this->Model_pelanggan->get_kategori(); // ambil dari tabel rkap_kategori_data
-        $data['jenis_list'] = $this->Model_pelanggan->get_jenis_pelanggan(); // ambil dari tabel rkap_jenis_plgn
-        $data['upk_list'] = $this->Model_pelanggan->get_upk(); // ambil dari tabel rkap_nama_upk
+        $data['title'] = 'Input Data Perkembangan Pelanggan';
+        $data['upk_list'] = $this->db->get('rkap_nama_upk')->result();
+        $data['jenis_list'] = $this->db->get('rkap_jenis_plgn')->result();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/upload_pelanggan', $data);
+        $this->load->view('lembar_kerja/perkembangan_pelanggan/upload_pelanggan', $data);
         $this->load->view('templates/footer');
     }
 
-    // public function tambah()
-    // {
-    //     $id_upk = $this->input->post('id_upk');
-    //     $id_jp  = $this->input->post('id_jp');
-    //     $tahun  = $this->input->post('tahun');
-    //     $bulan  = (int) $this->input->post('bulan');
+    public function insert_data()
+    {
+        $id_upk = $this->input->post('id_upk');
+        $id_jp  = $this->input->post('id_jp');
+        $tahun  = $this->input->post('tahun');
+        $bulan  = $this->input->post('bulan');
 
-    //     // input user
-    //     $s_awal     = (int) $this->input->post('s_awal');
-    //     $s_baru     = (int) $this->input->post('s_baru');
-    //     $penutupan  = (int) $this->input->post('penutupan');
-    //     $pembukaan  = (int) $this->input->post('pembukaan');
-    //     $pencabutan = (int) $this->input->post('pencabutan');
+        $kd_awal  = 1;
+        $kd_baru  = 2;
+        $kd_tutup = 3;
+        $kd_buka  = 4;
+        $kd_cabut = 5;
+        $kd_akhir = 6;
 
-    //     // jika bulan > 1, sambungan awal otomatis dari akhir bulan sebelumnya
-    //     if ($bulan > 1) {
-    //         $prev = $this->Rkap_model->get_sambungan_akhir($id_upk, $id_jp, $tahun, $bulan - 1);
-    //         $s_awal = $prev ? $prev->jumlah : 0;
-    //     }
+        $now = date('Y-m-d H:i:s');
 
-    //     // hitung sambungan akhir
-    //     $s_akhir = $s_awal + $s_baru - $penutupan + $pembukaan - $pencabutan;
+        // --- hitung sambungan awal ---
+        if ($bulan == 1) {
+            // Januari diinput manual
+            $s_awal = $this->input->post('s_awal') ?: 0;
+        } else {
+            // selain Januari → ambil dari akhir bulan sebelumnya
+            $s_awal = $this->Model_pelanggan->get_jumlah($id_upk, $id_jp, $kd_akhir, $tahun, $bulan - 1);
+        }
 
-    //     // simpan data
-    //     $kategori_data = [
-    //         1 => $s_awal,
-    //         2 => $s_baru,
-    //         3 => $penutupan,
-    //         4 => $pembukaan,
-    //         5 => $pencabutan,
-    //         6 => $s_akhir
-    //     ];
+        // kategori lain tetap input manual
+        $s_baru = $this->input->post('s_baru') ?: 0;
+        $tutup  = $this->input->post('penutupan') ?: 0;
+        $buka   = $this->input->post('pembukaan') ?: 0;
+        $cabut  = $this->input->post('pencabutan') ?: 0;
 
-    //     foreach ($kategori_data as $id_kd => $jumlah) {
-    //         $data = [
-    //             'id_upk' => $id_upk,
-    //             'id_jp'  => $id_jp,
-    //             'id_kd'  => $id_kd,
-    //             'tahun'  => $tahun,
-    //             'bulan'  => $bulan,
-    //             'jumlah' => $jumlah
-    //         ];
-    //         $this->Model_pelanggan->insert_or_update($data);
-    //     }
+        // cek duplikasi data / jika error maka kode ini dihapus saja
+        // $cek = $this->db->get_where('rkap_pelanggan', [
+        //     'id_upk' => $id_upk,
+        //     'id_jp'  => $id_jp,
+        //     'tahun'  => $tahun,
+        //     'bulan'  => $bulan
+        // ])->num_rows();
 
-    //     // setelah insert bulan ini, hitung ulang bulan berikutnya (propagasi)
-    //     $this->propagate($id_upk, $id_jp, $tahun, $bulan + 1);
+        // if ($cek > 0) {
+        //     $this->session->set_flashdata(
+        //         'info',
+        //         '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+        //     <strong>Gagal!</strong> Data untuk UPK ini pada bulan ' . $bulan . ' tahun ' . $tahun . ' sudah ada. 
+        //     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        // </div>'
+        //     );
+        //     redirect('lembar_kerja/pelanggan');
+        // }
 
-    //     $this->session->set_flashdata('success', "Data bulan $bulan berhasil disimpan");
-    //     redirect('rkap_pelanggan/form_input');
-    // }
+        // simpan awal bulan
+        $this->Model_pelanggan->save_or_update([
+            'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_awal,
+            'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_awal,
+            'tgl_update' => $now, 'tgl_upload' => $now
+        ]);
 
-    // public function tambah()
-    // {
-    //     $data['title'] = 'Input Data Perkembangan Pelanggan';
-    //     $data['upk_list']   = $this->db->order_by('id_upk')->get('rkap_nama_upk')->result();               // table upk
-    //     $data['jenis_list'] = $this->db->order_by('id_jp')->get('rkap_jenis_plgn')->result(); // table jenis_pelanggan
-    //     $data['kategori_list'] = $this->Model_pelanggan->get_kategori(); // rkap_kategori_data
-    //     $this->load->view('templates/header', $data);
-    //     $this->load->view('templates/navbar');
-    //     $this->load->view('templates/sidebar');
-    //     $this->load->view('lembar_kerja/upload_pelanggan', $data);
-    //     $this->load->view('templates/footer');
-    // }
+        // simpan kategori "baru"
+        $this->Model_pelanggan->save_or_update([
+            'id_upk' => $id_upk,
+            'id_jp' => $id_jp,
+            'id_kd' => $kd_baru,
+            'tahun' => $tahun,
+            'bulan' => $bulan,
+            'jumlah' => $s_baru,
+            'tgl_update' => $now,
+            'tgl_upload' => $now
+        ]);
 
-    // public function insert_data()
-    // {
-    //     // ambil input, trim & sanitize
-    //     $id_upk = $this->input->post('id_upk', true);
-    //     $id_jp  = $this->input->post('id_jp', true);
-    //     $tahun  = (int) $this->input->post('tahun', true);
-    //     $bulan  = (int) $this->input->post('bulan', true);
+        // simpan kategori "penutupan"
+        $this->Model_pelanggan->save_or_update([
+            'id_upk' => $id_upk,
+            'id_jp' => $id_jp,
+            'id_kd' => $kd_tutup,
+            'tahun' => $tahun,
+            'bulan' => $bulan,
+            'jumlah' => $tutup,
+            'tgl_update' => $now,
+            'tgl_upload' => $now
+        ]);
 
-    //     // validasi wajib
-    //     if (!$id_upk || !$id_jp || !$tahun || $bulan < 1 || $bulan > 12) {
-    //         $this->session->set_flashdata('error', 'Lengkapi UPK, Jenis Produk, Tahun, dan Bulan.');
-    //         redirect('rkap_pelanggan/form_input');
-    //         return;
-    //     }
+        // simpan kategori "pembukaan"
+        $this->Model_pelanggan->save_or_update([
+            'id_upk' => $id_upk,
+            'id_jp' => $id_jp,
+            'id_kd' => $kd_buka,
+            'tahun' => $tahun,
+            'bulan' => $bulan,
+            'jumlah' => $buka,
+            'tgl_update' => $now,
+            'tgl_upload' => $now
+        ]);
 
-    //     // Sambungan Awal: jika bulan > 1 ambil dari sambungan akhir bulan sebelumnya,
-    //     // jika bulan = 1 ambil dari input (kolom s_awal)
-    //     if ($bulan > 1) {
-    //         $prev = $this->Rkap_model->get_sambungan_akhir($id_upk, $id_jp, $tahun, $bulan - 1);
-    //         $s_awal = $prev ? (int)$prev->jumlah : 0;
-    //     } else {
-    //         $s_awal = (int) $this->input->post('s_awal', true);
-    //     }
+        // simpan kategori "pencabutan"
+        $this->Model_pelanggan->save_or_update([
+            'id_upk' => $id_upk,
+            'id_jp' => $id_jp,
+            'id_kd' => $kd_cabut,
+            'tahun' => $tahun,
+            'bulan' => $bulan,
+            'jumlah' => $cabut,
+            'tgl_update' => $now,
+            'tgl_upload' => $now
+        ]);
 
-    //     // Sambungan baru & lainnya diambil dari form (default 0)
-    //     $s_baru     = (int) $this->input->post('s_baru', true);
-    //     $penutupan  = (int) $this->input->post('penutupan', true);
-    //     $pembukaan  = (int) $this->input->post('pembukaan', true);
-    //     $pencabutan = (int) $this->input->post('pencabutan', true);
 
-    //     // hitung sambungan akhir
-    //     $s_akhir = $s_awal + $s_baru - $penutupan + $pembukaan - $pencabutan;
+        // hitung akhir
+        $s_akhir = $s_awal + $s_baru - $tutup + $buka - $cabut;
+        $this->Model_pelanggan->save_or_update([
+            'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_akhir,
+            'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_akhir,
+            'tgl_update' => $now, 'tgl_upload' => $now
+        ]);
 
-    //     // siapkan data per kategori untuk disimpan (1..6)
-    //     $kategori_data = [
-    //         1 => $s_awal,
-    //         2 => $s_baru,
-    //         3 => $penutupan,
-    //         4 => $pembukaan,
-    //         5 => $pencabutan,
-    //         6 => $s_akhir
-    //     ];
+        // lanjutkan propagasi mulai bulan setelahnya
+        $this->propagate_recursive($id_upk, $id_jp, $tahun, $bulan + 1, $s_akhir);
 
-    //     foreach ($kategori_data as $id_kd => $jumlah) {
-    //         $row = [
-    //             'id_upk'     => (int)$id_upk,
-    //             'id_jp'      => (int)$id_jp,
-    //             'id_kd'      => (int)$id_kd,
-    //             'tahun'      => (int)$tahun,
-    //             'bulan'      => (int)$bulan,
-    //             'jumlah'     => (int)$jumlah,
-    //             'tgl_update' => date('Y-m-d H:i:s'),
-    //             'tgl_upload' => date('Y-m-d H:i:s')
-    //         ];
-    //         $this->Rkap_model->insert_or_update($row);
-    //     }
+        $this->session->set_flashdata('info', '<div class="alert alert-primary">Data berhasil disimpan</div>');
+        redirect('lembar_kerja/pelanggan');
+    }
 
-    //     // propagasi otomatis ke bulan berikutnya (recompute sampai Desember)
-    //     $this->propagate($id_upk, $id_jp, $tahun, $bulan + 1);
-
-    //     $this->session->set_flashdata('success', "Data bulan {$bulan} berhasil disimpan.");
-    //     redirect('lembar_kerja/pelanggan');
-    // }
-
-    // propagasi ulang: rekalkulasi sambungan awal & akhir untuk bulan berikutnya dst
-    private function propagate($id_upk, $id_jp, $tahun, $bulan)
+    private function propagate_recursive($id_upk, $id_jp, $tahun, $bulan, $s_awal)
     {
         if ($bulan > 12) return;
 
-        // ambil sambungan akhir bulan sebelumnya
-        $prev = $this->Rkap_model->get_sambungan_akhir($id_upk, $id_jp, $tahun, $bulan - 1);
-        if (!$prev) return;
+        $kd_awal  = 1;
+        $kd_baru  = 2;
+        $kd_tutup = 3;
+        $kd_buka  = 4;
+        $kd_cabut = 5;
+        $kd_akhir = 6;
 
-        $s_awal = (int)$prev->jumlah;
+        $now = date('Y-m-d H:i:s');
 
-        // ambil nilai kategori lain yang sudah ada untuk bulan ini
-        $rows = $this->db->get_where('rkap_pelanggan', [
-            'id_upk' => $id_upk,
-            'id_jp'  => $id_jp,
-            'tahun'  => $tahun,
-            'bulan'  => $bulan
-        ])->result();
+        // sambungan awal bulan ini = akhir bulan sebelumnya
+        $this->Model_pelanggan->save_or_update([
+            'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_awal,
+            'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_awal,
+            'tgl_update' => $now, 'tgl_upload' => $now
+        ]);
 
-        $map = [];
-        foreach ($rows as $r) {
-            $map[(int)$r->id_kd] = (int)$r->jumlah;
+        // ambil input kategori lain bulan ini
+        $baru  = $this->Model_pelanggan->get_jumlah($id_upk, $id_jp, $kd_baru, $tahun, $bulan);
+        $tutup = $this->Model_pelanggan->get_jumlah($id_upk, $id_jp, $kd_tutup, $tahun, $bulan);
+        $buka  = $this->Model_pelanggan->get_jumlah($id_upk, $id_jp, $kd_buka, $tahun, $bulan);
+        $cabut = $this->Model_pelanggan->get_jumlah($id_upk, $id_jp, $kd_cabut, $tahun, $bulan);
+
+        $s_akhir = $s_awal + $baru - $tutup + $buka - $cabut;
+
+        // simpan akhir bulan ini
+        $this->Model_pelanggan->save_or_update([
+            'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_akhir,
+            'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_akhir,
+            'tgl_update' => $now, 'tgl_upload' => $now
+        ]);
+
+        // lanjut ke bulan berikut
+        if ($bulan < 12) {
+            $this->propagate_recursive($id_upk, $id_jp, $tahun, $bulan + 1, $s_akhir);
         }
-
-        $s_baru     = isset($map[2]) ? $map[2] : 0;
-        $penutupan  = isset($map[3]) ? $map[3] : 0;
-        $pembukaan  = isset($map[4]) ? $map[4] : 0;
-        $pencabutan = isset($map[5]) ? $map[5] : 0;
-
-        $s_akhir = $s_awal + $s_baru - $penutupan + $pembukaan - $pencabutan;
-
-        // update/insert sambungan awal (id_kd = 1)
-        $this->Rkap_model->insert_or_update([
-            'id_upk' => $id_upk,
-            'id_jp'  => $id_jp,
-            'id_kd'  => 1,
-            'tahun'  => $tahun,
-            'bulan'  => $bulan,
-            'jumlah' => $s_awal,
-            'tgl_update' => date('Y-m-d H:i:s'),
-            'tgl_upload' => date('Y-m-d H:i:s')
-        ]);
-
-        // update/insert sambungan akhir (id_kd = 6)
-        $this->Rkap_model->insert_or_update([
-            'id_upk' => $id_upk,
-            'id_jp'  => $id_jp,
-            'id_kd'  => 6,
-            'tahun'  => $tahun,
-            'bulan'  => $bulan,
-            'jumlah' => $s_akhir,
-            'tgl_update' => date('Y-m-d H:i:s'),
-            'tgl_upload' => date('Y-m-d H:i:s')
-        ]);
-
-        // lanjutkan ke bulan selanjutnya
-        $this->propagate($id_upk, $id_jp, $tahun, $bulan + 1);
     }
 }

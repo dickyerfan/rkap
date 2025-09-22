@@ -5,30 +5,57 @@
                 <div class="card-header shadow">
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <a class="fw-bold text-dark pe-2" style="text-decoration:none;">Pilih Tahun</a>
-                        <form action="<?= base_url('lembar_kerja/pelanggan') ?>" method="get">
+                        <!-- <form action="<?= base_url('lembar_kerja/pelanggan') ?>" method="get">
                             <div style="display: flex; align-items: center;">
                                 <?php
                                 $upk = isset($_GET['upk']) ? $_GET['upk'] : '';
                                 $tahun_rkap = isset($_GET['tahun_rkap']) ? $_GET['tahun_rkap'] : date('Y');
-                                $kategori = isset($_GET['kategori']) ? $_GET['kategori'] : '';
                                 ?>
-                                <select name="upk" class="form-select select2" style="width: 170px; " aria-label="Default select example">
-                                    <option value="">Pilih UPK</option>
-                                    <option value="bondowoso" <?= $upk == 'bondowoso' ? 'selected' : '' ?>>Bondowoso</option>
-                                    <option value="sukosari1" <?= $upk == 'sukosari1' ? 'selected' : '' ?>>Sukosari 1</option>
-                                    <option value="maesan" <?= $upk == 'maesan' ? 'selected' : '' ?>>Maesan</option>
-                                    <option value="tegalampel" <?= $upk == 'tegalampel' ? 'selected' : '' ?>>Tegalampel</option>
-                                    <option value="tapen" <?= $upk == 'tapen' ? 'selected' : '' ?>>Tapen</option>
-                                    <option value="prajekan" <?= $upk == 'prajekan' ? 'selected' : '' ?>>Prajekan</option>
-                                    <option value="tlogosari" <?= $upk == 'tlogosari' ? 'selected' : '' ?>>Tlogosari</option>
-                                    <option value="wringin" <?= $upk == 'wringin' ? 'selected' : '' ?>>Wringin</option>
-                                    <option value="curahdami" <?= $upk == 'curahdami' ? 'selected' : '' ?>>Curahdami</option>
-                                    <option value="tamanan" <?= $upk == 'tamanan' ? 'selected' : '' ?>>Tamanan</option>
-                                    <option value="tenggarang" <?= $upk == 'tenggarang' ? 'selected' : '' ?>>Tenggarang</option>
-                                    <option value="tamankrocok" <?= $upk == 'tamankrocok' ? 'selected' : '' ?>>Tamankrocok</option>
-                                    <option value="wonosari" <?= $upk == 'wonosari' ? 'selected' : '' ?>>Wonosari</option>
-                                    <option value="klabang" <?= $upk == 'klabang' ? 'selected' : '' ?>>Klabang</option>
-                                    <option value="sukosari2" <?= $upk == 'sukosari2' ? 'selected' : '' ?>>Sukosari 2</option>
+                                <select name="upk" class="form-select select2" style="width: 170px;">
+                                    <option value="">KONSOLIDASI</option>
+                                    <option value="1" <?= $upk == '1' ? 'selected' : '' ?>>Bondowoso</option>
+                                    <option value="2" <?= $upk == '2' ? 'selected' : '' ?>>Sukosari 1</option>
+                                    <option value="3" <?= $upk == '3' ? 'selected' : '' ?>>Maesan</option>
+                                    <option value="4" <?= $upk == '4' ? 'selected' : '' ?>>Tegalampel</option>
+                                    <option value="5" <?= $upk == '5' ? 'selected' : '' ?>>Tapen</option>
+                                    <option value="6" <?= $upk == '6' ? 'selected' : '' ?>>Prajekan</option>
+                                    <option value="7" <?= $upk == '7' ? 'selected' : '' ?>>Tlogosari</option>
+                                    <option value="8" <?= $upk == '8' ? 'selected' : '' ?>>Wringin</option>
+                                    <option value="9" <?= $upk == '9' ? 'selected' : '' ?>>Curahdami</option>
+                                    <option value="10" <?= $upk == '10' ? 'selected' : '' ?>>Tamanan</option>
+                                    <option value="11" <?= $upk == '11' ? 'selected' : '' ?>>Tenggarang</option>
+                                    <option value="12" <?= $upk == '12' ? 'selected' : '' ?>>Tamankrocok</option>
+                                    <option value="13" <?= $upk == '13' ? 'selected' : '' ?>>Wonosari</option>
+                                    <option value="14" <?= $upk == '14' ? 'selected' : '' ?>>Klabang</option>
+                                    <option value="15" <?= $upk == '15' ? 'selected' : '' ?>>Sukosari 2</option>
+                                </select>
+
+                                <select name="tahun_rkap" class="form-select" style="width: 100px; margin-left:10px;">
+                                    <?php
+                                    $mulai = date('Y') - 2;
+                                    $tahun_rkap = (int)$tahun_rkap;
+                                    for ($i = $mulai; $i < $mulai + 11; $i++) {
+                                        $sel = $i == $tahun_rkap ? ' selected="selected"' : '';
+                                        echo '<option value="' . $i . '"' . $sel . '>' . $i . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                                <input type="submit" value="Tampilkan Data" style="margin-left: 10px;" class="neumorphic-button">
+                            </div>
+                        </form> -->
+                        <form action="<?= base_url('lembar_kerja/pelanggan') ?>" method="get">
+                            <div style="display: flex; align-items: center;">
+                                <?php
+                                $upk = isset($upk) ? $upk : '';
+                                $tahun_rkap = isset($tahun_rkap) ? $tahun_rkap : date('Y');
+                                ?>
+                                <select name="upk" class="form-select select2" style="width: 170px;">
+                                    <option value="">KONSOLIDASI</option>
+                                    <?php foreach ($list_upk as $row) : ?>
+                                        <option value="<?= $row->id_upk ?>" <?= $upk == $row->id_upk ? 'selected' : '' ?>>
+                                            <?= ucfirst($row->nama_upk) ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <select name="tahun_rkap" class="form-select" style="width: 100px; margin-left:10px;">
                                     <?php
@@ -43,8 +70,12 @@
                                 <input type="submit" value="Tampilkan Data" style="margin-left: 10px;" class="neumorphic-button">
                             </div>
                         </form>
+
+                        <div class="navbar-nav ms-2">
+                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/pelanggan') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Reset</button> </a>
+                        </div>
                         <div class="navbar-nav ms-auto">
-                            <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/pelanggan/export_pdf_rkap') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
+                            <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/pelanggan/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
                         </div>
                         <div class="navbar-nav">
                             <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/pelanggan/tambah') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input Data</button> </a>
@@ -66,7 +97,6 @@
                             <table class="table table-sm table-bordered" style="font-size: 0.7rem;" id="example">
                                 <thead>
                                     <tr>
-                                        <!-- <th class="text-center">NO</th> -->
                                         <th class="text-center">URAIAN</th>
                                         <th class="text-center">Jan</th>
                                         <th class="text-center">Feb</th>
@@ -83,36 +113,6 @@
                                         <th class="text-center">JUMLAH</th>
                                     </tr>
                                 </thead>
-                                <!-- <tbody>
-                                    <?php
-                                    $no = 1;
-                                    $kategori_sebelumnya = "";
-                                    $total_per_kategori = array_fill(1, 12, 0);
-                                    foreach ($data_pelanggan as $row) {
-                                        // bikin array data per kategori & jenis
-                                        $data[$row['nama_kd']][$row['nama_jp']][$row['bulan']] = $row['jumlah'];
-                                    }
-
-                                    if (!empty($data)) {
-                                        foreach ($data as $kategori => $jenisList) {
-                                            echo "<tr><td colspan='15' class='fw-bold bg-light '>" . strtoupper($kategori) . "</td></tr>";
-                                            foreach ($jenisList as $jenis => $bulanData) {
-                                                echo "<tr>";
-                                                echo "<td class='text-center'>" . $no++ . "</td>";
-                                                echo "<td class='text-start'> $jenis</td>";
-                                                $jumlah = 0;
-                                                for ($b = 1; $b <= 12; $b++) {
-                                                    $nilai = isset($bulanData[$b]) ? $bulanData[$b] : 0;
-                                                    echo "<td class='text-center'>" . number_format($nilai, 0, ',', '.') . "</td>";
-                                                    $jumlah = $nilai;
-                                                }
-                                                echo "<td class='fw-bold text-center'>" . number_format($jumlah, 0, ',', '.') . "</td>";
-                                                echo "</tr>";
-                                            }
-                                        }
-                                    }
-                                    ?>
-                                </tbody> -->
                                 <tbody>
                                     <?php
                                     $no = 1;
@@ -143,15 +143,14 @@
 
                                         foreach ($jenis_list as $jenis) {
                                             echo "<tr>";
-                                            // echo "<td class='text-center'>" . $no++ . "</td>";
                                             echo "<td class='text-start'> - " . htmlspecialchars($jenis) . "</td>";
 
                                             $jumlah = 0;
                                             for ($b = 1; $b <= 12; $b++) {
                                                 $nilai = isset($map[$kategori][$jenis][$b]) ? (int)$map[$kategori][$jenis][$b] : 0;
-                                                echo "<td class='text-center'>" . number_format($nilai, 0, ',', '.') . "</td>";
+                                                echo "<td class='text-end pe-2'>" . number_format($nilai, 0, ',', '.') . "</td>";
 
-                                                if ($kategori === 'Sambungan Awal') {
+                                                if ($kategori === 'Sambungan Awal' || $kategori === 'Sambungan Akhir') {
                                                     $jumlah = $nilai; // overwrite
                                                     $totalKategori[$b] += $nilai; // tetap masuk ke total kategori
                                                 } else {
@@ -160,7 +159,7 @@
                                                 }
                                             }
 
-                                            echo "<td class='fw-bold text-center'>" . number_format($jumlah, 0, ',', '.') . "</td>";
+                                            echo "<td class='fw-bold text-end pe-2'>" . number_format($jumlah, 0, ',', '.') . "</td>";
                                             echo "</tr>";
 
                                             // tambah ke grand total kategori
@@ -169,18 +168,15 @@
 
                                         // tampilkan baris total kategori
                                         echo "<tr class='fw-bold bg-light'>";
-                                        echo "<td  class='text-center'>TOTAL " . strtoupper(htmlspecialchars($kategori)) . "</td>";
+                                        echo "<td class='text-center'>TOTAL " . strtoupper(htmlspecialchars($kategori)) . "</td>";
                                         for ($b = 1; $b <= 12; $b++) {
-                                            echo "<td class='text-center'>" . number_format($totalKategori[$b], 0, ',', '.') . "</td>";
+                                            echo "<td class='text-end pe-2' >" . number_format($totalKategori[$b], 0, ',', '.') . "</td>";
                                         }
-                                        echo "<td class='text-center'>" . number_format($grandTotalKategori, 0, ',', '.') . "</td>";
+                                        echo "<td class='text-end pe-2' >" . number_format($grandTotalKategori, 0, ',', '.') . "</td>";
                                         echo "</tr>";
                                     }
                                     ?>
                                 </tbody>
-
-                                <tfoot>
-                                </tfoot>
                             </table>
                         </div>
                     </div>

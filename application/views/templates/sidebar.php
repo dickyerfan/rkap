@@ -53,14 +53,63 @@
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
                     <div class="collapse" id="lk" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="<?= base_url('lembar_kerja/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
-                            <a class="nav-link" href="<?= base_url('lembar_kerja/pelanggan') ?>" style="font-size: 0.8rem;">Perkembangan Pelanggan</a>
-                            <a class="nav-link" href="<?= base_url('lembar_kerja/produksi') ?>" style="font-size: 0.8rem;">Produksi Air</a>
-                            <a class="nav-link" href="<?= base_url('lembar_kerja/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>
-                            <a class="nav-link" href="<?= base_url('lembar_kerja/pendapatan_non_air') ?>" style="font-size: 0.8rem;">Pendapatan Non Air</a>
-                            <a class="nav-link" href="<?= base_url('lembar_kerja/pendapatan_usaha') ?>" style="font-size: 0.8rem;">Pendapatan Usaha Lain</a>
-                        </nav>
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#laba_rugi" aria-expanded="false" aria-controls="laba_rugi">
+                            <div class="sb-nav-link-icon ps-2"><i class="fa-fw fa fa-circle fa-xs"></i></div>
+                            <div style="font-size: 0.8rem;"> Laba Rugi</div>
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="laba_rugi" aria-labelledby="headingOne" data-bs-parent="#laba_rugi">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/pelanggan') ?>" style="font-size: 0.8rem;">Perkembangan Pelanggan</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/produksi_air') ?>" style="font-size: 0.8rem;">Produksi Air</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/pendapatan_non_air') ?>" style="font-size: 0.8rem;">Pendapatan Non Air</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/pendapatan_usaha_lain') ?>" style="font-size: 0.8rem;">Pendapatan Usaha Lain</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/pendapatan_luar_usaha') ?>" style="font-size: 0.8rem;">Pendapatan Diluar Usaha</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Sumber</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Pengolahan</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Trandis</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Umum</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Diluar Usaha</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Sumber Bagian</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Pengolahan Bagian</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Trandis Bagian</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Beban Umum Bagian</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">RKAP AMDK</a>
+                            </nav>
+                        </div>
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#arus_kas" aria-expanded="false" aria-controls="arus_kas">
+                            <div class="sb-nav-link-icon ps-2"><i class="fa-fw fa fa-circle fa-xs"></i></div>
+                            <div style="font-size: 0.8rem;"> Arus Kas</div>
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="arus_kas" aria-labelledby="headingOne" data-bs-parent="#arus_kas">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Proyeksi Arus Kas</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Penerimaan Air</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Penerimaan Non Air</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Penerimaan Usaha Lainnya</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Penerimaan Diluar Usaha</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Pengeluaran Tenaga Kerja</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Pengeluaran Operasional</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Pengeluaran Non Ops</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Inventaris</a>
+                                <a class="nav-link" href="" style="font-size: 0.8rem;">Inventaris Bagian</a>
+                            </nav>
+                        </div>
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#dataPendukung" aria-expanded="false" aria-controls="dataPendukung">
+                            <div class="sb-nav-link-icon ps-2"><i class="fa-fw fa fa-circle fa-xs"></i></div>
+                            <div style="font-size: 0.8rem;"> Data Pendukung</div>
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+
+                        <div class="collapse" id="dataPendukung" aria-labelledby="headingOne" data-bs-parent="#dataPendukung">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/data_pendukung') ?>" style="font-size: 0.8rem;">Jasa Tambahan</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/data_pendukung/pola_konsumsi_tarif') ?>" style="font-size: 0.8rem;">Pola Konsumsi & Tarif</a>
+                            </nav>
+                        </div>
                     </div>
                     <?php if ($this->session->userdata('nama_pengguna') === 'administrator') : ?>
                         <a class="nav-link" href="<?= base_url('user/admin') ?>">
