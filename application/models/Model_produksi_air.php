@@ -3,156 +3,343 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Model_produksi_air extends CI_Model
 {
+
+    // public function getDataProduksiAir($tahun, $upk = null)
+    // {
+    //     // ======================
+    //     // 1️⃣ AIR TERJUAL
+    //     // ======================
+    //     $this->db->select("
+    //     jp.nama_jp,
+    //     p.bulan,
+    //     SUM(p.jumlah) AS pelanggan_akhir,
+    //     COALESCE(SUM(p.jumlah * pk.konsumsi_rata) / NULLIF(SUM(p.jumlah),0), 0) AS pola_konsumsi
+    // ");
+    //     $this->db->from('rkap_pelanggan p');
+    //     $this->db->join('rkap_jenis_plgn jp', 'jp.id_jp = p.id_jp', 'left');
+    //     $this->db->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left');
+    //     $this->db->where('p.tahun', $tahun);
+    //     $this->db->where('p.id_kd', 6); // hanya pelanggan akhir
+    //     if ($upk) {
+    //         $this->db->where('p.id_upk', $upk);
+    //     }
+
+    //     $this->db->group_by(['jp.nama_jp', 'p.bulan']);
+    //     $this->db->order_by('jp.id_jp, p.bulan', 'ASC');
+    //     $rows = $this->db->get()->result_array();
+
+    //     $air_terjual = [];
+    //     $total_air_terjual = 0;
+    //     foreach ($rows as $r) {
+    //         $jp = $r['nama_jp'] ?? 'LAINNYA';
+    //         $bulan = (int)$r['bulan'];
+    //         if (!isset($air_terjual[$jp])) {
+    //             $air_terjual[$jp] = array_fill(1, 12, 0);
+    //         }
+
+    //         $pelanggan = (float)$r['pelanggan_akhir'];
+    //         $pola = (float)$r['pola_konsumsi'];
+    //         $hasil = $pelanggan * $pola;
+
+    //         $air_terjual[$jp][$bulan] = $hasil;
+    //         $total_air_terjual += $hasil;
+    //     }
+
+    //     // isi bulan kosong supaya lengkap 12 bulan
+    //     foreach ($air_terjual as &$bulanData) {
+    //         for ($m = 1; $m <= 12; $m++) {
+    //             if (!isset($bulanData[$m])) $bulanData[$m] = 0;
+    //         }
+    //     }
+
+    //     // ======================
+    //     // 2️⃣ AMBIL SUMBER AIR
+    //     // ======================
+    //     $this->db->from('rkap_sumber');
+    //     $this->db->where('tahun', $tahun);
+    //     if ($upk) $this->db->where('id_upk', $upk);
+    //     $sumber = $this->db->get()->result_array();
+
+    //     // ======================
+    //     // 3️⃣ HITUNG AIR PRODUKSI
+    //     // ======================
+    //     $air_produksi = [];
+    //     if (count($sumber) == 1) {
+    //         // jika hanya satu sumber, ambil 100%
+    //         $produksi_total = $total_air_terjual * 100 / 80; // contoh 80% efisiensi
+    //         $air_produksi[] = [
+    //             'uraian' => $sumber[0]['uraian'],
+    //             'persen' => 100,
+    //             'produksi_total' => $produksi_total
+    //         ];
+    //     } elseif (count($sumber) > 1) {
+    //         // jika lebih dari satu sumber
+    //         $total_nilai = array_sum(array_column($sumber, 'nilai'));
+    //         if ($total_nilai > 0) {
+    //             foreach ($sumber as $sb) {
+    //                 $persen = round(($sb['nilai'] / $total_nilai) * 100, 2);
+    //                 $produksi_sb = ($total_air_terjual * 100 / 80) * $persen / 100;
+    //                 $air_produksi[] = [
+    //                     'uraian' => $sb['uraian'],
+    //                     'persen' => $persen,
+    //                     'produksi_total' => $produksi_sb
+    //                 ];
+    //             }
+    //         }
+    //     }
+
+    //     // ======================
+    //     // 4️⃣ NAMA UPK
+    //     // ======================
+    //     if ($upk) {
+    //         $nama_upk = $this->db
+    //             ->select('nama_upk')
+    //             ->where('id_upk', $upk)
+    //             ->get('rkap_nama_upk')
+    //             ->row('nama_upk');
+    //     } else {
+    //         $nama_upk = 'KONSOLIDASI';
+    //     }
+
+    //     // ======================
+    //     // 5️⃣ RETURN
+    //     // ======================
+    //     return [
+    //         'nama_upk' => $nama_upk,
+    //         'air_terjual' => $air_terjual,
+    //         'air_produksi' => $air_produksi
+    //     ];
+    // }
+
+
+    // kode ini hampir betul
     public function getDataProduksiAir($tahun, $upk = null)
     {
-        // Ambil baris per bulan per jenis pelanggan dari rkap_pelanggan (id_kd = 6)
+        // ======================
+        // 1️⃣ AIR TERJUAL
+        // ======================
         $this->db->select("
-        p.id_upk,
-        u.nama_upk,
-        p.id_jp,
         jp.nama_jp,
         p.bulan,
-        p.jumlah AS pelanggan_akhir,
-        COALESCE(pk.konsumsi_rata, 0) AS konsumsi_rata,
-        COALESCE(tr.tarif_rata, 0) AS tarif_rata,
-        COALESCE(jt.jasa_pemeliharaan, 0) AS jasa_pemeliharaan,
-        COALESCE(jt.jasa_admin, 0) AS jasa_admin
+        SUM(p.jumlah) AS pelanggan_akhir,
+        COALESCE(SUM(p.jumlah * pk.konsumsi_rata) / NULLIF(SUM(p.jumlah),0), 0) AS pola_konsumsi
     ");
         $this->db->from('rkap_pelanggan p');
-        $this->db->join('rkap_nama_upk u', 'u.id_upk = p.id_upk', 'left');
         $this->db->join('rkap_jenis_plgn jp', 'jp.id_jp = p.id_jp', 'left');
         $this->db->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left');
-        $this->db->join('rkap_tarif_rata tr', 'tr.id_upk = p.id_upk AND tr.id_jp = p.id_jp AND tr.tahun = p.tahun', 'left');
-        $this->db->join('rkap_jasa_tambahan jt', 'jt.id_upk = p.id_upk AND jt.id_jp = p.id_jp AND jt.tahun = p.tahun', 'left');
-
         $this->db->where('p.tahun', $tahun);
-        $this->db->where('p.id_kd', 6); // sambungan akhir
+        $this->db->where('p.id_kd', 6); // hanya pelanggan akhir
 
-        if ($upk) {
+        // filter UPK jika ada
+        if (!empty($upk) && strtolower($upk) !== 'all') {
             $this->db->where('p.id_upk', $upk);
         }
-
-        $this->db->order_by('jp.id_jp', 'ASC');
+        $this->db->group_by(['jp.nama_jp', 'p.bulan']);
+        $this->db->order_by('jp.id_jp, p.bulan', 'ASC');
         $rows = $this->db->get()->result_array();
 
-        $nama_upk = !empty($rows) ? $rows[0]['nama_upk'] : '';
-
-        // struktur per jenis pelanggan
-        $data = [];
-
-        // temporary accumulators per jenis per bulan
-        // we'll keep:
-        // pelanggan_sum[b] = sum pelanggan
-        // pola_num[b] = sum(pelanggan * konsumsi) -> for weighted avg
-        // tarif_num[b] = sum(pelanggan * tarif) -> for weighted avg
-        // penjualan_sum[b] = sum(pelanggan * konsumsi * tarif)
-        // jasa_admin_sum[b] = sum(pelanggan * jasa_admin)
-        // jasa_pem_sum[b] = sum(pelanggan * jasa_pemeliharaan)
+        $air_terjual = [];
+        $total_air_terjual = 0;
         foreach ($rows as $r) {
             $jp = $r['nama_jp'] ?? 'LAINNYA';
             $bulan = (int)$r['bulan'];
-            if ($bulan < 1 || $bulan > 12) $bulan = 1;
-
-            if (!isset($data[$jp])) {
-                $data[$jp] = [
-                    'Pelanggan Akhir'   => array_fill(1, 12, 0),
-                    'Pola Konsumsi'     => array_fill(1, 12, 0), // will fill weighted avg later
-                    'Tarif Rata'        => array_fill(1, 12, 0), // will fill weighted avg later
-                    'Penjualan Air'     => array_fill(1, 12, 0),
-                    'Jasa Pemeliharaan' => array_fill(1, 12, 0),
-                    'Jasa Administrasi' => array_fill(1, 12, 0),
-                    'Tagihan Air'       => array_fill(1, 12, 0),
-                    // internal accumulators:
-                    '_acc' => [
-                        'pel' => array_fill(1, 12, 0),
-                        'pola_num' => array_fill(1, 12, 0),
-                        'tarif_num' => array_fill(1, 12, 0),
-                        'penjualan' => array_fill(1, 12, 0),
-                        'jasa_admin' => array_fill(1, 12, 0),
-                        'jasa_pem' => array_fill(1, 12, 0)
-                    ]
-                ];
+            if (!isset($air_terjual[$jp])) {
+                $air_terjual[$jp] = array_fill(1, 12, 0);
             }
 
-            $pel = (float)$r['pelanggan_akhir'];
-            $pola = (float)$r['konsumsi_rata'];
-            $tarif = (float)$r['tarif_rata'];
-            $jp_jasa_pem = (float)$r['jasa_pemeliharaan'];
-            $jp_jasa_adm = (float)$r['jasa_admin'];
+            $pelanggan = (float)$r['pelanggan_akhir'];
+            $pola = (float)$r['pola_konsumsi'];
+            $hasil = $pelanggan * $pola;
 
-            // per-row penjualan and jasa (note: jasa harus dikali jumlah pelanggan)
-            $penjualan_row = $pel * $pola * $tarif;
-            $jasa_pem_amount = $pel * $jp_jasa_pem;
-            $jasa_adm_amount = $pel * $jp_jasa_adm;
-
-            // accumulators
-            $data[$jp]['_acc']['pel'][$bulan] += $pel;
-            $data[$jp]['_acc']['pola_num'][$bulan] += $pel * $pola;
-            $data[$jp]['_acc']['tarif_num'][$bulan] += $pel * $tarif;
-            $data[$jp]['_acc']['penjualan'][$bulan] += $penjualan_row;
-            $data[$jp]['_acc']['jasa_admin'][$bulan] += $jasa_adm_amount;
-            $data[$jp]['_acc']['jasa_pem'][$bulan] += $jasa_pem_amount;
+            $air_terjual[$jp][$bulan] = $hasil;
+            $total_air_terjual += $hasil;
         }
 
-        // finalize: compute weighted averages and totals per jenis per bulan
-        $total = [
-            'Pelanggan Akhir'   => array_fill(1, 12, 0),
-            'Pola Konsumsi'     => array_fill(1, 12, 0),
-            'Tarif Rata'        => array_fill(1, 12, 0),
-            'Penjualan Air'     => array_fill(1, 12, 0),
-            'Jasa Pemeliharaan' => array_fill(1, 12, 0),
-            'Jasa Administrasi' => array_fill(1, 12, 0),
-            'Tagihan Air'       => array_fill(1, 12, 0),
-        ];
-        foreach ($data as $jp => &$block) {
+        // isi bulan kosong supaya lengkap 12 bulan
+        foreach ($air_terjual as &$bulanData) {
             for ($m = 1; $m <= 12; $m++) {
-                $pel_sum = $block['_acc']['pel'][$m];
-                // Pelanggan Akhir (jumlah)
-                $block['Pelanggan Akhir'][$m] = (int) $pel_sum;
-
-                // pola konsumsi = weighted avg (pel * pola) / pel_sum
-                $block['Pola Konsumsi'][$m] = $pel_sum > 0 ? ($block['_acc']['pola_num'][$m] / $pel_sum) : 0;
-
-                // tarif rata = weighted avg (pel * tarif) / pel_sum
-                $block['Tarif Rata'][$m] = $pel_sum > 0 ? ($block['_acc']['tarif_num'][$m] / $pel_sum) : 0;
-
-                // penjualan air (sum)
-                $block['Penjualan Air'][$m] = $block['_acc']['penjualan'][$m];
-
-                // jasa sums (already multiplied by pel)
-                $block['Jasa Pemeliharaan'][$m] = $block['_acc']['jasa_pem'][$m];
-                $block['Jasa Administrasi'][$m] = $block['_acc']['jasa_admin'][$m];
-
-                // tagihan air
-                $block['Tagihan Air'][$m] = $block['Penjualan Air'][$m] + $block['Jasa Pemeliharaan'][$m] + $block['Jasa Administrasi'][$m];
-
-                // === akumulasi ke TOTAL ===
-                $total['Pelanggan Akhir'][$m]   += $block['Pelanggan Akhir'][$m];
-                $total['Pola Konsumsi'][$m]     += $block['Pola Konsumsi'][$m] * $block['Pelanggan Akhir'][$m]; // weighted
-                $total['Tarif Rata'][$m]        += $block['Tarif Rata'][$m] * $block['Pelanggan Akhir'][$m];   // weighted
-                $total['Penjualan Air'][$m]     += $block['Penjualan Air'][$m];
-                $total['Jasa Pemeliharaan'][$m] += $block['Jasa Pemeliharaan'][$m];
-                $total['Jasa Administrasi'][$m] += $block['Jasa Administrasi'][$m];
-                $total['Tagihan Air'][$m]       += $block['Tagihan Air'][$m];
-            }
-            // drop internal accumulator to keep return clean
-            unset($block['_acc']);
-        }
-        // hitung rata-rata konsumsi dan tarif
-        for ($m = 1; $m <= 12; $m++) {
-            $pel_sum = $total['Pelanggan Akhir'][$m];
-            if ($pel_sum > 0) {
-                $total['Pola Konsumsi'][$m] = $total['Pola Konsumsi'][$m] / $pel_sum;
-                $total['Tarif Rata'][$m]    = $total['Tarif Rata'][$m] / $pel_sum;
+                if (!isset($bulanData[$m])) $bulanData[$m] = 0;
             }
         }
-        unset($r, $rows);
 
-        // return $data;
+        // ======================
+        // 2️⃣ AMBIL SUMBER AIR
+        // ======================
+        $this->db->from('rkap_sumber');
+        $this->db->where('tahun', $tahun);
+        if (!empty($upk) && strtolower($upk) !== 'all') {
+            $this->db->where('id_upk', $upk);
+        }
+        $sumber = $this->db->get()->result_array();
+
+        // Jika data sumber tidak ditemukan di level UPK, fallback ke data konsolidasi
+        if (empty($sumber) && !empty($upk) && strtolower($upk) !== 'all') {
+            $this->db->from('rkap_sumber');
+            $this->db->where('tahun', $tahun);
+            $sumber = $this->db->get()->result_array();
+        }
+
+        // ======================
+        // 3️⃣ HITUNG AIR PRODUKSI
+        // ======================
+        $air_produksi = [];
+        if (count($sumber) == 1) {
+            // jika hanya satu sumber, ambil 100%
+            $produksi_total = $total_air_terjual * 100 / 80; // contoh efisiensi 80%
+            $air_produksi[] = [
+                'uraian' => $sumber[0]['uraian'],
+                'persen' => 100.00,
+                'produksi_total' => $produksi_total
+            ];
+        } elseif (count($sumber) > 1) {
+            // jika lebih dari satu sumber
+            $total_nilai = array_sum(array_column($sumber, 'nilai'));
+            if ($total_nilai > 0) {
+                foreach ($sumber as $sb) {
+                    $persen = round(($sb['nilai'] / $total_nilai) * 100, 2);
+                    $produksi_sb = ($total_air_terjual * 100 / 80) * $persen / 100;
+                    $air_produksi[] = [
+                        'uraian' => $sb['uraian'],
+                        'persen' => $persen,
+                        'produksi_total' => $produksi_sb
+                    ];
+                }
+            }
+        }
+
+        // ======================
+        // 4️⃣ NAMA UPK
+        // ======================
+        if (!empty($upk) && strtolower($upk) !== 'all') {
+            $nama_upk = $this->db
+                ->select('nama_upk')
+                ->where('id_upk', $upk)
+                ->get('rkap_nama_upk')
+                ->row('nama_upk');
+        } else {
+            $nama_upk = 'KONSOLIDASI';
+        }
+
+        // ======================
+        // 4️⃣ NAMA UPK & REKAP KONSOLIDASI
+        // ======================
+        if (!empty($upk) && strtolower($upk) !== 'all') {
+            $nama_upk = $this->db
+                ->select('nama_upk')
+                ->where('id_upk', $upk)
+                ->get('rkap_nama_upk')
+                ->row('nama_upk');
+        } else {
+            // 🔹 Ambil semua UPK
+            $list_upk = $this->db->get('rkap_nama_upk')->result_array();
+            $air_produksi = [];
+
+            foreach ($list_upk as $u) {
+                $id_upk = $u['id_upk'];
+                $nama_upk_item = $u['nama_upk'];
+
+                // Hitung total pelanggan akhir dan pola konsumsi per UPK
+                $sub = $this->db->select("
+            SUM(p.jumlah) AS pelanggan_akhir,
+            COALESCE(SUM(p.jumlah * pk.konsumsi_rata) / NULLIF(SUM(p.jumlah),0), 0) AS pola_konsumsi
+        ")
+                    ->from('rkap_pelanggan p')
+                    ->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left')
+                    ->where('p.tahun', $tahun)
+                    ->where('p.id_kd', 6)
+                    ->where('p.id_upk', $id_upk)
+                    ->get()->row_array();
+
+                $pelanggan = (float)$sub['pelanggan_akhir'];
+                $pola = (float)$sub['pola_konsumsi'];
+                $hasil = $pelanggan * $pola;
+
+                if ($hasil > 0) {
+                    // ambil sumber air
+                    $sumber = $this->db->from('rkap_sumber')
+                        ->where('tahun', $tahun)
+                        ->where('id_upk', $id_upk)
+                        ->get()->result_array();
+
+                    $total_nilai = array_sum(array_column($sumber, 'nilai'));
+                    $produksi_total = 0;
+                    if ($total_nilai > 0) {
+                        foreach ($sumber as $sb) {
+                            $persen = round(($sb['nilai'] / $total_nilai) * 100, 2);
+                            $produksi_total += ($hasil * 100 / 80) * $persen / 100;
+                        }
+                    } else {
+                        $produksi_total = $hasil * 100 / 80; // fallback 80%
+                    }
+
+                    $air_produksi[] = [
+                        'uraian' => strtoupper($nama_upk_item),
+                        'persen' => 100,
+                        'produksi_total' => $produksi_total
+                    ];
+                }
+            }
+
+            $nama_upk = 'KONSOLIDASI';
+        }
+
+        // ======================
+        // 5️⃣ RETURN
+        // ======================
         return [
             'nama_upk' => $nama_upk,
-            'data'     => $data,
-            'total'    => $total
+            'air_terjual' => $air_terjual,
+            'air_produksi' => $air_produksi
         ];
     }
+
+    public function getDataSumber($tahun, $upk = null)
+    {
+        $this->db->from('rkap_sumber sb');
+        $this->db->join('rkap_nama_upk nu', 'nu.id_upk = sb.id_upk', 'left');
+        $this->db->where('sb.tahun', $tahun);
+        if ($upk) {
+            $this->db->where('sb.id_upk', $upk);
+        }
+        return $this->db->get()->result_array();
+    }
+
+    // public function get_produksi($id_upk, $tahun)
+    // {
+    //     // Ambil semua sumber air untuk UPK & tahun ini
+    //     $sumber = $this->db->where('id_upk', $id_upk)
+    //         ->where('tahun', $tahun)
+    //         ->get('rkap_sumber')
+    //         ->result_array();
+
+    //     $total_air_terjual = $this->get_total_air_terjual($id_upk, $tahun); // ambil dari fungsi air terjual
+
+    //     // Jika hanya 1 sumber air
+    //     if (count($sumber) == 1) {
+    //         $produksi = $total_air_terjual * 100 / 80;
+    //         return [
+    //             [
+    //                 'uraian' => $sumber[0]['uraian'],
+    //                 'produksi' => $produksi
+    //             ]
+    //         ];
+    //     }
+
+    //     // Jika lebih dari 1 sumber air
+    //     $total_nilai = array_sum(array_column($sumber, 'nilai'));
+    //     $hasil = [];
+
+    //     foreach ($sumber as $row) {
+    //         $persen = round(($row['nilai'] / $total_nilai) * 100, 2);
+    //         $produksi_sb = $total_air_terjual * $persen / 100;
+
+    //         $hasil[] = [
+    //             'uraian' => $row['uraian'],
+    //             'persen' => $persen,
+    //             'produksi' => $produksi_sb
+    //         ];
+    //     }
+
+    //     return $hasil;
+    // }
 }

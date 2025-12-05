@@ -113,33 +113,6 @@
         window.print();
     })
 </script>
-<!-- <script>
-    window.setTimeout(function() {
-        $(".alert").fadeTo(500, 0).slideUp(500, function() {
-            $(this).remove();
-        });
-    }, 5000);
-</script> -->
-
-<!-- <script>
-    window.setTimeout(function() {
-        $( ".alert" ).animate({
-    left: "+=50",
-    width: "350"
-  }, 5000, function() {
-  }).fadeTo(1000, 0).slideUp(1000, function(){
-            $(this).remove(); 
-        });
-    }, 1000);
-</script> -->
-
-<!-- <script>
-    window.setTimeout(function() {
-        $(".alert").fadeOut(1000, function() {
-            $(this).remove();
-        });
-    }, 5000); // 5 detik
-</script> -->
 
 <script>
     window.setTimeout(function() {
@@ -175,6 +148,38 @@
         });
     });
 </script>
+
+<script>
+    // Loader untuk semua link <a>
+    document.querySelectorAll("a").forEach(a => {
+        a.addEventListener("click", function(e) {
+            const href = this.getAttribute("href");
+
+            if (!href) return;
+            if (href === "#") return;
+            if (href.startsWith("javascript")) return;
+            if (this.hasAttribute("data-bs-toggle")) return; // modal/collapse/dropdown tidak pakai loader
+
+            document.getElementById("global-loader").style.display = "flex";
+        });
+    });
+
+    // Loader untuk semua form submit
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function() {
+            document.getElementById("global-loader").style.display = "flex";
+        });
+    });
+
+    // Loader untuk AJAX
+    $(document).ajaxStart(function() {
+        $("#global-loader").fadeIn(200);
+    });
+    $(document).ajaxStop(function() {
+        $("#global-loader").fadeOut(200);
+    });
+</script>
+
 
 </body>
 

@@ -135,3 +135,107 @@
 </head>
 
 <body class="sb-nav-fixed">
+
+    <div id="global-loader" class="loader-wrapper">
+        <div class="loader-content">
+            <img src="<?= base_url('assets/img/logo.png') ?>" class="loader-logo" alt="Logo PDAM">
+            <div class="drop"></div>
+            <br>
+            <br>
+            <h5 class="loader-text">Sedang memproses data...<br>Mohon tunggu sebentar</h5>
+        </div>
+    </div>
+
+    <style>
+        /* ========== PDAM LOADER CSS ========== */
+
+        .loader-wrapper {
+            position: fixed;
+            z-index: 999999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(240, 248, 255, 0.9);
+            /* biru lembut */
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .loader-content {
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .loader-logo {
+            width: 90px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        /* Animasi tetesan air */
+        .drop {
+            width: 18px;
+            height: 18px;
+            background: #00aaff;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            animation: drop 1s infinite ease-in-out;
+        }
+
+        @keyframes drop {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translateY(25px);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Teks loading */
+        .loader-text {
+            font-family: 'Arial';
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #005f99;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>

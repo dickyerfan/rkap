@@ -62,7 +62,7 @@
                                         <option value="admin">admin</option>
                                         <option value="upk">upk</option>
                                         <option value="bagian">bagian</option>
-                                        <option value="korektor">korektor</option>
+                                        <!-- <option value="korektor">korektor</option> -->
                                     </select>
                                 </div>
                             </div>

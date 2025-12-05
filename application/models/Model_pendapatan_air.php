@@ -155,4 +155,133 @@ class Model_pendapatan_air extends CI_Model
             'total'    => $total
         ];
     }
+
+    private function getKodePerkiraan($id_upk)
+    {
+        $mapping = [
+            1  => ['penjualan' => '81.01.01.01', 'pemeliharaan' => '81.01.02.01', 'admin' => '81.01.03.01'], // Bondowoso
+            2  => ['penjualan' => '81.01.01.02', 'pemeliharaan' => '81.01.02.02', 'admin' => '81.01.03.02'], // Sukosari 1
+            3  => ['penjualan' => '81.01.01.03', 'pemeliharaan' => '81.01.02.03', 'admin' => '81.01.03.03'], // Maesan
+            4  => ['penjualan' => '81.01.01.04', 'pemeliharaan' => '81.01.02.04', 'admin' => '81.01.03.04'], // Tegalampel
+            5  => ['penjualan' => '81.01.01.05', 'pemeliharaan' => '81.01.02.05', 'admin' => '81.01.03.05'], // Tapen
+            6  => ['penjualan' => '81.01.01.06', 'pemeliharaan' => '81.01.02.06', 'admin' => '81.01.03.06'], // Prajekan
+            7  => ['penjualan' => '81.01.01.07', 'pemeliharaan' => '81.01.02.07', 'admin' => '81.01.03.07'], // Tlogosari
+            8  => ['penjualan' => '81.01.01.08', 'pemeliharaan' => '81.01.02.08', 'admin' => '81.01.03.08'], // Wringin
+            9  => ['penjualan' => '81.01.01.09', 'pemeliharaan' => '81.01.02.09', 'admin' => '81.01.03.09'], // Curahdami
+            10 => ['penjualan' => '81.01.01.10', 'pemeliharaan' => '81.01.02.10', 'admin' => '81.01.03.10'], // Tamanan
+            11 => ['penjualan' => '81.01.01.11', 'pemeliharaan' => '81.01.02.11', 'admin' => '81.01.03.11'], // Tenggarang
+            12 => ['penjualan' => '81.01.01.12', 'pemeliharaan' => '81.01.02.12', 'admin' => '81.01.03.12'], // Tamankrocok
+            13 => ['penjualan' => '81.01.01.13', 'pemeliharaan' => '81.01.02.13', 'admin' => '81.01.03.13'], // Wonosari
+            14 => ['penjualan' => '81.01.01.14', 'pemeliharaan' => '81.01.02.14', 'admin' => '81.01.03.14'], // Klabang
+            15 => ['penjualan' => '81.01.01.15', 'pemeliharaan' => '81.01.02.15', 'admin' => '81.01.03.15'], // Sukosari 2
+        ];
+
+        return $mapping[$id_upk] ?? null;
+    }
+
+    public function insertRekapPendapatanAir($tahun, $upk)
+    {
+        $result = $this->getDataPendapatanAir($tahun, $upk);
+        $data   = $result['total'];
+
+        $upkRow = $this->db->get_where('rkap_nama_upk', ['id_upk' => $upk])->row();
+        if (!$upkRow) return false;
+
+        $cabang_id = $upkRow->kode;
+
+        // ambil kode perkiraan sesuai id_upk
+        $kode = $this->getKodePerkiraan($upk);
+        if (!$kode) return false;
+
+        // loop bulan 1-12
+        for ($bulan = 1; $bulan <= 12; $bulan++) {
+            // hapus dulu agar tidak dobel
+            $this->db->where('id_upk', $upk);
+            $this->db->where('bulan', sprintf('%04d-%02d-01', $tahun, $bulan));
+            $this->db->delete('rkap_rekap');
+
+            // insert penjualan air
+            $this->db->insert('rkap_rekap', [
+                'id_upk'    => $upk,
+                'cabang_id' => $cabang_id,
+                'no_per_id' => $kode['penjualan'],
+                'bulan'     => sprintf('%04d-%02d-01', $tahun, $bulan),
+                'pagu'      => $data['Penjualan Air'][$bulan],
+            ]);
+
+            // insert jasa pemeliharaan
+            $this->db->insert('rkap_rekap', [
+                'id_upk'    => $upk,
+                'cabang_id' => $cabang_id,
+                'no_per_id' => $kode['pemeliharaan'],
+                'bulan'     => sprintf('%04d-%02d-01', $tahun, $bulan),
+                'pagu'      => $data['Jasa Pemeliharaan'][$bulan],
+            ]);
+
+            // insert jasa administrasi
+            $this->db->insert('rkap_rekap', [
+                'id_upk'    => $upk,
+                'cabang_id' => $cabang_id,
+                'no_per_id' => $kode['admin'],
+                'bulan'     => sprintf('%04d-%02d-01', $tahun, $bulan),
+                'pagu'      => $data['Jasa Administrasi'][$bulan],
+            ]);
+        }
+
+        return true;
+    }
+
+    public function getTangkiAir($upk, $tahun)
+    {
+        $this->db->from('rkap_tangki_air');
+
+        if ($upk) {
+            $this->db->where('id_upk', $upk);
+        }
+
+        // $this->db->where('id_upk', $upk);
+        $this->db->where('tahun', $tahun);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function save_tangki_air($data)
+    {
+        $this->db->where('cabang_id', $data['cabang_id']);
+        $this->db->where('tahun', $data['tahun']);
+        $this->db->where('bulan', $data['bulan']);
+        $query = $this->db->get('rkap_tangki_air');
+
+        if ($query->num_rows() > 0) {
+            $this->db->where('cabang_id', $data['cabang_id']);
+            $this->db->where('tahun', $data['tahun']);
+            $this->db->where('bulan', $data['bulan']);
+            return $this->db->update('rkap_tangki_air', $data);
+        } else {
+            return $this->db->insert('rkap_tangki_air', $data);
+        }
+    }
+
+    public function save_rekap_tangki($data)
+    {
+        // Cek apakah data rekap sudah ada
+        $this->db->where('id_upk', $data['id_upk']);
+        $this->db->where('cabang_id', $data['cabang_id']);
+        $this->db->where('bulan', $data['bulan']);
+        $query = $this->db->get('rkap_rekap');
+
+        if ($query->num_rows() > 0) {
+            // Jika sudah ada, lakukan update
+            $this->db->where('id_upk', $data['id_upk']);
+            $this->db->where('cabang_id', $data['cabang_id']);
+            $this->db->where('bulan', $data['bulan']);
+            return $this->db->update('rkap_rekap', [
+                'no_per_id' => $data['no_per_id'],
+                'pagu'      => $data['pagu']
+            ]);
+        } else {
+            // Jika belum ada, insert baru
+            return $this->db->insert('rkap_rekap', $data);
+        }
+    }
 }

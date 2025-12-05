@@ -20,6 +20,7 @@
                                     <th>Nama Lengkap</th>
                                     <th>UPK/Bagian</th>
                                     <th>Level</th>
+                                    <th>Tipe</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -35,6 +36,7 @@
                                         <td><?= $row->nama_lengkap ?></td>
                                         <td><?= $row->upk_bagian ?></td>
                                         <td class="text-center"><?= $row->level ?></td>
+                                        <td class="text-center"><?= $row->tipe ?></td>
                                         <td class="text-center"><?= $row->status == 1 ? 'Aktif' : 'Non Aktif' ?></td>
                                         <td class="text-center">
                                             <?php if ($row->nama_pengguna !== 'administrator') : ?>

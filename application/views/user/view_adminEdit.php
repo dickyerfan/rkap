@@ -45,6 +45,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tipe">Tipe :</label>
+                                    <select name="tipe" id="tipe" class="form-control">
+                                        <option value="admin" <?= $user->tipe == 'admin' ? 'selected' : '' ?>>admin</option>
+                                        <option value="bagian" <?= $user->tipe == 'bagian' ? 'selected' : '' ?>>bagian</option>
+                                        <option value="upk" <?= $user->tipe == 'upk' ? 'selected' : '' ?>>upk</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <button class="btn btn-primary btn-sm mt-2" name="tambah" type="submit"><i class="fas fa-save"></i> Update</button>
                     </form>

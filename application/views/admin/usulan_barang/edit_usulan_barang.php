@@ -52,7 +52,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="no_perkiraan">No Perkiraan :</label>
-                                    <input type="number" step="1" class="form-control" id="no_perkiraan" name="no_perkiraan" value="<?= $usulan_barang->no_perkiraan; ?>">
+                                    <input type="text" step="1" class="form-control" id="no_perkiraan" name="no_perkiraan" value="<?= $usulan_barang->no_perkiraan; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan'); ?></small>
                                 </div>
 
