@@ -31,22 +31,22 @@ class Model_evaluasi_amdk extends CI_Model
         return $query->result();
     }
 
-    public function getPiutangUsaha()
+    public function getProduksiUsaha()
     {
         $this->db->select('*');
         $this->db->from('evaluasi_amdk');
         $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
-        $this->db->where('jenis_uraian', 'Piutang Usaha');
+        $this->db->where('jenis_uraian', 'Produksi Usaha');
         $this->db->where('tahun_rkap', date('Y'));
         $query = $this->db->get();
         return $query->result();
     }
 
-    public function getPiutangUsahaAmdk($dataTahun)
+    public function getProduksiUsahaAmdk($dataTahun)
     {
         $this->db->select('*');
         $this->db->from('evaluasi_amdk');
-        $this->db->where('jenis_uraian', 'Piutang Usaha');
+        $this->db->where('jenis_uraian', 'Produksi Usaha');
         $this->db->where('tahun_rkap', $dataTahun);
         $query = $this->db->get();
         return $query->result();
@@ -88,11 +88,11 @@ class Model_evaluasi_amdk extends CI_Model
         $this->db->insert('evaluasi_amdk', $data);
     }
 
-    public function upload_piutang_usaha()
+    public function upload_produksi_usaha()
     {
         $data = [
             'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
-            'jenis_uraian' => 'Piutang Usaha',
+            'jenis_uraian' => 'Produksi Usaha',
             'uraian_evaluasi' => $this->input->post('uraian_evaluasi'),
             'satuan' => 'Rp',
             'rkap' => (int) $this->input->post('rkap', true),

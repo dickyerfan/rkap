@@ -84,8 +84,20 @@ class Pendapatan_ops extends MY_Controller
             );
             redirect('lembar_kerja/rkap_amdk/pendapatan_ops?tahun_rkap=' . $tahun);
         } else {
-            $data['produk'] = $this->db->get('rkap_amdk_produk')->result();
-            $data['tarif'] = $this->db->get('rkap_amdk_tarif')->result();
+            // $data['produk'] = $this->db->get('rkap_amdk_produk')->result();
+            // $data['tarif'] = $this->db->get('rkap_amdk_tarif')->result();
+
+            $tahun_rkap = (date('Y') + 1);
+            $data['produk'] = $this->db
+                ->where('tahun_rkap', $tahun_rkap)
+                ->get('rkap_amdk_produk')
+                ->result();
+
+            $data['tarif'] = $this->db
+                ->where('tahun_rkap', $tahun_rkap)
+                ->get('rkap_amdk_tarif')
+                ->result();
+
             $data['title'] = 'Input Data Harga AMDK';
             $this->load->view('templates/header', $data);
             $this->load->view('templates/navbar');
@@ -99,6 +111,10 @@ class Pendapatan_ops extends MY_Controller
     {
         $tahun = $this->input->get('tahun_rkap') ?: date('Y') + 1;
         $dataPendapatan = $this->Model_pendapatan_amdk->getDataPendapatan($tahun);
+
+        // echo "<pre>";
+        // print_r($dataPendapatan);
+        // die;
 
         $id_upk = 23;
         $cabang_id = 13;
@@ -121,6 +137,12 @@ class Pendapatan_ops extends MY_Controller
         ];
 
         foreach ($dataPendapatan['produksi'] as $produk) {
+
+            // echo "<pre>";
+            // echo "PRODUK: " . $produk['nama_produk'] . "\n";
+            // print_r($produk['tarif']); // 🔥 INI KUNCI DEBUG
+            // die;
+
             $nama_produk = trim($produk['nama_produk']);
             $id_produk = $produk['id_produk'];
 
@@ -137,7 +159,11 @@ class Pendapatan_ops extends MY_Controller
                 $no_per_id = $no_per->kode;
 
                 // ambil id_tarif dengan helper (sesuaikan fungsi getTarifId)
-                $id_tarif = $this->getTarifId($tarif);
+                $id_tarif = $this->getTarifId($tarif, $tahun);
+                if ($id_tarif == 0) {
+                    log_message('error', "Tarif tidak ditemukan: $tarif");
+                    continue;
+                }
                 // ambil harga per tarif dari tabel rkap_amdk_harga
                 $hargaRow = $this->db->get_where('rkap_amdk_harga', [
                     'id_produk' => $id_produk,
@@ -190,10 +216,19 @@ class Pendapatan_ops extends MY_Controller
 
 
     // fungsi bantu untuk ambil id_tarif dari nama tarif
-    private function getTarifId($tarif)
+    // private function getTarifId($tarif)
+    // {
+    //     $this->db->where('LOWER(tarif) =', strtolower($tarif));
+    //     $row = $this->db->get('rkap_amdk_tarif')->row();
+    //     return $row ? $row->id_tarif : null;
+    // }
+
+    private function getTarifId($tarif, $tahun)
     {
-        $this->db->where('LOWER(tarif) =', strtolower($tarif));
+        $this->db->where('LOWER(tarif)', strtolower(trim($tarif)));
+        $this->db->where('tahun_rkap', $tahun);
         $row = $this->db->get('rkap_amdk_tarif')->row();
-        return $row ? $row->id_tarif : null;
+
+        return $row ? (int)$row->id_tarif : 0;
     }
 }

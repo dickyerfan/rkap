@@ -16,7 +16,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="tahun_rkap">Tahun Pembuatan RKAP :</label>
-                                    <select name="tahun_rkap" class="form-select">
+                                    <!-- <select name="tahun_rkap" class="form-select">
                                         <?php
                                         $mulai = date('Y') - 2;
                                         for ($i = $mulai; $i < $mulai + 11; $i++) {
@@ -24,7 +24,9 @@
                                             echo '<option value="' . $i . '"' . $sel . '>' . $i . '</option>';
                                         }
                                         ?>
-                                    </select>
+                                    </select> -->
+                                    <input type="number" class="form-control" id="tahun_rkap" name="tahun_rkap" value="<?= date('Y'); ?>" readonly>
+                                    <small class="form-text text-danger pl-3"><?= form_error('tahun_rkap'); ?></small>
                                 </div>
                                 <div class="form-group">
                                     <label for="latar_belakang">Latar Belakang :</label>
@@ -73,7 +75,7 @@
                                     <label for="foto_ket">Foto Barang :</label>
                                     <input type="file" class="form-control" id="foto_ket" name="foto_ket" value="<?= set_value('foto_ket'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('foto_ket'); ?></small>
-                                    <small class="form-text text-danger pl-3">Sertakan foto pendukung jika dibutuhkan</small>
+                                    <small class="form-text text-danger pl-3">Sertakan foto pendukung kegiatan</small>
                                 </div>
                             </div>
                             <div class="col-md-4">

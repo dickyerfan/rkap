@@ -23,6 +23,7 @@ class Isian_barang extends CI_Controller
         $kategori = $this->input->get('kategori');
         $data['tampil'] = $this->Model_isian_barang->getFiltered($upk_bagian, $tahun, $kategori);
         $data['list_upk_bagian'] = $this->Model_isian_barang->getListUpkBagian();
+        $data['kategori'] = $this->Model_isian_barang->getKategori();
 
         $data['title'] = 'USULAN PERMINTAAN BARANG (RKAP) TAHUN ';
         $this->load->view('templates/pengguna/header', $data);

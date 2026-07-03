@@ -38,6 +38,14 @@
                                     <input type="number" step="1" class="form-control" id="realisasi" name="realisasi" value="<?= $evaluasi_amdk->realisasi; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('realisasi'); ?></small>
                                 </div>
+                                <div class="form-group">
+                                    <label for="selisih">Naik/Turun :</label>
+                                    <input type="text" class="form-control" id="selisih" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="persen">Persen Naik/Turun :</label>
+                                    <input type="text" class="form-control" id="persen" readonly>
+                                </div>
                             </div>
                         </div>
                         <div class="row justify-content-center">
@@ -50,3 +58,38 @@
             </div>
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rkapInput = document.getElementById('rkap');
+            const realisasiInput = document.getElementById('realisasi');
+            const selisihInput = document.getElementById('selisih');
+            const persenInput = document.getElementById('persen');
+
+            function formatAngka(nilai) {
+                return new Intl.NumberFormat('id-ID').format(nilai);
+            }
+
+            function hitungNaikTurun() {
+                const rkap = Number(rkapInput.value) || 0;
+                const realisasi = Number(realisasiInput.value) || 0;
+                const selisih = realisasi - rkap;
+                const persen = rkap !== 0 ? (selisih / rkap) * 100 : 0;
+
+                selisihInput.value = formatAngka(selisih);
+                persenInput.value = persen.toLocaleString('id-ID', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) + ' %';
+
+                selisihInput.classList.toggle('text-danger', selisih < 0);
+                selisihInput.classList.toggle('text-success', selisih >= 0);
+                persenInput.classList.toggle('text-danger', persen < 0);
+                persenInput.classList.toggle('text-success', persen >= 0);
+            }
+
+            rkapInput.addEventListener('input', hitungNaikTurun);
+            realisasiInput.addEventListener('input', hitungNaikTurun);
+            hitungNaikTurun();
+        });
+    </script>

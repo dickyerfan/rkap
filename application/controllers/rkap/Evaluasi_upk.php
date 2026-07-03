@@ -8,6 +8,7 @@ class Evaluasi_upk extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Model_evaluasi_upk');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -42,12 +43,13 @@ class Evaluasi_upk extends CI_Controller
     {
         $data['title'] = 'Input Penambahan Pelanggan Baru';
 
-        $statusUpload = $this->Model_evaluasi_upk->getStatusUploadPlgbaru();
+        // $statusUpload = $this->Model_evaluasi_upk->getStatusUploadPlgbaru();
+        $statusUpload = $this->Model_pengaturan->getStatusUpload('evaluasi_upk');
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -84,12 +86,13 @@ class Evaluasi_upk extends CI_Controller
     public function upload_plgAktif()
     {
         $data['title'] = 'Input Jumlah Pelanggan Aktif';
-        $statusUpload = $this->Model_evaluasi_upk->getStatusUploadPlgAktif();
+        // $statusUpload = $this->Model_evaluasi_upk->getStatusUploadPlgAktif();
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -125,12 +128,12 @@ class Evaluasi_upk extends CI_Controller
     public function upload_jmlRek()
     {
         $data['title'] = 'Input Jumlah Lembar Yg Direkeningkan';
-        $statusUpload = $this->Model_evaluasi_upk->getStatusUpdateJumRek();
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -166,12 +169,12 @@ class Evaluasi_upk extends CI_Controller
     public function upload_airTerjual()
     {
         $data['title'] = 'Input Air Terjual';
-        $statusUpload = $this->Model_evaluasi_upk->getStatusUpdateAirTerjual();
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -207,12 +210,12 @@ class Evaluasi_upk extends CI_Controller
     public function upload_pendapatanAir()
     {
         $data['title'] = 'Input Pendapatan Air';
-        $statusUpload = $this->Model_evaluasi_upk->getStatusUpdatePendapatanAir();
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -254,7 +257,7 @@ class Evaluasi_upk extends CI_Controller
     //         $this->session->set_flashdata(
     //             'info',
     //             '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    //             <strong>Maaf,</strong> data sudah tidak bisa di input.
+    //             <strong>Maaf,</strong> sudah tidak bisa input data baru.
     //             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
     //             </button>
     //         </div>'
@@ -316,7 +319,7 @@ class Evaluasi_upk extends CI_Controller
     public function edit_evaluasi_upk($id_evaluasi_upk)
     {
         $data['title'] = 'update Evaluasi UPK';
-        $statusUpdate = $this->Model_evaluasi_upk->getStatusUpdate('evaluasi_upk');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -357,7 +360,7 @@ class Evaluasi_upk extends CI_Controller
                         <strong>Sukses,</strong> Data Evaluasi UPK berhasil di update
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                         </button>
-                      </div>'
+                    </div>'
             );
             redirect('rkap/evaluasi_upk');
         }
@@ -367,12 +370,12 @@ class Evaluasi_upk extends CI_Controller
     public function upload_target()
     {
         $data['title'] = 'Penjelasan pendapatan tidak mencapai target tahun';
-        $statusUpload = $this->Model_evaluasi_upk->getStatusUpload('target_pencapaian');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload('target_pencapaian');
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -406,7 +409,7 @@ class Evaluasi_upk extends CI_Controller
     public function edit_target_sr($id_target)
     {
         $data['title'] = 'update Target Pencapaian';
-        $statusUpdate = $this->Model_evaluasi_upk->getStatusUpdate('target_pencapaian');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('target_pencapaian');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -459,12 +462,12 @@ class Evaluasi_upk extends CI_Controller
     {
         $data['title'] = 'Usulan program dalam rangka peningkatan pendapatan tahun';
         $data['subtitle'] = 'Bidang Administrasi';
-        $statusUpload = $this->Model_evaluasi_upk->getStatusUpload('usulan_admin');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload('usulan_admin');
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -498,7 +501,7 @@ class Evaluasi_upk extends CI_Controller
     public function edit_usulan_admin($id_usulanAdmin)
     {
         $data['title'] = 'update Usulan Admin';
-        $statusUpdate = $this->Model_evaluasi_upk->getStatusUpdate('usulan_admin');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('usulan_admin');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -551,12 +554,12 @@ class Evaluasi_upk extends CI_Controller
     {
         $data['title'] = 'Usulan program dalam rangka peningkatan pendapatan tahun';
         $data['subtitle'] = 'Bidang Teknik';
-        $statusUpload = $this->Model_evaluasi_upk->getStatusUpload('usulan_teknik');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload('usulan_teknik');
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -590,7 +593,7 @@ class Evaluasi_upk extends CI_Controller
     public function edit_usulan_teknik($id_usulanTeknik)
     {
         $data['title'] = 'update Usulan Teknik';
-        $statusUpdate = $this->Model_evaluasi_upk->getStatusUpdate('usulan_teknik');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('usulan_teknik');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',

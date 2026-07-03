@@ -9,6 +9,7 @@ class Usulan_inves extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_inves');
+        $this->load->model('Model_pengaturan');
         $this->load->model('Model_setting');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
@@ -96,7 +97,7 @@ class Usulan_inves extends CI_Controller
     public function edit_usulan_investasi($id_usulanInvestasi)
     {
         $data['title'] = 'Update Usulan Investasi';
-        $statusUpdate = $this->Model_usulan_inves->getStatusUpdate('usulan_investasi');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('usulan_investasi');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -108,6 +109,7 @@ class Usulan_inves extends CI_Controller
             );
             redirect('admin/usulan_inves');
         } else {
+            $data['no_per'] = $this->Model_usulan_inves->getNoPerInves();
             $data['usulan_investasi'] = $this->Model_usulan_inves->getUsulanInves($id_usulanInvestasi);
             $this->load->view('templates/header', $data);
             $this->load->view('templates/navbar');
@@ -199,6 +201,157 @@ class Usulan_inves extends CI_Controller
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
         $this->load->view('admin/usulan_inves/detail_usulan_investasi', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function generate_usulan_inves($id_usulanInvestasi)
+    {
+        $data['title'] = 'Generate Data Ke INVESTASI (ARUS KAS)';
+        // Cek status update
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
+        if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger">
+                Data sudah tidak bisa diproses.
+            </div>'
+            );
+            redirect('admin/usulan_inves');
+        }
+        // Ambil data usulan
+        $usulan = $this->Model_usulan_inves->getUsulanInvestasiAdmin($id_usulanInvestasi);
+        if (!$usulan) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger">
+                Data tidak ditemukan.
+            </div>'
+            );
+            redirect('admin/usulan_inves');
+        }
+
+        // PROSES GENERATE
+        if ($this->input->post()) {
+            $bulanDipilih = $this->input->post('bulan');
+            if (empty($bulanDipilih)) {
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger">
+                    Pilih minimal satu bulan.
+                </div>'
+                );
+                redirect('admin/usulan_inves/generate_usulan_inves/' . $id_usulanInvestasi);
+            }
+
+            // Mapping UPK
+            $mapping_upk = [
+                'pusat'        => '00',
+                'bondowoso'    => '01',
+                'sukosari1'    => '02',
+                'maesan'       => '03',
+                'tegalampel'   => '04',
+                'tapen'        => '05',
+                'prajekan'     => '06',
+                'tlogosari'    => '07',
+                'wringin'      => '08',
+                'curahdami'    => '09',
+                'tamanan'      => '11',
+                'tenggarang'   => '12',
+                'amdk'         => '13',
+                'tamankrocok'  => '14',
+                'wonosari'     => '15',
+                'klabang'      => '16',
+                'sukosari2'    => '22',
+                'umum'         => '23',
+                'keuangan'     => '24',
+                'langganan'    => '25',
+                'pemeliharaan' => '26',
+                'perencanaan'  => '27',
+                'spi'          => '28'
+            ];
+
+            $bagian = strtolower(trim($usulan->bagian_upk));
+            $cabang_id = $mapping_upk[$bagian] ?? '';
+            // bagian_upk berasal dari data usulan_investasi, mapping_upk digunakan untuk mendapatkan cabang_id yang sesuai. Jika bagian_upk tidak ada dalam mapping, cabang_id akan menjadi string kosong.
+            $cabang_id = $mapping_upk[$usulan->bagian_upk] ?? '';
+
+            if ($cabang_id == '') {
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger">
+                    Mapping UPK tidak ditemukan.
+                </div>'
+                );
+                redirect('admin/usulan_inves');
+            }
+
+            //  Siapkan data
+            $tahun = $usulan->tahun_rkap + 1;
+            $insert = [];
+            foreach ($bulanDipilih as $bulan) {
+                $insert[] = [
+                    'id_upk' => NULL,
+                    'cabang_id' => $cabang_id,
+                    'no_per_id' => $usulan->no_perkiraan,
+                    'vol' => $usulan->volume,
+                    'sat' => $usulan->satuan,
+                    'bulan' => sprintf(
+                        '%04d-%02d-01',
+                        $tahun,
+                        $bulan
+                    ),
+                    'uraian' => $usulan->nama_perkiraan,
+                    'pagu' => $usulan->biaya,
+                    'status' => 0,
+                    'status_update' => 0,
+                    'ptgs_upload' => $this->session->userdata('nama_lengkap')
+
+                ];
+            }
+
+            // Simpan
+            // $result = $this->Model_usulan_inves
+            //     ->insert_or_update_generate_inves($insert);
+            // $this->session->set_flashdata(
+            //     'info',
+            //     '<div class="alert alert-success">
+            //     Berhasil Generate Investasi (Arus Kas).<br>
+            //     Proses Insert : <b>' . $result['inserted'] . '</b><br>
+            //     Proses Update : <b>' . $result['updated'] . '</b>
+            // </div>'
+            // );
+
+            $this->db->trans_begin();
+            $result = $this->Model_usulan_inves
+                ->insert_or_update_generate_inves($insert);
+            $this->Model_usulan_inves->updateStatusUpload($id_usulanInvestasi);
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger">
+            Generate gagal.
+        </div>'
+                );
+            } else {
+                $this->db->trans_commit();
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-success">
+            Berhasil Generate Investasi (Arus Kas).<br>
+            Proses Insert : <b>' . $result['inserted'] . '</b><br>
+            Proses Update : <b>' . $result['updated'] . '</b>
+        </div>'
+                );
+            }
+            redirect('admin/usulan_inves');
+        }
+
+        $data['usulan_investasi'] = $usulan;
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/usulan_inves/generate_usulan_inves', $data);
         $this->load->view('templates/footer');
     }
 }

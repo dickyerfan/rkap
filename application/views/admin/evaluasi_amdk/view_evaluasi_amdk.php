@@ -45,7 +45,7 @@
                                         <!-- <th>No</th> -->
                                         <th rowspan="2" class="align-middle">Uraian</th>
                                         <th rowspan="2" class="align-middle">Satuan</th>
-                                        <th colspan="2">S/D Juli <?= $tahun ?></th>
+                                        <th colspan="2">S/D Juni <?= $tahun ?></th>
                                         <th colspan="2">Naik/Turun</th>
                                         <!-- <th rowspan="2" class="align-middle">Action</th> -->
                                     </tr>
@@ -82,10 +82,10 @@
                                         </tr>
                                     <?php endforeach; ?>
                                     <tr>
-                                        <td class="ps-3">Nilai Piutang Usaha</td>
+                                        <td class="ps-3">Nilai Produksi Usaha</td>
                                         <td colspan="5"></td>
                                     </tr>
-                                    <?php foreach ($piutang_usaha as $row) :
+                                    <?php foreach ($produksi_usaha as $row) :
                                         $realisasi = $row->realisasi;
                                         $rkap = $row->rkap;
                                         $id = $row->id_evaluasi_amdk;
@@ -109,8 +109,8 @@
                                             <td class="text-center"><?= $row->satuan; ?></td>
                                             <td class="text-end pe-3"><?= number_format($row->rkap, 0, ',', '.'); ?></td>
                                             <td class="text-end pe-3"><?= number_format($row->realisasi, 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-3"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
-                                            <td class="text-center"><?= number_format($persen, 2, ',', '.'); ?></td>
+                                            <td class="text-end pe-3 <?= $naikTurun < 0 ? 'text-danger' : 'text-success'; ?>"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
+                                            <td class="text-center <?= $persen < 0 ? 'text-danger' : 'text-success'; ?>"><?= number_format($persen, 2, ',', '.'); ?></td>
                                             <!-- <td class="text-center"><a href="<?= base_url('rkap/evaluasi_amdk/edit_evaluasi_amdk/') ?><?= $id ?>"><i class="fas fa-edit text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data"></i></a></td> -->
                                         </tr>
                                     <?php endforeach; ?>
@@ -141,8 +141,8 @@
                                             <td class="text-center"><?= $row->satuan; ?></td>
                                             <td class="text-end pe-3"><?= number_format($row->rkap, 0, ',', '.'); ?></td>
                                             <td class="text-end pe-3"><?= number_format($row->realisasi, 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-3"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
-                                            <td class="text-center"><?= number_format($persen, 2, ',', '.'); ?></td>
+                                            <td class="text-end pe-3 <?= $naikTurun < 0 ? 'text-danger' : 'text-success'; ?>"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
+                                            <td class="text-center <?= $persen < 0 ? 'text-danger' : 'text-success'; ?>"><?= number_format($persen, 2, ',', '.'); ?></td>
                                             <!-- <td class="text-center"><a href="<?= base_url('rkap/evaluasi_amdk/edit_evaluasi_amdk/') ?><?= $id ?>"><i class="fas fa-edit text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data"></i></a></td> -->
                                         </tr>
                                     <?php endforeach; ?>

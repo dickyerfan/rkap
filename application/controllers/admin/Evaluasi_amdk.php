@@ -19,7 +19,7 @@ class Evaluasi_amdk extends CI_Controller
         $data['tahun'] = $dataTahun;
         $data['title'] = 'EVALUASI PENCAPAIAN TAHUN';
         $data['tenaga_kerja'] = $this->Model_evaluasi_amdk->getTenagaKerjaAmdk($dataTahun);
-        $data['piutang_usaha'] = $this->Model_evaluasi_amdk->getPiutangUsahaAmdk($dataTahun);
+        $data['produksi_usaha'] = $this->Model_evaluasi_amdk->getProduksiUsahaAmdk($dataTahun);
         $data['pendapatan_usaha'] = $this->Model_evaluasi_amdk->getPendapatanUsahaAmdk($dataTahun);
         $data['statusEvaluasiAmdk'] = $this->Model_evaluasi_amdk->getStatusUpdate('evaluasi_amdk');
         $data['target'] = $this->Model_evaluasi_amdk->getTargetAmdk($dataTahun);
@@ -40,7 +40,7 @@ class Evaluasi_amdk extends CI_Controller
         $data['tahun'] = $dataTahun;
         $data['title'] = 'EVALUASI PENCAPAIAN TAHUN';
         $data['tenaga_kerja'] = $this->Model_evaluasi_amdk->getTenagaKerjaAmdk($dataTahun);
-        $data['piutang_usaha'] = $this->Model_evaluasi_amdk->getPiutangUsahaAmdk($dataTahun);
+        $data['produksi_usaha'] = $this->Model_evaluasi_amdk->getProduksiUsahaAmdk($dataTahun);
         $data['pendapatan_usaha'] = $this->Model_evaluasi_amdk->getPendapatanUsahaAmdk($dataTahun);
         $data['statusEvaluasiAmdk'] = $this->Model_evaluasi_amdk->getStatusUpdate('evaluasi_amdk');
         $data['target'] = $this->Model_evaluasi_amdk->getTargetAmdk($dataTahun);

@@ -304,6 +304,26 @@ class Model_produksi_air extends CI_Model
         return $this->db->get()->result_array();
     }
 
+    public function getSumber($tahun)
+    {
+        return $this->db
+            ->where('tahun', $tahun)
+            ->get('rkap_sumber')
+            ->result();
+    }
+
+    public function cek_tahun_sumber($tahun)
+    {
+        return $this->db
+            ->where('tahun', $tahun)
+            ->count_all_results('rkap_sumber');
+    }
+
+    public function insert_batch_sumber($data)
+    {
+        return $this->db->insert_batch('rkap_sumber', $data);
+    }
+
     // public function get_produksi($id_upk, $tahun)
     // {
     //     // Ambil semua sumber air untuk UPK & tahun ini

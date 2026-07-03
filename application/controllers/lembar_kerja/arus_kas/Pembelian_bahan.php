@@ -181,7 +181,7 @@ class Pembelian_bahan extends MY_Controller
     public function input()
     {
         $data['title'] = 'Input Data Barang Sambungan Baru';
-
+        $data['no_per_id'] = $this->Model_pembelian_bahan->getNoPerBarang();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -218,7 +218,7 @@ class Pembelian_bahan extends MY_Controller
         if (!$data['barang']) {
             show_404();
         }
-
+        $data['no_per_id'] = $this->Model_pembelian_bahan->getNoPerBarang();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -233,9 +233,11 @@ class Pembelian_bahan extends MY_Controller
         $data = [
             'no_per_id'    => $this->input->post('no_per_id', true),
             'nama_barang'  => $this->input->post('nama_barang', true),
+            'harga'        => $this->input->post('harga', true),
             'pembagi'      => $this->input->post('pembagi', true),
             'satuan'       => $this->input->post('satuan', true),
-            'tahun'        => $this->input->post('tahun', true)
+            'tahun'        => date('Y') + 1,
+            'ptgs_update'  => $this->session->userdata('nama_lengkap')
         ];
 
         $this->db->where('id_barang', $id);
@@ -245,6 +247,35 @@ class Pembelian_bahan extends MY_Controller
             'info',
             '<div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>Berhasil!</strong> Data barang berhasil diupdate.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>'
+        );
+
+        redirect('lembar_kerja/arus_kas/pembelian_bahan/daftar_barang');
+    }
+
+    public function copy()
+    {
+        $tahun = date('Y') + 1; // Tahun depan
+        $barangLama = $this->Model_pembelian_bahan->getAll($tahun - 1); // Ambil data tahun sebelumnya
+
+        foreach ($barangLama as $b) {
+            $dataBaru = [
+                'no_per_id'   => $b->no_per_id,
+                'nama_barang' => $b->nama_barang,
+                'harga'       => $b->harga,
+                'pembagi'     => $b->pembagi,
+                'satuan'      => $b->satuan,
+                'tahun'       => $tahun,
+                'ptgs_upload' => $this->session->userdata('nama_lengkap')
+            ];
+            $this->Model_pembelian_bahan->insert($dataBaru);
+        }
+
+        $this->session->set_flashdata(
+            'info',
+            '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Berhasil!</strong> Data barang dari tahun sebelumnya berhasil dicopy ke tahun ' . $tahun . '.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>'
         );

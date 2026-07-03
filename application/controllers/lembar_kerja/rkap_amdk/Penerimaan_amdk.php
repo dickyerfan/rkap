@@ -28,12 +28,19 @@ class Penerimaan_amdk extends MY_Controller
         $data['non_air'] = $this->Model_penerimaan_amdk->getDataPenerimaanNonAir($tahun);
         $data['title2'] = 'RENCANA PENERIMAAN PENDAPATAN NON AIR <br> TAHUN ANGGARAN ';
 
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/rkap_amdk/penerimaan_amdk/view_penerimaan_amdk', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/rkap_amdk/penerimaan_amdk/view_penerimaan_amdk', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/rkap_amdk/penerimaan_amdk/view_penerimaan_amdk', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pdf()
@@ -228,18 +235,34 @@ class Penerimaan_amdk extends MY_Controller
         $data['title'] = 'Proyeksi Sisa Piutang AMDK Tahun ';
         $data['hasil'] = $this->Model_penerimaan_amdk->get_tahun_lalu($tahun_rkap);
 
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/rkap_amdk/penerimaan_amdk/view_tahun_lalu', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/rkap_amdk/penerimaan_amdk/view_tahun_lalu', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/rkap_amdk/penerimaan_amdk/view_tahun_lalu', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function input_tahun_lalu()
     {
         $data['title'] = 'Input Sisa Piutang AMDK Tahun Lalu';
-        $data['list_produk'] = $this->db->where('status', 1)->get('rkap_amdk_produk')->result();
+        // $data['list_produk'] = $this->db->where('status', 1)->get('rkap_amdk_produk')->result();
+        $tahun = $this->session->userdata('tahun_rkap');
+
+        $data['list_produk'] = $this->db
+            ->where('status', 1)
+            ->where('tahun_rkap', $tahun)
+            ->order_by('nama_produk', 'ASC')
+            ->get('rkap_amdk_produk')
+            ->result();
+
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');

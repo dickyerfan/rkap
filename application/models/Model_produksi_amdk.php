@@ -3,24 +3,95 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Model_produksi_amdk extends CI_Model
 {
+    // public function getDataProduksi($tahun)
+    // {
+    //     $sql = "
+    //     SELECT 
+    //         p.id_produk,
+    //         p.nama_produk,
+    //         prod.bulan,
+    //         prod.jumlah_produksi,
+    //         pr.id_tarif,
+    //         t.tarif,
+    //         pr.persen
+    //     FROM rkap_amdk_produksi prod
+    //     JOIN rkap_amdk_produk p ON p.id_produk = prod.id_produk
+    //     JOIN rkap_amdk_persentase pr ON pr.id_produk = p.id_produk AND pr.tahun_rkap = prod.tahun_rkap
+    //     JOIN rkap_amdk_tarif t ON t.id_tarif = pr.id_tarif AND t.tahun_rkap = prod.tahun_rkap
+    //     WHERE prod.tahun_rkap = ?
+    //     ORDER BY p.id_produk, FIELD(prod.bulan,1,2,3,4,5,6,7,8,9,10,11,12), t.id_tarif
+    // ";
+    //     $query = $this->db->query($sql, [$tahun]);
+    //     $data = $query->result_array();
+
+    //     // Format data menjadi array per produk agar mudah ditampilkan di view
+    //     $result = [];
+    //     foreach ($data as $row) {
+    //         $id_produk = $row['id_produk'];
+    //         $nama_produk = $row['nama_produk'];
+
+    //         if (!isset($result[$id_produk])) {
+    //             $result[$id_produk] = [
+    //                 'id_produk' => $id_produk,
+    //                 'nama_produk' => $nama_produk,
+    //                 'produksi' => array_fill(1, 12, 0),
+    //                 'subtotal' => 0,
+    //                 'tarif' => []
+    //             ];
+    //         }
+
+    //         // Simpan total produksi per bulan (baris utama)
+    //         $result[$id_produk]['produksi'][$row['bulan']] = $row['jumlah_produksi'];
+    //         $result[$id_produk]['subtotal'] += $row['jumlah_produksi'];
+
+    //         // Hitung per kategori tarif
+    //         $kategori = $row['tarif'];
+    //         $jumlah_kategori = $row['jumlah_produksi'] * ($row['persen'] / 100);
+
+    //         if (!isset($result[$id_produk]['tarif'][$kategori])) {
+    //             $result[$id_produk]['tarif'][$kategori] = [
+    //                 'persen' => $row['persen'],
+    //                 // 'harga' => $row['harga'],
+    //                 'produksi' => array_fill(1, 12, 0),
+    //                 'subtotal' => 0,
+    //                 'pendapatan' => array_fill(1, 12, 0),
+    //                 'total_pendapatan' => 0
+    //             ];
+    //         }
+
+    //         $result[$id_produk]['tarif'][$kategori]['produksi'][$row['bulan']] = $jumlah_kategori;
+    //         $result[$id_produk]['tarif'][$kategori]['subtotal'] += $jumlah_kategori;
+    //     }
+
+    //     return $result;
+    // }
+
     public function getDataProduksi($tahun)
     {
         $sql = "
-        SELECT 
-            p.id_produk,
-            p.nama_produk,
-            prod.bulan,
-            prod.jumlah_produksi,
-            pr.id_tarif,
-            t.tarif,
-            pr.persen
-        FROM rkap_amdk_produksi prod
-        JOIN rkap_amdk_produk p ON p.id_produk = prod.id_produk
-        JOIN rkap_amdk_persentase pr ON pr.id_produk = p.id_produk AND pr.tahun_rkap = prod.tahun_rkap
-        JOIN rkap_amdk_tarif t ON t.id_tarif = pr.id_tarif AND t.tahun_rkap = prod.tahun_rkap
-        WHERE prod.tahun_rkap = ?
-        ORDER BY p.id_produk, FIELD(prod.bulan,1,2,3,4,5,6,7,8,9,10,11,12), t.id_tarif
-    ";
+            SELECT 
+                p.id_produk,
+                p.nama_produk,
+                prod.bulan,
+                prod.jumlah_produksi,
+                pr.id_tarif,
+                t.tarif,
+                pr.persen
+            FROM rkap_amdk_produksi prod
+            JOIN rkap_amdk_produk p 
+                ON p.id_produk = prod.id_produk
+
+            LEFT JOIN rkap_amdk_persentase pr 
+                ON pr.id_produk = p.id_produk 
+                AND pr.tahun_rkap = prod.tahun_rkap
+
+            LEFT JOIN rkap_amdk_tarif t 
+                ON t.id_tarif = pr.id_tarif 
+                AND t.tahun_rkap = prod.tahun_rkap
+
+            WHERE prod.tahun_rkap = ?
+            ORDER BY p.id_produk, FIELD(prod.bulan,1,2,3,4,5,6,7,8,9,10,11,12), t.id_tarif
+            ";
         $query = $this->db->query($sql, [$tahun]);
         $data = $query->result_array();
 
@@ -66,6 +137,7 @@ class Model_produksi_amdk extends CI_Model
         return $result;
     }
 
+
     public function insertProduksi($id_produk, $tahun, $jumlah)
     {
         // Cek apakah sudah ada data untuk produk & tahun ini
@@ -88,7 +160,6 @@ class Model_produksi_amdk extends CI_Model
                 'ptgs_upload' => $this->session->userdata('nama_lengkap')
             ];
         }
-
         return $this->db->insert_batch('rkap_amdk_produksi', $data);
     }
 
@@ -109,5 +180,130 @@ class Model_produksi_amdk extends CI_Model
                 ->where('bulan', $bulan)
                 ->update('rkap_amdk_produksi', ['jumlah_produksi' => $nilai, 'ptgs_update' => $ptgs_update]);
         }
+    }
+
+    // fungsi persentase produksi amdk
+    public function getPersen($tahun)
+    {
+        return $this->db
+            ->select('
+            rkap_amdk_persentase.*,
+            rkap_amdk_produk.nama_produk,
+            rkap_amdk_tarif.tarif
+        ')
+            ->from('rkap_amdk_persentase')
+            ->join('rkap_amdk_produk', 'rkap_amdk_produk.id_produk = rkap_amdk_persentase.id_produk', 'left')
+            ->join('rkap_amdk_tarif', 'rkap_amdk_tarif.id_tarif = rkap_amdk_persentase.id_tarif', 'left')
+            ->where('rkap_amdk_persentase.tahun_rkap', $tahun)
+            ->order_by('rkap_amdk_persentase.id_persentase', 'DESC')
+            ->get()
+            ->result();
+    }
+
+    public function insert($data)
+    {
+        return $this->db->insert('rkap_amdk_persentase', $data);
+    }
+
+    public function update($id, $data)
+    {
+        return $this->db
+            ->where('id_persentase', $id)
+            ->update('rkap_amdk_persentase', $data);
+    }
+
+    public function get_by_id($id)
+    {
+        return $this->db
+            ->where('id_persentase', $id)
+            ->get('rkap_amdk_persentase')
+            ->row();
+    }
+
+    // dropdown produk
+    public function get_produk($tahun)
+    {
+        return $this->db
+            ->where('tahun_rkap', $tahun)
+            ->get('rkap_amdk_produk')
+            ->result();
+    }
+
+    // dropdown tarif
+    public function get_tarif($tahun)
+    {
+        return $this->db
+            ->where('tahun_rkap', $tahun)
+            ->get('rkap_amdk_tarif')
+            ->result();
+    }
+
+    public function cek_duplikat($produk, $tarif, $tahun)
+    {
+        return $this->db
+            ->where('id_produk', $produk)
+            ->where('id_tarif', $tarif)
+            ->where('tahun_rkap', $tahun)
+            ->count_all_results('rkap_amdk_persentase');
+    }
+    // akhir persentase produksi amdk
+
+    // Tarif AMDK
+    public function getTarif($tahun)
+    {
+        return $this->db
+            ->where('tahun_rkap', $tahun)
+            ->get('rkap_amdk_tarif')
+            ->result();
+    }
+
+    public function insert_batch_tarif($data)
+    {
+        return $this->db->insert_batch('rkap_amdk_tarif', $data);
+    }
+
+    public function cek_tahun_tarif($tahun)
+    {
+        return $this->db
+            ->where('tahun_rkap', $tahun)
+            ->count_all_results('rkap_amdk_tarif');
+    }
+
+    public function get_tarif_by_id($id)
+    {
+        return $this->db
+            ->where('id_tarif', $id)
+            ->get('rkap_amdk_tarif')
+            ->row();
+    }
+
+    // public function update_tarif($id, $data)
+    // {
+    //     return $this->db
+    //         ->where('id_tarif', $id)
+    //         ->update('rkap_amdk_tarif', $data);
+    // }
+
+    // akhir Tarif AMDK
+
+    // produk amdk
+    public function getProduk($tahun)
+    {
+        return $this->db
+            ->where('tahun_rkap', $tahun)
+            ->get('rkap_amdk_produk')
+            ->result();
+    }
+
+    public function cek_tahun_produk($tahun)
+    {
+        return $this->db
+            ->where('tahun_rkap', $tahun)
+            ->count_all_results('rkap_amdk_produk');
+    }
+
+    public function insert_batch_produk($data)
+    {
+        return $this->db->insert_batch('rkap_amdk_produk', $data);
     }
 }

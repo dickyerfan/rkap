@@ -56,7 +56,7 @@
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-lg-12 text-center">
-                            <h5><?= $title . ' ' .  $tahun + 1; ?></h5>
+                            <h5><?= $title . ' ' .  $tahun; ?></h5>
                         </div>
                     </div>
                     <div class="row justify-content-center">

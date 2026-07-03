@@ -9,6 +9,7 @@ class Usulan_pemeliharaan extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_pemeliharaan');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -31,12 +32,12 @@ class Usulan_pemeliharaan extends CI_Controller
     public function upload()
     {
 
-        $statusUpload = $this->Model_usulan_pemeliharaan->getStatusUpload('usulan_pemeliharaan');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -81,7 +82,7 @@ class Usulan_pemeliharaan extends CI_Controller
                     }
                 }
                 // Isi data selain file yang diupload
-                $data['tahun_rkap'] = (int) $this->input->post('tahun_rkap', true);
+                $data['tahun_rkap'] = date('Y');
                 $data['no_perkiraan'] = $this->input->post('no_perkiraan', true);
                 $data['nama_perkiraan'] = $this->input->post('nama_perkiraan', true);
                 $data['latar_belakang'] = $this->input->post('latar_belakang', true);
@@ -111,7 +112,7 @@ class Usulan_pemeliharaan extends CI_Controller
     public function edit_usulan_pemeliharaan($id_usulanPemeliharaan)
     {
         $data['title'] = 'Update Usulan pemeliharaan';
-        $statusUpdate = $this->Model_usulan_pemeliharaan->getStatusUpdate('usulan_pemeliharaan');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0 && $this->session->userdata('level') == 'Pengguna') {
             $this->session->set_flashdata(
                 'info',
@@ -225,7 +226,7 @@ class Usulan_pemeliharaan extends CI_Controller
 
     public function hapus_usulan_pemeliharaan($id_usulanPemeliharaan)
     {
-        $statusUpdate = $this->Model_usulan_pemeliharaan->getStatusUpdate('usulan_pemeliharaan');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -274,5 +275,28 @@ class Usulan_pemeliharaan extends CI_Controller
         // $this->pdf->filename = "Potensi Sr.pdf";
         $this->pdf->filename = "Usulan Pemeliharaan-{$upk_bagian}-{$tahun}.pdf";
         $this->pdf->generate('rkap/usulan_pemeliharaan/laporan_pdf', $data);
+    }
+
+    public function detail_usulan_pemeliharaan($id_usulanPemeliharaan)
+    {
+        $data['title'] = 'Detail Usulan Pemeliharaan';
+        $data['usulan_pemeliharaan'] = $this->db->get_where('usulan_pemeliharaan', ['id_usulanPemeliharaan' => $id_usulanPemeliharaan])->row();
+
+        if (!$data['usulan_pemeliharaan']) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Maaf,</strong> Data tidak ditemukan.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>'
+            );
+            redirect('rkap/usulan_pemeliharaan');
+        }
+
+        $this->load->view('templates/pengguna/header', $data);
+        $this->load->view('templates/pengguna/navbar');
+        $this->load->view('templates/pengguna/sidebar');
+        $this->load->view('rkap/usulan_pemeliharaan/detail_usulan_pemeliharaan', $data);
+        $this->load->view('templates/pengguna/footer');
     }
 }

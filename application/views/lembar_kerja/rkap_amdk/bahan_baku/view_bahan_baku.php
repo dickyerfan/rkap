@@ -136,7 +136,7 @@
                                                 ?>
                                                 <!-- JUDUL PRODUK -->
                                                 <tr>
-                                                    <td colspan="2" class="text-center fw-bold">BAHAN BAKU <?= strtoupper($produk_sekarang); ?></td>
+                                                    <td colspan="5" class="text-start fw-bold">BAHAN BAKU <?= strtoupper($produk_sekarang); ?></td>
                                                     <td colspan="16"></td>
                                                 </tr>
                                             <?php endif; ?>

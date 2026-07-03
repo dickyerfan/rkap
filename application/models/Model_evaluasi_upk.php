@@ -133,7 +133,7 @@ class Model_evaluasi_upk extends CI_Model
     public function upload_plgBaru()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'uraian_evaluasi' => 'Penambahan Pelanggan Baru',
             'satuan' => 'SR',
             'rkap' => (int) $this->input->post('rkap', true),
@@ -146,7 +146,7 @@ class Model_evaluasi_upk extends CI_Model
     public function upload_plgAktif()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'uraian_evaluasi' => 'Jumlah pelanggan aktif',
             'satuan' => 'SR',
             'rkap' => (int) $this->input->post('rkap', true),
@@ -159,7 +159,7 @@ class Model_evaluasi_upk extends CI_Model
     public function upload_jmlRek()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'uraian_evaluasi' => 'Jumlah Lbr Yg Direkeningkan',
             'satuan' => 'Lbr',
             'rkap' => (int) $this->input->post('rkap', true),
@@ -172,7 +172,7 @@ class Model_evaluasi_upk extends CI_Model
     public function upload_airTerjual()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'uraian_evaluasi' => 'Air terjual',
             'satuan' => 'M3',
             'rkap' => (int) $this->input->post('rkap', true),
@@ -185,7 +185,7 @@ class Model_evaluasi_upk extends CI_Model
     public function upload_pendapatanAir()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'uraian_evaluasi' => 'Pendapatan air',
             'satuan' => 'Rp',
             'rkap' => (int) $this->input->post('rkap', true),
@@ -218,7 +218,7 @@ class Model_evaluasi_upk extends CI_Model
     public function upload_target()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'uraian_target' => $this->input->post('uraian_target', true),
             'bagian_upk' => $this->session->userdata('upk_bagian')
         ];
@@ -406,7 +406,7 @@ class Model_evaluasi_upk extends CI_Model
     public function upload_usulanAdmin()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'usulan_admin' => $this->input->post('usulan_admin', true),
             'bagian_upk' => $this->session->userdata('upk_bagian')
         ];
@@ -461,7 +461,7 @@ class Model_evaluasi_upk extends CI_Model
     public function upload_usulanTeknik()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'usulan_teknik' => $this->input->post('usulan_teknik', true),
             'bagian_upk' => $this->session->userdata('upk_bagian')
         ];

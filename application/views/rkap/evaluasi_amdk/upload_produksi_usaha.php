@@ -35,6 +35,7 @@
                                         <option value="Air Botol 330 ml">Air Botol 330 ml</option>
                                         <option value="Air Botol 500 ml">Air Botol 500 ml</option>
                                         <option value="Air Botol 1500 ml">Air Botol 1500 ml</option>
+                                        <option value="Air Gelas 250 ml">Air Gelas 250 ml</option>
                                     </select>
                                     <!-- <input type="text" step="1" class="form-control" id="uraian_evaluasi" name="uraian_evaluasi" value="<?= set_value('uraian_evaluasi'); ?>"> -->
                                     <small class="form-text text-danger pl-3"><?= form_error('uraian_evaluasi'); ?></small>

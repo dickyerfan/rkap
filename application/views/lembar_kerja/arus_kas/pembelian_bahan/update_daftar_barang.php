@@ -18,12 +18,23 @@
 
                                 <div class="form-group">
                                     <label>Kode Perkiraan</label>
-                                    <input type="text" name="no_per_id" class="form-control" value="<?= htmlspecialchars($barang->no_per_id); ?>" required>
+                                    <!-- <input type="text" name="no_per_id" class="form-control" value="<?= htmlspecialchars($barang->no_per_id); ?>" required> -->
+                                    <select name="no_per_id" class="form-select" required>
+                                        <?php foreach ($no_per_id as $kode) : ?>
+                                            <option value="<?= $kode->kode ?>" <?= $kode->kode == $barang->no_per_id ? 'selected' : '' ?>>
+                                                <?= $kode->kode ?> - <?= htmlspecialchars($kode->name); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Nama Barang</label>
                                     <input type="text" name="nama_barang" class="form-control" value="<?= htmlspecialchars($barang->nama_barang); ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Harga Satuan</label>
+                                    <input type="number" step="100" name="harga" class="form-control" value="<?= $barang->harga; ?>" required>
                                 </div>
 
                                 <div class="form-group">
@@ -33,14 +44,18 @@
 
                                 <div class="form-group">
                                     <label>Satuan</label>
-                                    <input type="text" name="satuan" class="form-control" value="<?= htmlspecialchars($barang->satuan); ?>" required>
+                                    <!-- <input type="text" name="satuan" class="form-control" value="<?= htmlspecialchars($barang->satuan); ?>" required> -->
+                                    <select name="satuan" class="form-select" required>
+                                        <option value="buah" <?= $barang->satuan == 'buah' ? 'selected' : '' ?>>buah</option>
+                                        <option value="mtr" <?= $barang->satuan == 'mtr' ? 'selected' : '' ?>>Meter</option>
+                                        <option value="SR" <?= $barang->satuan == 'SR' ? 'selected' : '' ?>>SR</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Tahun</label>
-                                    <input type="number" name="tahun" class="form-control" value="<?= $barang->tahun; ?>" required>
+                                    <input type="number" name="tahun" class="form-control" value="<?= $barang->tahun; ?>" disabled>
                                 </div>
-
                                 <div class="mt-3">
                                     <button type="submit" class="neumorphic-button">Simpan Perubahan</button>
                                 </div>

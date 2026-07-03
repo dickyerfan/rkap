@@ -62,7 +62,7 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('tambah_sr'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pola_kon">Pola Konsumsi rata2 :</label>
+                                    <label for="pola_kon">Pola Konsumsi rata2 sampai Juni :</label>
                                     <input type="number" step="0.01" class="form-control" id="pola_kon" name="pola_kon" value="<?= $potensiSr->pola_kon; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('pola_kon'); ?></small>
                                 </div>

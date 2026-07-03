@@ -9,6 +9,7 @@ class Usulan_Umum extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_umum');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -129,7 +130,7 @@ class Usulan_Umum extends CI_Controller
         // Data untuk view
         $data['upk'] = $this->Model_usulan_umum->getUpk();
         // Cek status upload
-        $statusUpload = $this->Model_usulan_umum->getStatusUpload('usulan_umum');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -145,11 +146,11 @@ class Usulan_Umum extends CI_Controller
         // Rules form validation
         $this->form_validation->set_rules('no_perkiraan', 'No Perkiraan', 'trim');
         $this->form_validation->set_rules('nama_perkiraan', 'Nama Barang', 'required|trim');
-        // $this->form_validation->set_rules('latar_belakang', 'Latar Belakang', 'required|trim');
-        // $this->form_validation->set_rules('solusi', 'Solusi', 'required|trim');
         $this->form_validation->set_rules('volume', 'Volume', 'required|trim|numeric');
         $this->form_validation->set_rules('satuan', 'Satuan', 'required|trim');
-        $this->form_validation->set_rules('kategori', 'Kategori', 'required|trim');
+        // $this->form_validation->set_rules('latar_belakang', 'Latar Belakang', 'required|trim');
+        // $this->form_validation->set_rules('solusi', 'Solusi', 'required|trim');
+        // $this->form_validation->set_rules('kategori', 'Kategori', 'required|trim');
         $this->form_validation->set_rules('bagian_upk', 'Nama UPK', 'required|trim');
         $this->form_validation->set_rules('biaya', 'Biaya', 'trim|numeric');
         $this->form_validation->set_rules('ket', 'Keterangan', 'trim');
@@ -170,16 +171,16 @@ class Usulan_Umum extends CI_Controller
 
         // Data yang akan diinsert
         $insertData = [
-            'tahun_rkap'     => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap'     => date('Y'),
             'no_perkiraan'   => $this->input->post('no_perkiraan', true),
             'nama_perkiraan' => $this->input->post('nama_perkiraan', true),
-            'latar_belakang' => $this->input->post('latar_belakang', true),
-            'solusi'         => $this->input->post('solusi', true),
+            // 'latar_belakang' => $this->input->post('latar_belakang', true),
+            // 'solusi'         => $this->input->post('solusi', true),
             'volume'         => (int) $this->input->post('volume', true),
             'satuan'         => $this->input->post('satuan', true),
             'biaya'          => (int) $this->input->post('biaya', true),
             'ket'            => $this->input->post('ket', true),
-            'kategori'       => $this->input->post('kategori', true),
+            // 'kategori'       => $this->input->post('kategori', true),
             'bagian_upk'     => $this->input->post('bagian_upk', true),
             'tgl_Upload'     => date('Y-m-d H:i:s')
         ];
@@ -221,7 +222,7 @@ class Usulan_Umum extends CI_Controller
     public function edit_usulan_umum($id_usulanUmum)
     {
         $data['title'] = 'Update Usulan umum';
-        $statusUpdate = $this->Model_usulan_umum->getStatusUpdate('usulan_umum');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -233,6 +234,7 @@ class Usulan_Umum extends CI_Controller
             );
             redirect('rkap/usulan_umum');
         } else {
+            $data['no_per'] = $this->Model_usulan_umum->getNoPerUmum();
             $data['usulan_umum'] = $this->Model_usulan_umum->getUsulanUmum($id_usulanUmum);
             $this->load->view('templates/pengguna/header', $data);
             $this->load->view('templates/pengguna/navbar');
@@ -308,7 +310,7 @@ class Usulan_Umum extends CI_Controller
 
     public function hapus_usulan_umum($id_usulanUmum)
     {
-        $statusUpdate = $this->Model_usulan_umum->getStatusUpdate('usulan_umum');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',

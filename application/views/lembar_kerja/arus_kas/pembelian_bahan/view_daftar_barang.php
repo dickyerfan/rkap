@@ -48,6 +48,9 @@
                                 <div class="navbar-nav ms-2">
                                     <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/arus_kas/pembelian_bahan/input') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fas fa-plus"></i> Input Data</button> </a>
                                 </div>
+                                <div class="navbar-nav ms-2">
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/arus_kas/pembelian_bahan/copy') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fas fa-copy"></i> Copy Data tahun lalu</button> </a>
+                                </div>
                             <?php endif; ?>
                         <?php endif; ?>
                     </nav>
@@ -71,6 +74,7 @@
                                             <th>No</th>
                                             <th>Kode Perkiraan</th>
                                             <th>Nama Barang</th>
+                                            <th>Harga Satuan</th>
                                             <th>Pembagi</th>
                                             <th>Satuan</th>
                                             <th>Tahun</th>
@@ -85,7 +89,8 @@
                                                     <td class="text-center"><?= $no++; ?></td>
                                                     <td class="text-center"><?= htmlspecialchars($b->no_per_id); ?></td>
                                                     <td><?= htmlspecialchars($b->nama_barang); ?></td>
-                                                    <td class="text-right"><?= number_format($b->pembagi, 3, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($b->harga, 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($b->pembagi, 3, ',', '.'); ?></td>
                                                     <td class="text-center"><?= htmlspecialchars($b->satuan); ?></td>
                                                     <td class="text-center"><?= $b->tahun; ?></td>
                                                     <td class="text-center">

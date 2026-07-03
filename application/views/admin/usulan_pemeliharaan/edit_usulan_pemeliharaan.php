@@ -40,12 +40,24 @@
 
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="no_perkiraan">No Perkiraan :</label>
                                     <input type="number" step="1" class="form-control" id="no_perkiraan" name="no_perkiraan" value="<?= $usulan_pemeliharaan->no_perkiraan; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan'); ?></small>
-                                </div>
+                                </div> -->
 
+                                <div class="form-group">
+                                    <label for="no_perkiraan">No Perkiraan :</label>
+                                    <select class="form-control  select2" id="no_perkiraan" name="no_perkiraan">
+                                        <option value="">-- Pilih No Perkiraan --</option>
+                                        <?php foreach ($no_per as $row) : ?>
+                                            <option value="<?= $row->kode; ?>" <?= ($usulan_pemeliharaan->no_perkiraan == $row->kode) ? 'selected' : ''; ?>>
+                                                <?= $row->kode; ?> - <?= $row->name ?? '' ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan'); ?></small>
                                 <div class="form-group">
                                     <label for="solusi">Solusi :</label>
                                     <textarea name="solusi" id="solusi" cols="30" rows="8" class="form-control"><?= $usulan_pemeliharaan->solusi; ?></textarea>

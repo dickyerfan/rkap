@@ -135,4 +135,58 @@ class Model_usulan_umum extends CI_Model
         $query = $this->db->get('user');
         return $query->result();
     }
+
+    public function getNoPerUmum()
+    {
+        $this->db->like('kode', '96'); // kondisi contain 96
+        return $this->db->get('no_per')->result();
+    }
+
+    public function getUsulanUmumAdmin($id_usulanUmum)
+    {
+        return $this->db
+            ->select('usulan_umum.*')
+            ->from('usulan_umum')
+            ->where('usulan_umum.id_usulanUmum', (int) $id_usulanUmum)
+            ->get()
+            ->row();
+    }
+
+    public function insert_or_update_generate_umum($data)
+    {
+        $insert_count = 0;
+        $update_count = 0;
+        foreach ($data as $row) {
+
+            $this->db->where('cabang_id', $row['cabang_id']);
+            $this->db->where('no_per_id', $row['no_per_id']);
+            $this->db->where('bulan', $row['bulan']);
+            $cek = $this->db->get('rkap_biaya')->row();
+
+            if ($cek) {
+                $row['ptgs_update'] = $this->session->userdata('nama_lengkap');
+                $this->db->where('id_by', $cek->id_by);
+                $this->db->update('rkap_biaya', $row);
+                $update_count++;
+            } else {
+
+                $this->db->insert('rkap_biaya', $row);
+                $insert_count++;
+            }
+        }
+
+        return [
+            'inserted' => $insert_count,
+            'updated' => $update_count
+        ];
+    }
+
+    public function updateStatusUpload($id_usulanUmum)
+    {
+        $this->db->where('id_usulanUmum', $id_usulanUmum);
+
+        return $this->db->update('usulan_umum', [
+            'status_upload' => 1
+        ]);
+    }
 }

@@ -21,15 +21,7 @@
                                 </div> -->
                                 <div class="form-group">
                                     <label for="tahun_rkap">Tahun Pembuatan RKAP :</label>
-                                    <select name="tahun_rkap" class="form-select">
-                                        <?php
-                                        $mulai = date('Y') - 2;
-                                        for ($i = $mulai; $i < $mulai + 11; $i++) {
-                                            $sel = $i == date('Y') ? ' selected="selected"' : '';
-                                            echo '<option value="' . $i . '"' . $sel . '>' . $i . '</option>';
-                                        }
-                                        ?>
-                                    </select>
+                                    <input type="number" class="form-control" id="tahun_rkap" name="tahun_rkap" value="<?= date('Y'); ?>" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="kap_pro">Kapasitas Produksi :</label>
@@ -54,7 +46,7 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('tk_bocor'); ?></small>
                                 </div> -->
                                 <div class="form-group">
-                                    <label for="plg_aktif">Jumlah Pelanggan aktif :</label>
+                                    <label for="plg_aktif">Jumlah Pelanggan Direkeningkan :</label>
                                     <input type="number" class="form-control" id="plg_aktif" name="plg_aktif" value="<?= set_value('plg_aktif'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('plg_aktif'); ?></small>
                                 </div>
@@ -66,7 +58,7 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('tambah_sr'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pola_kon">Pola Konsumsi Bulan Juli :</label>
+                                    <label for="pola_kon">Pola Konsumsi Rata2 sampai Juni :</label>
                                     <input type="number" step="0.01" class="form-control" id="pola_kon" name="pola_kon" value="<?= set_value('pola_kon'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('pola_kon'); ?></small>
                                 </div>

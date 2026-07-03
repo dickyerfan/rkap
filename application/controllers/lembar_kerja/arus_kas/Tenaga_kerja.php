@@ -30,11 +30,19 @@ class Tenaga_kerja extends MY_Controller
         $data['naker'] = $this->Model_tenaga_kerja->get_naker($tahun, $upk);
         $data['title'] = 'RENCANA GAJI KARYAWAN ' . strtoupper($upk) . ' <br> TAHUN ANGGARAN';
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_tenaga_kerja', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_tenaga_kerja', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_tenaga_kerja', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pdf()
@@ -521,11 +529,19 @@ class Tenaga_kerja extends MY_Controller
         $data['rekap'] = $this->Model_tenaga_kerja->get_rekap_naker($tahun);
         $data['title'] = 'REKAP RENCANA GAJI PEGAWAI TAHUN ';
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_rekap_tenaga_kerja', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_rekap_tenaga_kerja', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_rekap_tenaga_kerja', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_rekap_pdf()
@@ -557,11 +573,19 @@ class Tenaga_kerja extends MY_Controller
         $data['pegawai'] = $this->Model_tenaga_kerja->get_pegawai($upk);
         $data['title'] = 'DAFTAR KARYAWAN ' . strtoupper($upk);
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_pegawai', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_pegawai', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/view_pegawai', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pegawai_pdf()

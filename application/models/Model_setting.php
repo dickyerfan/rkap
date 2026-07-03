@@ -29,15 +29,37 @@ class Model_setting extends CI_Model
         }
     }
 
-
     public function setLock($tahun, $status)
     {
-        $this->db->where('tahun', $tahun);
-        if ($this->db->count_all_results('setting_rkap') > 0) {
-            $this->db->where('tahun', $tahun);
-            $this->db->update('setting_rkap', ['is_locked' => $status]);
+        $cek = $this->db
+            ->where('tahun', $tahun)
+            ->get('setting_rkap')
+            ->row();
+
+        if ($cek) {
+
+            $this->db
+                ->where('tahun', $tahun)
+                ->update('setting_rkap', [
+                    'is_locked' => $status
+                ]);
         } else {
-            $this->db->insert('setting_rkap', ['tahun' => $tahun, 'is_locked' => $status]);
+
+            $this->db->insert('setting_rkap', [
+                'tahun'     => $tahun,
+                'is_locked' => $status
+            ]);
         }
     }
+
+    // public function setLock($tahun, $status)
+    // {
+    //     $this->db->where('tahun', $tahun);
+    //     if ($this->db->count_all_results('setting_rkap') > 0) {
+    //         $this->db->where('tahun', $tahun);
+    //         $this->db->update('setting_rkap', ['is_locked' => $status]);
+    //     } else {
+    //         $this->db->insert('setting_rkap', ['tahun' => $tahun, 'is_locked' => $status]);
+    //     }
+    // }
 }

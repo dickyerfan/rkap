@@ -40,7 +40,7 @@
                                     <option value="spi" <?= $bagian_upk == 'spi' ? 'selected' : '' ?>>SPI</option>
                                     <option value="amdk" <?= $bagian_upk == 'amdk' ? 'selected' : '' ?>>A M D K</option>
                                 </select>
-                                <select name="tahun_rkap" class="form-select" style="width: 100px; margin-left:10px;">
+                                <!-- <select name="tahun_rkap" class="form-select" style="width: 100px; margin-left:10px;">
                                     <?php
                                     $mulai = date('Y') - 2;
                                     $tahun_rkap = (int)$tahun_rkap;
@@ -49,13 +49,13 @@
                                         echo '<option value="' . $i . '"' . $sel . '>' . $i . '</option>';
                                     }
                                     ?>
-                                </select>
-                                <select name="kategori" class="form-select" style="width: 150px; margin-left:10px;">
+                                </select> -->
+                                <!-- <select name="kategori" class="form-select" style="width: 150px; margin-left:10px;">
                                     <option value="">Pilih Kategori</option>
                                     <option value="Umum" <?= $kategori == 'Umum' ? 'selected' : '' ?>>Umum</option>
                                     <option value="Personalia" <?= $kategori == 'Personalia' ? 'selected' : '' ?>>Personalia</option>
                                     <option value="Administrasi" <?= $kategori == 'Administrasi' ? 'selected' : '' ?>>Administrasi</option>
-                                </select>
+                                </select> -->
                                 <input type="submit" value="Tampilkan Data" style="margin-left: 10px;" class="neumorphic-button">
                             </div>
                         </form>
@@ -86,23 +86,23 @@
                         <div class="col-lg-12">
                             <table class="table table-sm table-bordered" style="font-size: 0.7rem;" id='example'>
                                 <thead>
-                                    <tr class="text-center">
-                                        <th rowspan="2" class="align-middle">No</th>
-                                        <th colspan="2">Perkiraan</th>
-                                        <th colspan="7" class="align-middle">URAIAN TENTANG USULAN</th>
-                                        <th rowspan="2" class="align-middle">Keterangan</th>
-                                        <th rowspan="2" class="align-middle">Action</th>
+                                    <tr>
+                                        <th class="text-center align-middle" rowspan="2">No</th>
+                                        <th class="text-center align-middle" colspan="2">Perkiraan</th>
+                                        <th class="text-center align-middle" colspan="4">URAIAN TENTANG USULAN</th>
+                                        <th class="text-center align-middle" rowspan="2">Keterangan</th>
+                                        <th class="text-center align-middle" rowspan="2">Action</th>
                                     </tr>
-                                    <tr class="text-center">
-                                        <th>No Per</th>
-                                        <th>Nama</th>
-                                        <th>UPK</th>
-                                        <th>Kategori</th>
-                                        <th>Latar Belakang</th>
-                                        <th>Solusi/Usulan</th>
-                                        <th>Volume</th>
-                                        <th>Harga</th>
-                                        <th>Biaya</th>
+                                    <tr>
+                                        <th class="text-center">No Per</th>
+                                        <th class="text-center">Nama</th>
+                                        <th class="text-center">UPK</th>
+                                        <!-- <th class="text-center">Kategori</th>
+                                        <th class="text-center">Latar Belakang</th>
+                                        <th class="text-center">Solusi/Usulan</th> -->
+                                        <th class="text-center">Volume</th>
+                                        <th class="text-center">Harga</th>
+                                        <th class="text-center">Biaya</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,9 +119,9 @@
                                             <td><?= $row->no_perkiraan ?></td>
                                             <td><?= $row->nama_perkiraan ?></td>
                                             <td><?= $row->bagian_upk ?></td>
-                                            <td class="text-center"><?= $row->kategori ?></td>
+                                            <!-- <td class="text-center"><?= $row->kategori ?></td>
                                             <td><?= $row->latar_belakang ?></td>
-                                            <td><?= $row->solusi ?></td>
+                                            <td><?= $row->solusi ?></td> -->
                                             <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
                                             <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
                                             <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td>
@@ -136,13 +136,14 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="8" class="text-end">Total</th>
+                                        <th colspan="5" class="text-end">Total</th>
                                         <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
                                         <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
                                                                     return $item->biaya * $item->volume;
                                                                 }, $tampil)), 0, ',', '.') ?></th>
                                         <th colspan="2"></th>
                                     </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>

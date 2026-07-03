@@ -92,7 +92,7 @@
                     </div>
                     <div class="row justify-content-center mb-5">
                         <div class="col-lg-10">
-                            <h5 class="text-primary fw-bold">PENGATURAN PERIODE AKTIF</h5>
+                            <h5 class="text-primary fw-bold">PENGATURAN PERIODE AKTIF UNTUK LEMBAR KERJA RKAP</h5>
                             <hr class="mt-0">
                             <form method="post" action="<?= base_url('rkap_admin/update'); ?>">
                                 <div class="row g-3 align-items-end" style="font-size: 1.5rem;">

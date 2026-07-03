@@ -31,10 +31,9 @@
                             <div class="col-md-2">
                                 <select name="kategori" class="form-control">
                                     <option value="">-- Pilih Kategori --</option>
-                                    <option value="ATK" <?= (isset($_GET['kategori']) && $_GET['kategori'] == 'ATK') ? 'selected' : '' ?>>ATK</option>
-                                    <option value="Inventaris" <?= (isset($_GET['kategori']) && $_GET['kategori'] == 'Inventaris') ? 'selected' : '' ?>>Inventaris</option>
-                                    <option value="Peralatan Teknik" <?= (isset($_GET['kategori']) && $_GET['kategori'] == 'Peralatan Teknik') ? 'selected' : '' ?>>Peralatan Teknik</option>
-                                    <option value="Lainnya" <?= (isset($_GET['kategori']) && $_GET['kategori'] == 'Lainnya') ? 'selected' : '' ?>>Lainnya</option>
+                                    <?php foreach ($kategori as $k) : ?>
+                                        <option value="<?= $k->nama_kategori ?>" <?= isset($_GET['kategori']) && $_GET['kategori'] == $k->nama_kategori ? 'selected' : '' ?>><?= $k->nama_kategori ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -86,9 +85,9 @@
                                         <tr>
                                             <td class="text-center"><?= $no++ ?></td>
                                             <td><?= $row->bagian_upk ?></td>
-                                            <td class="text-end"><?= $row->no_perkiraan ?></td>
+                                            <td class="text-center"><?= $row->no_perkiraan ?></td>
                                             <td><?= $row->nama_perkiraan ?></td>
-                                            <td class="text-center"><?= $row->kategori ?></td>
+                                            <td class="text-start"><?= $row->kategori ?></td>
                                             <td><?= $row->latar_belakang ?></td>
                                             <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
                                             <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>

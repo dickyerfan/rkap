@@ -3,111 +3,62 @@
         <div class="container-fluid px-2 mt-2">
             <div class="card">
                 <div class="card-header shadow">
-                    <a class="fw-bold text-dark" style="text-decoration:none ;"><?= strtoupper($title) ?></a>
-                    <a href="<?= base_url('rkap/usulan_barang') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
+                    <a class="fw-bold text-dark" style="text-decoration:none;"><?= strtoupper($title) ?></a>
+                    <a href="<?= isset($back_url) ? $back_url : base_url('rkap/usulan_barang') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
                 </div>
                 <div class="p-2">
                     <?= $this->session->flashdata('info'); ?>
                     <?= $this->session->unset_userdata('info'); ?>
                 </div>
                 <div class="card-body">
-                    <form class="user" action="" method="POST" enctype="multipart/form-data">
+                    <form class="user" action="" method="POST">
                         <div class="row justify-content-center">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="tahun_rkap">Tahun Pembuatan RKAP :</label>
-                                    <select name="tahun_rkap" class="form-select">
-                                        <?php
-                                        $mulai = date('Y') - 2;
-                                        for ($i = $mulai; $i < $mulai + 11; $i++) {
-                                            $sel = $i == date('Y') ? ' selected="selected"' : '';
-                                            echo '<option value="' . $i . '"' . $sel . '>' . $i . '</option>';
-                                        }
-                                        ?>
-                                    </select>
+                                    <input type="number" class="form-control" id="tahun_rkap" value="<?= date('Y') ?>" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label for="latar_belakang">Latar Belakang :</label>
-                                    <textarea name="latar_belakang" id="latar_belakang" cols="30" rows="8" class="form-control"><?= set_value('latar_belakang'); ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('latar_belakang'); ?></small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="volume">volume :</label>
-                                    <input type="number" step="1" class="form-control" id="volume" name="volume" value="<?= set_value('volume'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('volume'); ?></small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="kategori">Kategori :</label>
-                                    <select name="kategori" id="" class="form-select">
+                                    <label for="kategori_id">Kategori :</label>
+                                    <select name="kategori_id" id="kategori_id" class="form-select">
                                         <option value="">Pilih Kategori</option>
-                                        <option value="ATK">ATK</option>
-                                        <option value="Inventaris">Inventaris</option>
-                                        <option value="Peralatan Teknik">Peralatan Teknik</option>
-                                        <option value="Lainnya">Lainnya</option>
+                                        <?php foreach ($kategori_barang as $kategori) : ?>
+                                            <option value="<?= (int) $kategori->id ?>" <?= set_select('kategori_id', $kategori->id) ?>>
+                                                <?= html_escape($kategori->nama_kategori) ?>
+                                            </option>
+                                        <?php endforeach; ?>
                                     </select>
-                                    <small class="form-text text-danger pl-3"><?= form_error('kategori'); ?></small>
+                                    <small class="form-text text-danger pl-3"><?= form_error('kategori_id') ?></small>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
                                 <div class="form-group">
+                                    <label for="master_barang_id">Nama Barang :</label>
+                                    <select name="master_barang_id" id="master_barang_id" class="form-select" disabled>
+                                        <option value="">Pilih kategori terlebih dahulu</option>
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('master_barang_id') ?></small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="satuan_barang">Satuan :</label>
+                                    <input type="text" class="form-control" id="satuan_barang" readonly>
+                                </div>
+                                <!-- <div class="form-group">
                                     <label for="no_perkiraan">No Perkiraan :</label>
-                                    <input type="number" step="1" class="form-control" id="no_perkiraan" name="no_perkiraan" value="<?= set_value('no_perkiraan'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan'); ?></small>
-                                </div>
-
+                                    <input type="text" class="form-control" id="no_perkiraan" name="no_perkiraan" value="<?= html_escape(set_value('no_perkiraan')) ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan') ?></small>
+                                </div> -->
                                 <div class="form-group">
-                                    <label for="solusi">Solusi :</label>
-                                    <textarea name="solusi" id="solusi" cols="30" rows="8" class="form-control"><?= set_value('solusi'); ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('solusi'); ?></small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="satuan">Satuan :</label>
-                                    <!-- <input type="text" class="form-control" id="satuan" name="satuan" value="<?= set_value('satuan'); ?>"> -->
-                                    <select name="satuan" id="satuan" class="form-select">
-                                        <option value="Meter">Meter</option>
-                                        <option value="Unit">Unit</option>
-                                        <option value="Ruangan">Ruangan</option>
-                                        <option value="Buah">Buah</option>
-                                        <option value="Pasang">Pasang</option>
-                                        <option value="Box">Box</option>
-                                        <option value="Botol">Botol</option>
-                                        <option value="Lusin">Lusin</option>
-                                        <option value="Kg">Kg</option>
-                                        <option value="M2">M2</option>
-                                        <option value="Rim">Rim</option>
-                                        <option value="Set">Set</option>
-                                    </select>
-                                    <small class="form-text text-danger pl-3"><?= form_error('satuan'); ?></small>
+                                    <label for="volume">Volume :</label>
+                                    <input type="number" min="1" step="1" class="form-control" id="volume" name="volume" value="<?= html_escape(set_value('volume')) ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('volume') ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="foto_ket">Foto Barang :</label>
-                                    <input type="file" class="form-control" id="foto_ket" name="foto_ket" value="<?= set_value('foto_ket'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('foto_ket'); ?></small>
-                                    <small class="form-text text-danger pl-3">Sertakan foto pendukung jika dibutuhkan</small>
+                                    <label for="ket">Keterangan:</label>
+                                    <input type="text" class="form-control" id="ket" name="ket" value="<?= html_escape(set_value('ket')) ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('ket') ?></small>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="nama_perkiraan">Nama Barang :</label>
-                                    <input type="text" class="form-control" id="nama_perkiraan" name="nama_perkiraan" value="<?= set_value('nama_perkiraan'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('nama_perkiraan'); ?></small>
+                                <div class="text-center">
+                                    <button class="neumorphic-button mt-2" name="tambah" type="submit"><i class="fas fa-save"></i> Simpan</button>
                                 </div>
-                                <div class="form-group">
-                                    <label for="ket">Keterangan :</label>
-                                    <textarea name="ket" id="ket" cols="30" rows="8" class="form-control"><?= set_value('ket'); ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="biaya">Harga :</label>
-                                    <input type="number" step="1" class="form-control" id="biaya" name="biaya" value="<?= set_value('biaya'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('biaya'); ?></small>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-12 text-center">
-                                <button class="neumorphic-button mt-2" name="tambah" type="submit"><i class="fas fa-save"></i> Simpan</button>
                             </div>
                         </div>
                     </form>
@@ -115,3 +66,48 @@
             </div>
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const masterBarang = <?= json_encode($master_barang, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+            const kategoriSelect = document.getElementById('kategori_id');
+            const barangSelect = document.getElementById('master_barang_id');
+            const satuanInput = document.getElementById('satuan_barang');
+            const barangTerpilih = <?= json_encode(set_value('master_barang_id')) ?>;
+
+            function tampilkanBarang() {
+                const kategoriId = kategoriSelect.value;
+                const barangKategori = masterBarang.filter(function(barang) {
+                    return String(barang.kategori_id) === String(kategoriId);
+                });
+
+                barangSelect.innerHTML = '';
+                satuanInput.value = '';
+
+                if (!kategoriId) {
+                    barangSelect.add(new Option('Pilih kategori terlebih dahulu', ''));
+                    barangSelect.disabled = true;
+                    return;
+                }
+
+                barangSelect.add(new Option(barangKategori.length ? 'Pilih Nama Barang' : 'Belum ada master barang pada kategori ini', ''));
+                barangKategori.forEach(function(barang) {
+                    const option = new Option(barang.nama_barang, barang.id);
+                    option.dataset.satuan = barang.satuan;
+                    option.selected = String(barang.id) === String(barangTerpilih);
+                    barangSelect.add(option);
+                });
+                barangSelect.disabled = barangKategori.length === 0;
+                tampilkanSatuan();
+            }
+
+            function tampilkanSatuan() {
+                const option = barangSelect.options[barangSelect.selectedIndex];
+                satuanInput.value = option && option.dataset.satuan ? option.dataset.satuan : '';
+            }
+
+            kategoriSelect.addEventListener('change', tampilkanBarang);
+            barangSelect.addEventListener('change', tampilkanSatuan);
+            tampilkanBarang();
+        });
+    </script>

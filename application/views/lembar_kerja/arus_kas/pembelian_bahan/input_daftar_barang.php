@@ -16,11 +16,21 @@
                             <form action="<?= base_url('lembar_kerja/arus_kas/pembelian_bahan/simpan') ?>" method="post">
                                 <div class="form-group mb-2">
                                     <label>No Per ID</label>
-                                    <input type="text" name="no_per_id" class="form-control" required>
+                                    <!-- <input type="text" name="no_per_id" class="form-control" required> -->
+                                    <select name="no_per_id" id="" class="form-select" required>
+                                        <option value="">Pilih No Perkiraan</option>
+                                        <?php foreach ($no_per_id as $kode) : ?>
+                                            <option value="<?= $kode->kode ?>"><?= $kode->kode ?> <?= $kode->name ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label>Nama Barang</label>
                                     <input type="text" name="nama_barang" class="form-control" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Harga Satuan</label>
+                                    <input type="number" step="1" name="harga" class="form-control" required>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label>Pembagi</label>
@@ -34,9 +44,9 @@
                                     <label>Satuan</label>
                                     <select name="satuan" id="" class="form-select" required>
                                         <option value="">Pilih Satuan</option>
-                                        <option value="kg">buah</option>
+                                        <option value="buah">buah</option>
                                         <option value="mtr">meter</option>
-                                        <option value="pcs">Pcs</option>
+                                        <option value="SR">SR</option>
                                     </select>
                                 </div>
 

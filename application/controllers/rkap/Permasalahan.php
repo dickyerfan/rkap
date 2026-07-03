@@ -9,6 +9,7 @@ class Permasalahan extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_permasalahan');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -31,12 +32,12 @@ class Permasalahan extends CI_Controller
     public function upload()
     {
 
-        $statusUpload = $this->Model_permasalahan->getStatusUpload('permasalahan');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -85,7 +86,7 @@ class Permasalahan extends CI_Controller
     public function edit_permasalahan($id_permasalahan)
     {
         $data['title'] = 'Update Usulan barang';
-        $statusUpdate = $this->Model_permasalahan->getStatusUpdate('permasalahan');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',

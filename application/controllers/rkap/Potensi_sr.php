@@ -8,6 +8,7 @@ class Potensi_sr extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Model_potensi_sr');
+        $this->load->model('Model_pengaturan');
         date_default_timezone_set('Asia/Jakarta');
         $this->load->library('form_validation');
         $this->load->library('pdf');
@@ -38,12 +39,13 @@ class Potensi_sr extends CI_Controller
     public function upload()
     {
         $data['title'] = 'Input Data Potensi SR Baru';
-        $statusUpload = $this->Model_potensi_sr->getStatusUpload('potensi_sr');
+        // $statusUpload = $this->Model_potensi_sr->getStatusUpload('potensi_sr');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -85,7 +87,8 @@ class Potensi_sr extends CI_Controller
     public function editPotensiSr($upk_bagian)
     {
         $data['title'] = 'Update Data Potensi SR Baru';
-        $statusUpdate = $this->Model_potensi_sr->getStatusUpdate('potensi_sr');
+        // $statusUpdate = $this->Model_potensi_sr->getStatusUpdate('potensi_sr');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -138,12 +141,12 @@ class Potensi_sr extends CI_Controller
     public function upload_ket()
     {
         $data['title'] = 'Input Data Pemetaan SR Baru';
-        $statusUpload = $this->Model_potensi_sr->getStatusUpload('ket_potensi_sr');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -179,7 +182,7 @@ class Potensi_sr extends CI_Controller
     public function edit_ket_potensi($id_ket_potensi)
     {
         $data['title'] = 'update Data Potensi SR Baru';
-        $statusUpdate = $this->Model_potensi_sr->getStatusUpdate('ket_potensi_sr');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -228,7 +231,7 @@ class Potensi_sr extends CI_Controller
 
     public function hapus_ket_potensi($id_ket_potensi)
     {
-        $statusUpdate = $this->Model_potensi_sr->getStatusUpdate('ket_potensi_sr');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -259,12 +262,12 @@ class Potensi_sr extends CI_Controller
     public function upload_tbh_airbaku()
     {
         $data['title'] = 'Input Penambahan Air Baku';
-        $statusAirBaku = $this->Model_potensi_sr->getStatusUpload('tambah_air_baku');
+        $statusAirBaku = $this->Model_pengaturan->getStatusUpload();
         if ($statusAirBaku !== null && $statusAirBaku->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -300,7 +303,7 @@ class Potensi_sr extends CI_Controller
     public function edit_air_baku($id_tambah_air_baku)
     {
         $data['title'] = 'update Penambahan Air Baku';
-        $statusUpdate = $this->Model_potensi_sr->getStatusUpdate('tambah_air_baku');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',

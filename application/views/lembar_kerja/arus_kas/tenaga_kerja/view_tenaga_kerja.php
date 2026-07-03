@@ -76,7 +76,7 @@
                             </div>
                         <?php endif; ?>
                     <?php endif; ?>
-                    <?php if ($this->session->userdata('nama_pengguna') == 'Personalia' || $this->session->userdata('tipe') == 'admin') : ?>
+                    <?php if ($this->session->userdata('nama_pengguna') == 'Umum & Administrasi' || $this->session->userdata('nama_pengguna') == 'Personalia' || $this->session->userdata('tipe') == 'admin') : ?>
                         <?php
                         $nama_pengguna  = $this->session->userdata('nama_pengguna');
                         $level = $this->session->userdata('level');

@@ -27,17 +27,53 @@
                                         ?>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="latar_belakang">Latar Belakang :</label>
                                     <textarea name="latar_belakang" id="latar_belakang" cols="30" rows="8" class="form-control"><?= $usulan_umum->latar_belakang; ?></textarea>
                                     <small class="form-text text-danger pl-3"><?= form_error('latar_belakang'); ?></small>
-                                </div>
+                                </div> -->
                                 <div class="form-group">
                                     <label for="volume">volume :</label>
                                     <input type="number" step="1" class="form-control" id="volume" name="volume" value="<?= $usulan_umum->volume; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('volume'); ?></small>
                                 </div>
                                 <div class="form-group">
+                                    <label for="bagian_upk">Bagian UPK:</label>
+                                    <select name="bagian_upk" id="bagian_upk" class="form-select">
+                                        <option value="">Pilih Bagian UPK</option>
+                                        <option value="pusat" <?= $usulan_umum->bagian_upk == "pusat" ? 'selected' : '' ?>>pusat</option>
+                                        <option value="umum" <?= $usulan_umum->bagian_upk == "umum" ? 'selected' : '' ?>>umum</option>
+                                        <option value="keuangan" <?= $usulan_umum->bagian_upk == "keuangan" ? 'selected' : '' ?>>keuangan</option>
+                                        <option value="langganan" <?= $usulan_umum->bagian_upk == "langganan" ? 'selected' : '' ?>>langganan</option>
+                                        <option value="pemeliharaan" <?= $usulan_umum->bagian_upk == "pemeliharaan" ? 'selected' : '' ?>>pemeliharaan</option>
+                                        <option value="perencanaan" <?= $usulan_umum->bagian_upk == "perencanaan" ? 'selected' : '' ?>>perencanaan</option>
+                                        <option value="spi" <?= $usulan_umum->bagian_upk == "spi" ? 'selected' : '' ?>>spi</option>
+                                        <option value="bondowoso" <?= $usulan_umum->bagian_upk == "bondowoso" ? 'selected' : '' ?>>bondowoso</option>
+                                        <option value="sukosari1" <?= $usulan_umum->bagian_upk == "sukosari1" ? 'selected' : '' ?>>sukosari1</option>
+                                        <option value="maesan" <?= $usulan_umum->bagian_upk == "maesan" ? 'selected' : '' ?>>maesan</option>
+                                        <option value="tegalampel" <?= $usulan_umum->bagian_upk == "tegalampel" ? 'selected' : '' ?>>tegalampel</option>
+                                        <option value="tapen" <?= $usulan_umum->bagian_upk == "tapen" ? 'selected' : '' ?>>tapen</option>
+                                        <option value="prajekan" <?= $usulan_umum->bagian_upk == "prajekan" ? 'selected' : '' ?>>prajekan</option>
+                                        <option value="tlogosari" <?= $usulan_umum->bagian_upk == "tlogosari" ? 'selected' : '' ?>>tlogosari</option>
+                                        <option value="wringin" <?= $usulan_umum->bagian_upk == "wringin" ? 'selected' : '' ?>>wringin</option>
+                                        <option value="curahdami" <?= $usulan_umum->bagian_upk == "curahdami" ? 'selected' : '' ?>>curahdami</option>
+                                        <option value="tamanan" <?= $usulan_umum->bagian_upk == "tamanan" ? 'selected' : '' ?>>tamanan</option>
+                                        <option value="tenggarang" <?= $usulan_umum->bagian_upk == "tenggarang" ? 'selected' : '' ?>>tenggarang</option>
+                                        <option value="tamankrocok" <?= $usulan_umum->bagian_upk == "tamankrocok" ? 'selected' : '' ?>>tamankrocok</option>
+                                        <option value="wonosari" <?= $usulan_umum->bagian_upk == "wonosari" ? 'selected' : '' ?>>wonosari</option>
+                                        <option value="klabang" <?= $usulan_umum->bagian_upk == "klabang" ? 'selected' : '' ?>>klabang</option>
+                                        <option value="sukosari2" <?= $usulan_umum->bagian_upk == "sukosari2" ? 'selected' : '' ?>>sukosari2</option>
+                                        <option value="amdk" <?= $usulan_umum->bagian_upk == "amdk" ? 'selected' : '' ?>>amdk</option>
+                                        <!-- <?php
+                                                $upk = $this->Model_usulan_umum->getUpk();
+                                                foreach ($upk as $row) {
+                                                    echo '<option value="' . $row->upk_bagian . '" ' . ($usulan_umum->bagian_upk == $row->upk_bagian ? 'selected' : '') . '>' . $row->upk_bagian . '</option>';
+                                                }
+                                                ?> -->
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('bagian_upk'); ?></small>
+                                </div>
+                                <!-- <div class="form-group">
                                     <label for="kategori">Kategori :</label>
                                     <select name="kategori" id="" class="form-select">
                                         <option value="">Pilih Kategori</option>
@@ -46,20 +82,30 @@
                                         <option value="Administrasi" <?= $usulan_umum->kategori == 'Administrasi' ? 'selected' : '' ?>>Administrasi</option>
                                     </select>
                                     <small class="form-text text-danger pl-3"><?= form_error('kategori'); ?></small>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="no_perkiraan">No Perkiraan :</label>
                                     <input type="number" step="1" class="form-control" id="no_perkiraan" name="no_perkiraan" value="<?= $usulan_umum->no_perkiraan; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan'); ?></small>
-                                </div>
-
+                                </div> -->
                                 <div class="form-group">
+                                    <label for="no_perkiraan">No Perkiraan :</label>
+                                    <select class="form-control  select2" id="no_perkiraan" name="no_perkiraan">
+                                        <option value="">-- Pilih No Perkiraan --</option>
+                                        <?php foreach ($no_per as $row) : ?>
+                                            <option value="<?= $row->kode; ?>" <?= ($usulan_umum->no_perkiraan == $row->kode) ? 'selected' : ''; ?>>
+                                                <?= $row->kode; ?> - <?= $row->name ?? '' ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <!-- <div class="form-group">
                                     <label for="solusi">Solusi :</label>
                                     <textarea name="solusi" id="solusi" cols="30" rows="8" class="form-control"><?= $usulan_umum->solusi; ?></textarea>
                                     <small class="form-text text-danger pl-3"><?= form_error('solusi'); ?></small>
-                                </div>
+                                </div> -->
                                 <div class="form-group">
                                     <label for="satuan">Satuan :</label>
                                     <select name="satuan" id="satuan" class="form-select">
@@ -80,11 +126,16 @@
                                     <small class="form-text text-danger pl-3"><?= form_error('satuan'); ?></small>
                                 </div>
                                 <div class="form-group">
+                                    <label for="ket">Keterangan :</label>
+                                    <input class="form-control" type="text" name="ket" id="ket" value="<?= $usulan_umum->ket; ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
+                                </div>
+                                <!-- <div class="form-group">
                                     <label for="foto_ket">Foto Kegiatan :</label>
                                     <input type="file" class="form-control" id="foto_ket" name="foto_ket" value="<?= $usulan_umum->foto_ket; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('foto_ket'); ?></small>
                                     <small class="form-text text-danger pl-3">Sertakan foto pendukung jika dibutuhkan</small>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -92,11 +143,7 @@
                                     <input type="text" class="form-control" id="nama_perkiraan" name="nama_perkiraan" value="<?= $usulan_umum->nama_perkiraan; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('nama_perkiraan'); ?></small>
                                 </div>
-                                <div class="form-group">
-                                    <label for="ket">Keterangan :</label>
-                                    <textarea name="ket" id="ket" cols="30" rows="8" class="form-control"><?= $usulan_umum->ket; ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
-                                </div>
+
                                 <div class="form-group">
                                     <label for="biaya">Harga :</label>
                                     <input type="number" step="1" class="form-control" id="biaya" name="biaya" value="<?= $usulan_umum->biaya; ?>">

@@ -103,4 +103,13 @@ class Model_pembelian_bahan extends CI_Model
     {
         return $this->db->insert('rkap_barang_beli', $data);
     }
+
+    public function getNoPerBarang()
+    {
+        return $this->db
+            ->like('kode', '15.03', 'after')
+            ->order_by('kode', 'ASC')
+            ->get('no_per')
+            ->result();
+    }
 }

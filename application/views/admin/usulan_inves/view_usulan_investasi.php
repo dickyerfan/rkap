@@ -101,7 +101,7 @@
                                         $satuan = $row->volume;
                                         $jumlah = $harga * $satuan;
                                     ?>
-                                        <tr>
+                                        <tr class="<?= ($row->status_upload == 1) ? 'table-danger' : ''; ?>">
                                             <td class="text-center"><?= $no++ ?></td>
                                             <td><?= $row->bagian_upk ?></td>
                                             <td><?= $row->no_perkiraan ?></td>
@@ -132,6 +132,9 @@
                                                         <a href="<?= base_url('admin/usulan_inves/hapus_usulan_investasi/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
                                                             <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
                                                         </a>
+                                                        <a href="<?= base_url('admin/usulan_inves/generate_usulan_inves/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
+                                                        </a>
                                                     <?php endif; ?>
 
                                                 <?php else : ?>
@@ -142,6 +145,9 @@
                                                         </a>
                                                         <a href="<?= base_url('admin/usulan_inves/hapus_usulan_investasi/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
                                                             <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_inves/generate_usulan_inves/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 <?php endif; ?>

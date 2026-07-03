@@ -26,7 +26,7 @@
                                     <li><a class="dropdown-item" href="<?= base_url('rkap/evaluasi_amdk/upload_pendapatan_usaha') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload "></i> Pendapatan Usaha</a></li>
                                 <?php endif; ?> -->
                                 <li><a class="dropdown-item" href="<?= base_url('rkap/evaluasi_amdk/upload_tenaga_kerja') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload "></i> Penambahan Tenaga Kerja</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url('rkap/evaluasi_amdk/upload_piutang_usaha') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload "></i> Piutang Usaha</a></li>
+                                <li><a class="dropdown-item" href="<?= base_url('rkap/evaluasi_amdk/upload_produksi_usaha') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload "></i> Produksi Usaha</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url('rkap/evaluasi_amdk/upload_pendapatan_usaha') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload "></i> Pendapatan Usaha</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url('rkap/evaluasi_amdk/upload_target') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload "></i> Penjelasan Target <?= date('Y') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= base_url('rkap/evaluasi_amdk/upload_usulanAdmin') ?>" style="font-size: 0.8rem;"><i class="fa-solid fa-upload "></i> Usulan Bidang Administrasi</a></li>
@@ -54,7 +54,7 @@
                                         <!-- <th>No</th> -->
                                         <th rowspan="2" class="align-middle">Uraian</th>
                                         <th rowspan="2" class="align-middle">Satuan</th>
-                                        <th colspan="2">S/D Juli <?= date('Y') ?></th>
+                                        <th colspan="2">S/D Juni <?= date('Y') ?></th>
                                         <th colspan="2">Naik/Turun</th>
                                         <th rowspan="2" class="align-middle">Action</th>
                                     </tr>
@@ -62,7 +62,7 @@
                                         <!-- <th>No</th> -->
                                         <th>RKAP</th>
                                         <th>Realisasi</th>
-                                        <th>Satuan</th>
+                                        <th>Selisih</th>
                                         <th>%</th>
                                     </tr>
                                 </thead>
@@ -76,7 +76,7 @@
                                         $rkap = $row->rkap;
                                         $id = $row->id_evaluasi_amdk;
                                         $naikTurun = $realisasi - $rkap;
-                                        $persen = ($naikTurun / $rkap) * 100;
+                                        $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                     ?>
                                         <tr>
                                             <td class="ps-4">
@@ -91,25 +91,17 @@
                                         </tr>
                                     <?php endforeach; ?>
                                     <tr>
-                                        <td class="ps-3">Nilai Piutang Usaha</td>
+                                        <td class="ps-3">Nilai Produksi Usaha</td>
                                         <td colspan="6"></td>
                                     </tr>
-                                    <?php foreach ($piutang_usaha as $row) :
+                                    <?php foreach ($produksi_usaha as $row) :
                                         $realisasi = $row->realisasi;
                                         $rkap = $row->rkap;
                                         $id = $row->id_evaluasi_amdk;
                                         // $naikTurun = $realisasi - $rkap;
                                         // $persen = ($naikTurun / $rkap) * 100;
                                         $naikTurun = $realisasi - $rkap;
-                                        if ($naikTurun < 0) {
-                                            $naikTurun = 0;
-                                        }
-
-                                        if ($rkap != 0) {
-                                            $persen = ($naikTurun / $rkap) * 100;
-                                        } else {
-                                            $persen = 0; // Atau nilai default lainnya
-                                        }
+                                        $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                     ?>
                                         <tr>
                                             <td class="ps-4">
@@ -118,8 +110,8 @@
                                             <td class="text-center"><?= $row->satuan; ?></td>
                                             <td class="text-end pe-3"><?= number_format($row->rkap, 0, ',', '.'); ?></td>
                                             <td class="text-end pe-3"><?= number_format($row->realisasi, 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-3"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
-                                            <td class="text-center"><?= number_format($persen, 2, ',', '.'); ?></td>
+                                            <td class="text-end pe-3 <?= $naikTurun < 0 ? 'text-danger' : 'text-success'; ?>"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
+                                            <td class="text-center <?= $persen < 0 ? 'text-danger' : 'text-success'; ?>"><?= number_format($persen, 2, ',', '.'); ?></td>
                                             <td class="text-center"><a href="<?= base_url('rkap/evaluasi_amdk/edit_evaluasi_amdk/') ?><?= $id ?>"><i class="fas fa-edit text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data"></i></a></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -128,22 +120,13 @@
                                         <td colspan="6"></td>
                                     </tr>
                                     <?php foreach ($pendapatan_usaha as $row) :
-                                        $naikTurun = 0;
                                         $realisasi = $row->realisasi;
                                         $rkap = $row->rkap;
                                         $id = $row->id_evaluasi_amdk;
                                         // $naikTurun = $realisasi - $rkap;
                                         // $persen = ($naikTurun / $rkap) * 100;
                                         $naikTurun = $realisasi - $rkap;
-                                        if ($naikTurun < 0) {
-                                            $naikTurun = 0;
-                                        }
-
-                                        if ($rkap != 0) {
-                                            $persen = ($naikTurun / $rkap) * 100;
-                                        } else {
-                                            $persen = 0; // Atau nilai default lainnya
-                                        }
+                                        $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                     ?>
                                         <tr>
                                             <td class="ps-4">
@@ -152,8 +135,8 @@
                                             <td class="text-center"><?= $row->satuan; ?></td>
                                             <td class="text-end pe-3"><?= number_format($row->rkap, 0, ',', '.'); ?></td>
                                             <td class="text-end pe-3"><?= number_format($row->realisasi, 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-3"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
-                                            <td class="text-center"><?= number_format($persen, 2, ',', '.'); ?></td>
+                                            <td class="text-end pe-3 <?= $naikTurun < 0 ? 'text-danger' : 'text-success'; ?>"><?= number_format($naikTurun, 0, ',', '.'); ?></td>
+                                            <td class="text-center <?= $persen < 0 ? 'text-danger' : 'text-success'; ?>"><?= number_format($persen, 2, ',', '.'); ?></td>
                                             <td class="text-center"><a href="<?= base_url('rkap/evaluasi_amdk/edit_evaluasi_amdk/') ?><?= $id ?>"><i class="fas fa-edit text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data"></i></a></td>
                                         </tr>
                                     <?php endforeach; ?>

@@ -64,25 +64,25 @@ class Model_usulan_inves extends CI_Model
         return $query->row();
     }
 
-    public function getStatusUpload($tableName)
-    {
-        $this->db->select('status');
-        $this->db->from($tableName);
-        $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
-        $this->db->where('tahun_rkap', date('Y'));
-        $query = $this->db->get();
-        return $query->row();
-    }
+    // public function getStatusUpload($tableName)
+    // {
+    //     $this->db->select('status');
+    //     $this->db->from($tableName);
+    //     $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+    //     $this->db->where('tahun_rkap', date('Y'));
+    //     $query = $this->db->get();
+    //     return $query->row();
+    // }
 
-    public function getStatusUpdate($tableName)
-    {
-        $this->db->select('status_update');
-        $this->db->from($tableName);
-        $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
-        $this->db->where('tahun_rkap', date('Y'));
-        $query = $this->db->get();
-        return $query->row();
-    }
+    // public function getStatusUpdate($tableName)
+    // {
+    //     $this->db->select('status_update');
+    //     $this->db->from($tableName);
+    //     $this->db->where('bagian_upk', $this->session->userdata('upk_bagian'));
+    //     $this->db->where('tahun_rkap', date('Y'));
+    //     $query = $this->db->get();
+    //     return $query->row();
+    // }
 
     public function getUsulanInves($id_usulanInvestasi)
     {
@@ -129,5 +129,59 @@ class Model_usulan_inves extends CI_Model
         $this->db->limit(1);
         $query = $this->db->get();
         return $query->result();
+    }
+
+    public function getNoPerInves()
+    {
+        $this->db->like('kode', '31'); // kondisi contain 93
+        return $this->db->get('no_per')->result();
+    }
+
+    public function getUsulanInvestasiAdmin($id_usulanInvestasi)
+    {
+        return $this->db
+            ->select('usulan_investasi.*, rkap_kategori_barang.kode_akun')
+            ->from('usulan_investasi')
+            ->join('rkap_kategori_barang', 'rkap_kategori_barang.kode_akun = usulan_investasi.no_perkiraan', 'left')
+            ->where('usulan_investasi.id_usulanInvestasi', (int) $id_usulanInvestasi)
+            ->get()
+            ->row();
+    }
+
+    public function insert_or_update_generate_inves($data)
+    {
+        $insert_count = 0;
+        $update_count = 0;
+        foreach ($data as $row) {
+
+            $this->db->where('cabang_id', $row['cabang_id']);
+            $this->db->where('no_per_id', $row['no_per_id']);
+            $this->db->where('bulan', $row['bulan']);
+            $cek = $this->db->get('rkap_investasi')->row();
+
+            if ($cek) {
+                $row['ptgs_update'] = $this->session->userdata('nama_lengkap');
+                $this->db->where('id_inves', $cek->id_inves);
+                $this->db->update('rkap_investasi', $row);
+                $update_count++;
+            } else {
+
+                $this->db->insert('rkap_investasi', $row);
+                $insert_count++;
+            }
+        }
+
+        return [
+            'inserted' => $insert_count,
+            'updated' => $update_count
+        ];
+    }
+    public function updateStatusUpload($id_usulanInvestasi)
+    {
+        $this->db->where('id_usulanInvestasi', $id_usulanInvestasi);
+
+        return $this->db->update('usulan_investasi', [
+            'status_upload' => 1
+        ]);
     }
 }

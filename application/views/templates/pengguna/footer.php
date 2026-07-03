@@ -47,11 +47,30 @@
 
 <script>
     $(document).ready(function() {
-        $('#example').DataTable();
+        $('#example').DataTable({
+            pageLength: 15,
+            lengthMenu: [
+                [10, 15, 50, 100, -1],
+                [10, 15, 50, 100, "Semua"]
+            ]
+        });
     });
     $(document).ready(function() {
-        $('#example2').DataTable();
+        $('#example2').DataTable({
+            pageLength: 15,
+            lengthMenu: [
+                [10, 15, 50, 100, -1],
+                [10, 15, 50, 100, "Semua"]
+            ]
+        });
     });
+
+    // $(document).ready(function() {
+    //     $('#example').DataTable();
+    // });
+    // $(document).ready(function() {
+    //     $('#example2').DataTable();
+    // });
 </script>
 
 <script>

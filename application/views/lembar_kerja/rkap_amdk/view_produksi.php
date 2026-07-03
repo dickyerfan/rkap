@@ -45,6 +45,15 @@
                                 <div class="navbar-nav">
                                     <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/rkap_amdk/produksi/tambah') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input Data</button> </a>
                                 </div>
+                                <div class="navbar-nav">
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/rkap_amdk/produksi/persen') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Persentase</button> </a>
+                                </div>
+                                <div class="navbar-nav">
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/rkap_amdk/produksi/tarif') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Tarif</button> </a>
+                                </div>
+                                <div class="navbar-nav">
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/rkap_amdk/produksi/produk') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Produk</button> </a>
+                                </div>
                             <?php endif; ?>
                         <?php endif; ?>
                     </nav>

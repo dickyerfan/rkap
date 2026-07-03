@@ -83,7 +83,12 @@
                                     </thead>
                                     <tbody>
                                         <?php $no = 1;
-                                        foreach ($hasil as $r) : ?>
+                                        $total_produk_lalu = 0;
+                                        $total_rupiah_lalu = 0;
+                                        foreach ($hasil as $r) :
+                                            $total_produk_lalu += $r->produk_lalu;
+                                            $total_rupiah_lalu += $r->rupiah_lalu;
+                                        ?>
                                             <tr>
                                                 <td class="text-center"><?= $no++ ?></td>
                                                 <td><?= $r->nama_produk ?></td>
@@ -101,6 +106,14 @@
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
+                                    <tfoot class="text-center bg-light">
+                                        <tr>
+                                            <th colspan="3">Total</th>
+                                            <th class="text-end"><?= number_format($total_produk_lalu, 0, ',', '.') ?></th>
+                                            <th class="text-end"><?= number_format($total_rupiah_lalu, 0, ',', '.') ?></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

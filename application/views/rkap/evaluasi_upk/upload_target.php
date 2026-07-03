@@ -16,15 +16,8 @@
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label for="tahun_rkap">Tahun Pembuatan RKAP :</label>
-                                    <select name="tahun_rkap" class="form-select">
-                                        <?php
-                                        $mulai = date('Y') - 2;
-                                        for ($i = $mulai; $i < $mulai + 11; $i++) {
-                                            $sel = $i == date('Y') ? ' selected="selected"' : '';
-                                            echo '<option value="' . $i . '"' . $sel . '>' . $i . '</option>';
-                                        }
-                                        ?>
-                                    </select>
+                                    <input type="number" class="form-control" id="tahun_rkap" name="tahun_rkap" value="<?= date('Y'); ?>" readonly>
+                                    <small class="form-text text-danger pl-3"><?= form_error('tahun_rkap'); ?></small>
                                 </div>
                                 <div class="form-group">
                                     <label for="uraian_target">Penjelasan Pencapaian :</label>

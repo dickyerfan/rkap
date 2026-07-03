@@ -10,6 +10,7 @@ class Usulan_umum extends CI_Controller
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_umum');
         $this->load->model('Model_setting');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -77,6 +78,7 @@ class Usulan_umum extends CI_Controller
             );
             redirect('admin/usulan_umum');
         } else {
+            $data['no_per'] = $this->Model_usulan_umum->getNoPerUmum();
             $data['usulan_umum'] = $this->Model_usulan_umum->getUsulanUmum($id_usulanUmum);
             $this->load->view('templates/pengguna/header', $data);
             $this->load->view('templates/pengguna/navbar');
@@ -207,6 +209,154 @@ class Usulan_umum extends CI_Controller
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
         $this->load->view('admin/usulan_umum/detail_usulan_umum', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function generate_usulan_umum($id_usulanUmum)
+    {
+        $data['title'] = 'Generate Data Ke Biaya (LABA RUGI)';
+        // Cek status update
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
+        if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger">
+                Data sudah tidak bisa diproses.
+            </div>'
+            );
+            redirect('admin/usulan_umum');
+        }
+        // Ambil data usulan
+        $usulan = $this->Model_usulan_umum->getUsulanUmumAdmin($id_usulanUmum);
+        if (!$usulan) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger">
+                Data tidak ditemukan.
+            </div>'
+            );
+            redirect('admin/usulan_umum');
+        }
+
+        // PROSES GENERATE
+        if ($this->input->post()) {
+            $bulanDipilih = $this->input->post('bulan');
+            if (empty($bulanDipilih)) {
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger">
+                    Pilih minimal satu bulan.
+                </div>'
+                );
+                redirect('admin/usulan_umum/generate_usulan_umum/' . $id_usulanUmum);
+            }
+
+            // Mapping UPK
+            $mapping_upk = [
+                'pusat'        => '00',
+                'bondowoso'    => '01',
+                'sukosari1'    => '02',
+                'maesan'       => '03',
+                'tegalampel'   => '04',
+                'tapen'        => '05',
+                'prajekan'     => '06',
+                'tlogosari'    => '07',
+                'wringin'      => '08',
+                'curahdami'    => '09',
+                'tamanan'      => '11',
+                'tenggarang'   => '12',
+                'amdk'         => '13',
+                'tamankrocok'  => '14',
+                'wonosari'     => '15',
+                'klabang'      => '16',
+                'sukosari2'    => '22',
+                'umum'         => '23',
+                'keuangan'     => '24',
+                'langganan'    => '25',
+                'pemeliharaan' => '26',
+                'perencanaan'  => '27',
+                'spi'          => '28'
+            ];
+
+            $bagian = strtolower(trim($usulan->bagian_upk));
+            $cabang_id = $mapping_upk[$bagian] ?? '';
+            // bagian_upk berasal dari data usulan_umum
+            $cabang_id = $mapping_upk[$usulan->bagian_upk] ?? '';
+
+            if ($cabang_id == '') {
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger">
+                    Mapping UPK tidak ditemukan.
+                </div>'
+                );
+                redirect('admin/usulan_umum');
+            }
+
+            //  Siapkan data
+            $tahun = $usulan->tahun_rkap + 1;
+            $insert = [];
+            foreach ($bulanDipilih as $bulan) {
+                $insert[] = [
+                    'id_upk' => NULL,
+                    'cabang_id' => $cabang_id,
+                    'no_per_id' => $usulan->no_perkiraan,
+                    'bulan' => sprintf(
+                        '%04d-%02d-01',
+                        $tahun,
+                        $bulan
+                    ),
+                    'uraian' => $usulan->nama_perkiraan,
+                    'pagu' => $usulan->biaya,
+                    'status' => 0,
+                    'status_update' => 0,
+                    'ptgs_upload' => $this->session->userdata('nama_lengkap')
+
+                ];
+            }
+
+            // Simpan
+            // $result = $this->Model_usulan_umum
+            //     ->insert_or_update_generate_umum($insert);
+            // $this->session->set_flashdata(
+            //     'info',
+            //     '<div class="alert alert-success">
+            //     Berhasil Generate Biaya (Laba Rugi).<br>
+            //     Proses Insert : <b>' . $result['inserted'] . '</b><br>
+            //     Proses Update : <b>' . $result['updated'] . '</b>
+            // </div>'
+            // );
+
+            $this->db->trans_begin();
+            $result = $this->Model_usulan_umum->insert_or_update_generate_umum($insert);
+            $this->Model_usulan_umum->updateStatusUpload($id_usulanUmum);
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger">
+            Generate gagal.
+        </div>'
+                );
+            } else {
+                $this->db->trans_commit();
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-success">
+            Berhasil Generate Usulan Umum.<br>
+            Proses Insert : <b>' . $result['inserted'] . '</b><br>
+            Proses Update : <b>' . $result['updated'] . '</b>
+        </div>'
+                );
+            }
+            redirect('admin/usulan_umum');
+        }
+
+        $data['usulan_umum'] = $usulan;
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/usulan_umum/generate_usulan_umum', $data);
         $this->load->view('templates/footer');
     }
 

@@ -59,13 +59,13 @@
         </div>
     </header>
     <main>
-        <div class="container-fluid">
+        <div class="container-fluid px-2 mt-2">
 
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div class="col-lg-6 text-center mb-2">
-                        <p><?= $title . ' ' .  $tahun ?></p>
-                        <p>UNIT AMDK</p>
+                        <p><?= $title . ' ' .  date('Y') ?></p>
+                        <p>UNIT <?= strtoupper($this->session->userdata('upk_bagian'));  ?></p>
                     </div>
                 </div>
                 <div class="row justify-content-center">
@@ -75,7 +75,7 @@
                                 <tr class="text-center">
                                     <th rowspan="2" class="align-middle">Uraian</th>
                                     <th rowspan="2" class="align-middle">Satuan</th>
-                                    <th colspan="2">S/D Juli <?= $tahun; ?></th>
+                                    <th colspan="2">S/D Juli <?= date('Y') ?></th>
                                     <th colspan="2">Naik/Turun</th>
                                 </tr>
                                 <tr class="text-center">
@@ -95,7 +95,7 @@
                                     $rkap = $row->rkap;
                                     $id = $row->id_evaluasi_amdk;
                                     $naikTurun = $realisasi - $rkap;
-                                    $persen = ($naikTurun / $rkap) * 100;
+                                    $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                 ?>
                                     <tr>
                                         <td class="ps-4">
@@ -109,23 +109,15 @@
                                     </tr>
                                 <?php endforeach; ?>
                                 <tr>
-                                    <td class="ps-3">Nilai Piutang Usaha</td>
+                                    <td class="ps-3">Nilai Produksi Usaha</td>
                                     <td colspan="5"></td>
                                 </tr>
-                                <?php foreach ($piutang_usaha as $row) :
+                                <?php foreach ($produksi_usaha as $row) :
                                     $realisasi = $row->realisasi;
                                     $rkap = $row->rkap;
                                     $id = $row->id_evaluasi_amdk;
                                     $naikTurun = $realisasi - $rkap;
-                                    if ($naikTurun < 0) {
-                                        $naikTurun = 0;
-                                    }
-
-                                    if ($rkap != 0) {
-                                        $persen = ($naikTurun / $rkap) * 100;
-                                    } else {
-                                        $persen = 0; // Atau nilai default lainnya
-                                    }
+                                    $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                 ?>
                                     <tr>
                                         <td class="ps-4">
@@ -135,7 +127,7 @@
                                         <td class="text-end pe-2"><?= $row->rkap; ?></td>
                                         <td class="text-end pe-2"><?= $row->realisasi; ?></td>
                                         <td class="text-end pe-2"><?= $naikTurun; ?></td>
-                                        <td class="text-end pe-2"><?= $persen; ?></td>
+                                        <td class="text-center pe-2"><?= $persen; ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 <tr>
@@ -146,15 +138,8 @@
                                     $realisasi = $row->realisasi;
                                     $rkap = $row->rkap;
                                     $id = $row->id_evaluasi_amdk;
-                                    if ($naikTurun < 0) {
-                                        $naikTurun = 0;
-                                    }
-
-                                    if ($rkap != 0) {
-                                        $persen = ($naikTurun / $rkap) * 100;
-                                    } else {
-                                        $persen = 0; // Atau nilai default lainnya
-                                    }
+                                    $naikTurun = $realisasi - $rkap;
+                                    $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                 ?>
                                     <tr>
                                         <td class="ps-4">
@@ -175,7 +160,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <p>Penjelasan pendapatan tahun <?= $tahun; ?> tidak mencapai target adalah :</p>
+                        <p>Penjelasan pendapatan tahun <?= date('Y') ?> tidak mencapai target adalah :</p>
                         <?php if (empty($target)) : ?>
                             <p class="text-danger">Belum ada Penjelasan yang diinputkan.</p>
                         <?php else : ?>
@@ -197,7 +182,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <p>Usulan program dalam rangka peningkatan pendapatan tahun <?= $tahun + 1; ?></p>
+                        <p>Usulan program dalam rangka peningkatan pendapatan tahun <?= date('Y') + 1 ?></p>
                         <p>Bidang Teknik</p>
                         <?php if (empty($usulanTeknik)) : ?>
                             <p class="text-danger">Belum ada usulan Teknik yang diinputkan.</p>

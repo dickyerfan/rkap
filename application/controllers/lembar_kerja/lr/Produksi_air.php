@@ -142,6 +142,67 @@ class Produksi_air extends MY_Controller
         }
     }
 
+    public function copy_data()
+    {
+        $tahun_baru = $this->input->get('tahun_rkap') ?: (date('Y') + 1);
+        $tahun_lama = $tahun_baru - 1;
+
+        // ambil data tahun sebelumnya
+        $data_lama = $this->Model_produksi_air->getSumber($tahun_lama);
+
+        if (empty($data_lama)) {
+
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger">
+                Data tahun sebelumnya tidak ditemukan!
+            </div>'
+            );
+            redirect('lembar_kerja/lr/produksi_air/data_sumber');
+            return;
+        }
+        $insert = [];
+
+        foreach ($data_lama as $row) {
+
+            if ($this->Model_produksi_air->cek_tahun_sumber($tahun_baru) > 0) {
+
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Gagal!</strong> Data tahun ini sudah pernah dicopy!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>'
+                );
+                redirect('lembar_kerja/lr/produksi_air/data_sumber');
+                return;
+            }
+
+            $insert[] = [
+                'uraian'       => $row->uraian,
+                'id_upk'       => $row->id_upk,
+                'nilai'        => $row->nilai,
+                'tahun'        => $tahun_baru,
+                'status'       => 1,
+                'status_update' => 1,
+                'ptgs_upload' => $this->session->userdata('nama_lengkap'),
+                'tgl_upload'  => date('Y-m-d H:i:s')
+            ];
+        }
+
+        // simpan batch
+        $this->Model_produksi_air->insert_batch_sumber($insert);
+
+        $this->session->set_flashdata(
+            'info',
+            '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Berhasil!</strong> Data sumber berhasil dicopy dari tahun ' . $tahun_lama . ' ke ' . $tahun_baru . '
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>'
+        );
+        redirect('lembar_kerja/lr/produksi_air/data_sumber?tahun_rkap=' . $tahun_baru);
+    }
+
     public function edit_sumber($id_sb)
     {
         $data['sumber'] = $this->db->get_where('rkap_sumber', ['id_sb' => $id_sb])->row_array();
@@ -164,6 +225,7 @@ class Produksi_air extends MY_Controller
                 'id_upk' => $this->input->post('id_upk'),
                 'uraian' => $this->input->post('uraian'),
                 'nilai'  => $this->input->post('nilai'),
+                'ptgs_update' => $this->session->userdata('nama_lengkap')
             ];
             $this->db->where('id_sb', $id_sb);
             $this->db->update('rkap_sumber', $update_data);

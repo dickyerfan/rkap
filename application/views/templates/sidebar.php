@@ -22,13 +22,14 @@
                             <a class="nav-link" href="<?= base_url('admin/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
                             <a class="nav-link" href="<?= base_url('admin/rekap_sr') ?>" style="font-size: 0.8rem;">Rekap SR</a>
                             <a class="nav-link" href="<?= base_url('admin/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
+                            <a class="nav-link" href="<?= base_url('admin/proyeksi_upk') ?>" style="font-size: 0.8rem;">Proyeksi UPK</a>
                             <a class="nav-link" href="<?= base_url('admin/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
-                            <a class="nav-link" href="<?= base_url('admin/potensi_amdk') ?>" style="font-size: 0.8rem;">Potensi AMDK</a>
-                            <a class="nav-link" href="<?= base_url('admin/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
+                            <!-- <a class="nav-link" href="<?= base_url('admin/potensi_amdk') ?>" style="font-size: 0.8rem;">Potensi AMDK</a> -->
                             <a class="nav-link" href="<?= base_url('admin/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
                             <a class="nav-link" href="<?= base_url('admin/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
                             <a class="nav-link" href="<?= base_url('admin/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
                             <a class="nav-link" href="<?= base_url('admin/usulan_umum') ?>" style="font-size: 0.8rem;">Usulan Umum</a>
+                            <a class="nav-link" href="<?= base_url('admin/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
                             <a class="nav-link" href="<?= base_url('admin/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                         </nav>
                     </div>
@@ -44,6 +45,8 @@
                                 <a class="nav-link" href="<?= base_url('admin/pengaturan/aktivasiUser') ?>" style="font-size: 0.8rem;">Aktivasi User</a>
                                 <a class="nav-link" href="<?= base_url('admin/pengaturan/aktivasiAdmin') ?>" style="font-size: 0.8rem;">Aktivasi Admin</a>
                                 <a class="nav-link" href="<?= base_url('rkap_admin') ?>" style="font-size: 0.8rem;"> Periode RKAP</a>
+                                <a class="nav-link" href="<?= base_url('admin/usulan_barang/kategori_barang') ?>" style="font-size: 0.8rem;">Kategori Barang</a>
+                                <a class="nav-link" href="<?= base_url('admin/usulan_barang/master_barang') ?>" style="font-size: 0.8rem;">Master Barang</a>
 
                             <?php endif; ?>
                             <a class="nav-link" href="<?= base_url('admin/pengaturan/kumpul_data') ?>" style="font-size: 0.8rem;">Cek Pengumpulan Data</a>
@@ -65,8 +68,8 @@
                                 <a class="nav-link" href="<?= base_url('ringkasan') ?>" style="font-size: 0.8rem;">Ringkasan</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pelanggan') ?>" style="font-size: 0.8rem;">Perkembangan Pelanggan</a>
-                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem;">Produksi Air</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem;">Produksi Air</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_non_air') ?>" style="font-size: 0.8rem;">Pendapatan Non Air</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_usaha_lain') ?>" style="font-size: 0.8rem;">Pendapatan Usaha Lain</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_luar_usaha') ?>" style="font-size: 0.8rem;">Pendapatan Diluar Usaha</a>

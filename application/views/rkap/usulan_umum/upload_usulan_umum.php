@@ -16,7 +16,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="tahun_rkap">Tahun Pembuatan RKAP :</label>
-                                    <select name="tahun_rkap" class="form-select">
+                                    <!-- <select name="tahun_rkap" class="form-select">
                                         <?php
                                         $mulai = date('Y') - 2;
                                         for ($i = $mulai; $i < $mulai + 11; $i++) {
@@ -24,92 +24,31 @@
                                             echo '<option value="' . $i . '"' . $sel . '>' . $i . '</option>';
                                         }
                                         ?>
-                                    </select>
+                                    </select> -->
+                                    <input type="number" class="form-control" id="tahun_rkap" name="tahun_rkap" value="<?= date('Y'); ?>" readonly>
+                                    <small class="form-text text-danger pl-3"><?= form_error('tahun_rkap'); ?></small>
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="latar_belakang">Latar Belakang :</label>
                                     <textarea name="latar_belakang" id="latar_belakang" cols="30" rows="8" class="form-control"><?= set_value('latar_belakang'); ?></textarea>
                                     <small class="form-text text-danger pl-3"><?= form_error('latar_belakang'); ?></small>
-                                </div>
+                                </div> -->
                                 <div class="form-group">
                                     <label for="volume">volume :</label>
                                     <input type="number" step="1" class="form-control" id="volume" name="volume" value="<?= set_value('volume'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('volume'); ?></small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="kategori">Kategori :</label>
-                                    <select name="kategori" id="" class="form-select">
-                                        <option value="">Pilih Kategori</option>
-                                        <option value="Umum">Umum</option>
-                                        <option value="Personalia">Personalia</option>
-                                        <option value="Administrasi">Administrasi</option>
-                                    </select>
-                                    <small class="form-text text-danger pl-3"><?= form_error('kategori'); ?></small>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="no_perkiraan">No Perkiraan :</label>
-                                    <input type="number" step="1" class="form-control" id="no_perkiraan" name="no_perkiraan" value="<?= set_value('no_perkiraan'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan'); ?></small>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="solusi">Solusi :</label>
-                                    <textarea name="solusi" id="solusi" cols="30" rows="8" class="form-control"><?= set_value('solusi'); ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('solusi'); ?></small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="satuan">Satuan :</label>
-                                    <!-- <input type="text" class="form-control" id="satuan" name="satuan" value="<?= set_value('satuan'); ?>"> -->
-                                    <select name="satuan" id="satuan" class="form-select">
-                                        <option value="Meter">Meter</option>
-                                        <option value="Unit">Unit</option>
-                                        <option value="Ruangan">Ruangan</option>
-                                        <option value="Buah">Buah</option>
-                                        <option value="Pasang">Pasang</option>
-                                        <option value="Box">Box</option>
-                                        <option value="Botol">Botol</option>
-                                        <option value="Lusin">Lusin</option>
-                                        <option value="Kg">Kg</option>
-                                        <option value="M2">M2</option>
-                                        <option value="Rim">Rim</option>
-                                        <option value="Set">Set</option>
-                                        <option value="Ls">Ls</option>
-                                        <option value="Orang">Orang</option>
-                                        <option value="Bulan">Bulan</option>
-                                        <option value="Tahun">Tahun</option>
-                                    </select>
-                                    <small class="form-text text-danger pl-3"><?= form_error('satuan'); ?></small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="foto_ket">Foto Barang :</label>
-                                    <input type="file" class="form-control" id="foto_ket" name="foto_ket" value="<?= set_value('foto_ket'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('foto_ket'); ?></small>
-                                    <small class="form-text text-danger pl-3">Sertakan foto pendukung jika dibutuhkan</small>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="nama_perkiraan">Nama Barang :</label>
-                                    <input type="text" class="form-control" id="nama_perkiraan" name="nama_perkiraan" value="<?= set_value('nama_perkiraan'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('nama_perkiraan'); ?></small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="ket">Keterangan :</label>
-                                    <textarea name="ket" id="ket" cols="30" rows="8" class="form-control"><?= set_value('ket'); ?></textarea>
-                                    <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="biaya">Biaya :</label>
-                                    <input type="number" step="1" class="form-control" id="biaya" name="biaya" value="<?= set_value('biaya'); ?>">
-                                    <small class="form-text text-danger pl-3"><?= form_error('biaya'); ?></small>
-                                </div>
-                                <div class="form-group">
                                     <label for="bagian_upk">Bagian UPK:</label>
                                     <select name="bagian_upk" id="bagian_upk" class="form-select">
                                         <option value="">Pilih Bagian UPK</option>
                                         <option value="pusat">pusat</option>
+                                        <option value="umum">umum</option>
+                                        <option value="keuangan">keuangan</option>
+                                        <option value="langganan">langganan</option>
+                                        <option value="pemeliharaan">pemeliharaan</option>
+                                        <option value="perencanaan">perencanaan</option>
+                                        <option value="spi">spi</option>
                                         <option value="bondowoso">bondowoso</option>
                                         <option value="sukosari1">sukosari1</option>
                                         <option value="maesan">maesan</option>
@@ -134,6 +73,78 @@
                                     </select>
                                     <small class="form-text text-danger pl-3"><?= form_error('bagian_upk'); ?></small>
                                 </div>
+                                <!-- <div class="form-group">
+                                    <label for="kategori">Kategori :</label>
+                                    <select name="kategori" id="" class="form-select">
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="Umum">Umum</option>
+                                        <option value="Personalia">Personalia</option>
+                                        <option value="Administrasi">Administrasi</option>
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('kategori'); ?></small>
+                                </div> -->
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="no_perkiraan">No Perkiraan :</label>
+                                    <input type="number" step="1" class="form-control" id="no_perkiraan" name="no_perkiraan" value="<?= set_value('no_perkiraan'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan'); ?></small>
+                                </div>
+
+                                <!-- <div class="form-group">
+                                    <label for="solusi">Solusi :</label>
+                                    <textarea name="solusi" id="solusi" cols="30" rows="8" class="form-control"><?= set_value('solusi'); ?></textarea>
+                                    <small class="form-text text-danger pl-3"><?= form_error('solusi'); ?></small>
+                                </div> -->
+                                <div class="form-group">
+                                    <label for="satuan">Satuan :</label>
+                                    <!-- <input type="text" class="form-control" id="satuan" name="satuan" value="<?= set_value('satuan'); ?>"> -->
+                                    <select name="satuan" id="satuan" class="form-select">
+                                        <option value="Meter">Meter</option>
+                                        <option value="Unit">Unit</option>
+                                        <option value="Ruangan">Ruangan</option>
+                                        <option value="Buah">Buah</option>
+                                        <option value="Pasang">Pasang</option>
+                                        <option value="Box">Box</option>
+                                        <option value="Botol">Botol</option>
+                                        <option value="Lusin">Lusin</option>
+                                        <option value="Kg">Kg</option>
+                                        <option value="M2">M2</option>
+                                        <option value="Rim">Rim</option>
+                                        <option value="Set">Set</option>
+                                        <option value="Ls">Ls</option>
+                                        <option value="Orang">Orang</option>
+                                        <option value="Bulan">Bulan</option>
+                                        <option value="Tahun">Tahun</option>
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('satuan'); ?></small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ket">Keterangan :</label>
+                                    <input type="text" class="form-control" id="ket" name="ket" value="<?= set_value('ket'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small>
+                                    <!-- <textarea name="ket" id="ket" cols="30" rows="8" class="form-control"><?= set_value('ket'); ?></textarea>
+                                    <small class="form-text text-danger pl-3"><?= form_error('ket'); ?></small> -->
+                                </div>
+                                <!-- <div class="form-group">
+                                    <label for="foto_ket">Foto Barang :</label>
+                                    <input type="file" class="form-control" id="foto_ket" name="foto_ket" value="<?= set_value('foto_ket'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('foto_ket'); ?></small>
+                                    <small class="form-text text-danger pl-3">Sertakan foto pendukung jika dibutuhkan</small>
+                                </div> -->
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="nama_perkiraan">Nama Kegiatan/Barang :</label>
+                                    <input type="text" class="form-control" id="nama_perkiraan" name="nama_perkiraan" value="<?= set_value('nama_perkiraan'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('nama_perkiraan'); ?></small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="biaya">Biaya :</label>
+                                    <input type="number" step="1" class="form-control" id="biaya" name="biaya" value="<?= set_value('biaya'); ?>">
+                                    <small class="form-text text-danger pl-3"><?= form_error('biaya'); ?></small>
+                                </div>
+
                             </div>
                         </div>
                         <div class="row justify-content-center">

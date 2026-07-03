@@ -47,11 +47,32 @@
 <script src="<?= base_url('assets/js/bootstrap-datepicker.js') ?>"></script>
 
 <script>
+    // $(document).ready(function() {
+    //     $('#example').DataTable();
+    // });
+
+    // $(document).ready(function() {
+    //     $('#example2').DataTable();
+    // });
+
+
     $(document).ready(function() {
-        $('#example').DataTable();
+        $('#example').DataTable({
+            pageLength: 15,
+            lengthMenu: [
+                [10, 15, 50, 100, -1],
+                [10, 15, 50, 100, "Semua"]
+            ]
+        });
     });
     $(document).ready(function() {
-        $('#example2').DataTable();
+        $('#example2').DataTable({
+            pageLength: 15,
+            lengthMenu: [
+                [10, 15, 50, 100, -1],
+                [10, 15, 50, 100, "Semua"]
+            ]
+        });
     });
 </script>
 
@@ -151,15 +172,21 @@
 
 <script>
     // Loader untuk semua link <a>
-    document.querySelectorAll("a").forEach(a => {
-        a.addEventListener("click", function(e) {
-            const href = this.getAttribute("href");
+    // document.querySelectorAll("a").forEach(a => {
+    //     a.addEventListener("click", function(e) {
+    //         const href = this.getAttribute("href");
 
-            if (!href) return;
-            if (href === "#") return;
-            if (href.startsWith("javascript")) return;
-            if (this.hasAttribute("data-bs-toggle")) return; // modal/collapse/dropdown tidak pakai loader
+    //         if (!href) return;
+    //         if (href === "#") return;
+    //         if (href.startsWith("javascript")) return;
+    //         if (this.hasAttribute("data-bs-toggle")) return; // modal/collapse/dropdown tidak pakai loader
 
+    //         document.getElementById("global-loader").style.display = "flex";
+    //     });
+    // });
+
+    document.querySelectorAll(".show-loader").forEach(el => {
+        el.addEventListener("click", function() {
             document.getElementById("global-loader").style.display = "flex";
         });
     });

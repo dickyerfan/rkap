@@ -9,6 +9,7 @@ class Evaluasi_amdk extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_evaluasi_amdk');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -19,7 +20,7 @@ class Evaluasi_amdk extends CI_Controller
 
         $data['title'] = 'EVALUASI PENCAPAIAN TAHUN';
         $data['tenaga_kerja'] = $this->Model_evaluasi_amdk->getTenagaKerja();
-        $data['piutang_usaha'] = $this->Model_evaluasi_amdk->getPiutangUsaha();
+        $data['produksi_usaha'] = $this->Model_evaluasi_amdk->getProduksiUsaha();
         $data['pendapatan_usaha'] = $this->Model_evaluasi_amdk->getPendapatanUsaha();
         $data['statusEvaluasiAmdk'] = $this->Model_evaluasi_amdk->getStatusUpdate('evaluasi_amdk');
         $data['target'] = $this->Model_evaluasi_amdk->getTarget();
@@ -36,8 +37,9 @@ class Evaluasi_amdk extends CI_Controller
     public function uploadData($uploadType, $title)
     {
         $data['title'] = $title;
+        $jenisUraian = $this->_getJenisUraian($uploadType);
 
-        $statusUpload = $this->Model_evaluasi_amdk->getStatusUpload('evaluasi_amdk');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -51,7 +53,7 @@ class Evaluasi_amdk extends CI_Controller
         } else {
             // $this->form_validation->set_rules('uraian_evaluasi', 'Uraian Evaluasi', 'required|trim|is_unique[evaluasi_amdk.uraian_evaluasi]');
             // $this->form_validation->set_rules('uraian_evaluasi', 'Uraian Evaluasi', 'required|trim');
-            $this->form_validation->set_rules('uraian_evaluasi', 'Uraian Evaluasi', 'required|trim|callback_cek_uraian_evaluasi');
+            $this->form_validation->set_rules('uraian_evaluasi', 'Uraian Evaluasi', 'required|trim|callback_cek_uraian_evaluasi[' . $jenisUraian . ']');
             $this->form_validation->set_rules('rkap', 'RKAP', 'required|trim|numeric');
             $this->form_validation->set_rules('realisasi', 'Realisasi', 'required|trim|numeric');
             $this->form_validation->set_message('is_unique', '%s sudah tersedia');
@@ -84,34 +86,47 @@ class Evaluasi_amdk extends CI_Controller
         $this->uploadData('upload_tenaga_kerja', 'Input Tenaga Kerja');
     }
 
-    public function upload_piutang_usaha()
+    public function upload_produksi_usaha()
     {
-        $this->uploadData('upload_piutang_usaha', 'Input Piutang Usaha');
+        $this->uploadData('upload_produksi_usaha', 'Input Produksi Usaha');
     }
     public function upload_pendapatan_usaha()
     {
         $this->uploadData('upload_pendapatan_usaha', 'Input Pendapatan Usaha');
     }
 
-    public function cek_uraian_evaluasi($uraian_evaluasi)
+    public function cek_uraian_evaluasi($uraian_evaluasi, $jenis_uraian)
     {
         $tahun_rkap = $this->input->post('tahun_rkap', true);
         $ada = $this->db->get_where('evaluasi_amdk', [
             'uraian_evaluasi' => $uraian_evaluasi,
+            'jenis_uraian' => $jenis_uraian,
+            'bagian_upk' => $this->session->userdata('upk_bagian'),
             'tahun_rkap' => $tahun_rkap
         ])->num_rows();
         if ($ada > 0) {
-            $this->form_validation->set_message('cek_uraian_evaluasi', 'Uraian Evaluasi sudah ada di tahun tersebut');
+            $this->form_validation->set_message('cek_uraian_evaluasi', 'Uraian Evaluasi sudah ada pada ' . $jenis_uraian . ' di tahun tersebut');
             return false;
         }
         return true;
+    }
+
+    private function _getJenisUraian($uploadType)
+    {
+        $jenis = [
+            'upload_tenaga_kerja' => 'Tenaga Kerja',
+            'upload_produksi_usaha' => 'Produksi Usaha',
+            'upload_pendapatan_usaha' => 'Pendapatan Usaha',
+        ];
+
+        return isset($jenis[$uploadType]) ? $jenis[$uploadType] : ucwords(str_replace('_', ' ', $uploadType));
     }
 
 
     public function edit_evaluasi_amdk($id_evaluasi_amdk)
     {
         $data['title'] = 'update Evaluasi amdk';
-        $statusUpdate = $this->Model_evaluasi_amdk->getStatusUpdate('evaluasi_amdk');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0 && $this->session->userdata('level') == 'Pengguna') {
             $this->session->set_flashdata(
                 'info',
@@ -163,7 +178,7 @@ class Evaluasi_amdk extends CI_Controller
     public function upload_target()
     {
         $data['title'] = 'Penjelasan pendapatan tidak mencapai target tahun';
-        $statusUpload = $this->Model_evaluasi_amdk->getStatusUpload('target_pencapaian');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -202,7 +217,7 @@ class Evaluasi_amdk extends CI_Controller
     public function edit_target_sr($id_target)
     {
         $data['title'] = 'update Target Pencapaian';
-        $statusUpdate = $this->Model_evaluasi_amdk->getStatusUpdate('target_pencapaian');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -255,7 +270,7 @@ class Evaluasi_amdk extends CI_Controller
     {
         $data['title'] = 'Usulan program dalam rangka peningkatan pendapatan tahun';
         $data['subtitle'] = 'Bidang Administrasi';
-        $statusUpload = $this->Model_evaluasi_amdk->getStatusUpload('usulan_admin');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -294,7 +309,7 @@ class Evaluasi_amdk extends CI_Controller
     public function edit_usulan_admin($id_usulanAdmin)
     {
         $data['title'] = 'update Usulan Admin';
-        $statusUpdate = $this->Model_evaluasi_amdk->getStatusUpdate('usulan_admin');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -347,7 +362,7 @@ class Evaluasi_amdk extends CI_Controller
     {
         $data['title'] = 'Usulan program dalam rangka peningkatan pendapatan tahun';
         $data['subtitle'] = 'Bidang Teknik';
-        $statusUpload = $this->Model_evaluasi_amdk->getStatusUpload('usulan_teknik');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -386,7 +401,7 @@ class Evaluasi_amdk extends CI_Controller
     public function edit_usulan_teknik($id_usulanTeknik)
     {
         $data['title'] = 'update Usulan Teknik';
-        $statusUpdate = $this->Model_evaluasi_amdk->getStatusUpdate('usulan_teknik');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -440,7 +455,7 @@ class Evaluasi_amdk extends CI_Controller
         $data['title'] = 'EVALUASI PENCAPAIAN TAHUN';
         $data['tahun'] = $this->Model_evaluasi_amdk->getTahun();
         $data['tenaga_kerja'] = $this->Model_evaluasi_amdk->getTenagaKerja();
-        $data['piutang_usaha'] = $this->Model_evaluasi_amdk->getPiutangUsaha();
+        $data['produksi_usaha'] = $this->Model_evaluasi_amdk->getProduksiUsaha();
         $data['pendapatan_usaha'] = $this->Model_evaluasi_amdk->getPendapatanUsaha();
         $data['statusEvaluasiAmdk'] = $this->Model_evaluasi_amdk->getStatusUpdate('evaluasi_amdk');
         $data['target'] = $this->Model_evaluasi_amdk->getTarget();

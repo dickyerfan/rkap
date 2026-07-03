@@ -47,12 +47,20 @@
                                     }
                                     ?>
                                 </select>
-                                <select name="kategori" class="form-select" style="width: 150px; margin-left:10px;">
+                                <!-- <select name="kategori" class="form-select" style="width: 150px; margin-left:10px;">
                                     <option value="">Pilih Kategori</option>
                                     <option value="ATK" <?= $kategori == 'ATK' ? 'selected' : '' ?>>ATK</option>
                                     <option value="Inventaris" <?= $kategori == 'Inventaris' ? 'selected' : '' ?>>Inventaris</option>
                                     <option value="Peralatan Teknik" <?= $kategori == 'Peralatan Teknik' ? 'selected' : '' ?>>Peralatan Teknik</option>
                                     <option value="Lainnya" <?= $kategori == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                                </select> -->
+                                <select name="kategori" class="form-select" style="width:150px; margin-left:10px;">
+                                    <option value="">Pilih Kategori</option>
+                                    <?php foreach ($kategori_list as $row) : ?>
+                                        <option value="<?= $row->nama_kategori ?>" <?= ($kategori == $row->nama_kategori) ? 'selected' : '' ?>>
+                                            <?= $row->nama_kategori ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <input type="submit" value="Tampilkan Data" style="margin-left: 10px;" class="neumorphic-button">
                             </div>
@@ -83,22 +91,22 @@
                             <table class="table table-sm table-bordered" style="font-size: 0.7rem;" id="example">
                                 <thead>
                                     <tr class="text-center">
-                                        <th rowspan="2" class="align-middle">No</th>
-                                        <th rowspan="2" class="align-middle">Bagian/UPK</th>
+                                        <th rowspan="2" class="align-middle text-center">No</th>
+                                        <th rowspan="2" class="align-middle text-center">Bagian/UPK</th>
                                         <th colspan="2">Perkiraan</th>
-                                        <th colspan="6" class="align-middle">URAIAN TENTANG USULAN</th>
-                                        <th rowspan="2" class="align-middle">Keterangan</th>
-                                        <th rowspan="2" class="align-middle">Action</th>
+                                        <th colspan="4" class="align-middle text-center">URAIAN TENTANG USULAN</th>
+                                        <th rowspan="2" class="align-middle text-center">Keterangan</th>
+                                        <th rowspan="2" class="align-middle text-center">Action</th>
                                     </tr>
-                                    <tr class="text-center">
-                                        <th>No Per</th>
-                                        <th>Nama</th>
-                                        <th>Kategori</th>
-                                        <th>Latar Belakang</th>
-                                        <th>Solusi/Usulan</th>
-                                        <th>Volume</th>
-                                        <th>Harga</th>
-                                        <th>Biaya</th>
+                                    <tr>
+                                        <th class="text-center">No Per</th>
+                                        <th class="text-center">Nama</th>
+                                        <th class="text-center">Kategori</th>
+                                        <!-- <th class="text-center">Latar Belakang</th>
+                                        <th class="text-center">Solusi/Usulan</th> -->
+                                        <th class="text-center">Volume</th>
+                                        <th class="text-center">Harga</th>
+                                        <th class="text-center">Biaya</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,21 +114,18 @@
                                     $no = 1;
                                     foreach ($tampil as $row) :
                                         $id = $row->id_usulanBarang;
-                                        $harga = $row->biaya;
-                                        $satuan = $row->volume;
-                                        $jumlah = $harga * $satuan;
                                     ?>
-                                        <tr>
+                                        <tr class="<?= ($row->status_upload == 1) ? 'table-danger' : ''; ?>">
                                             <td class="text-center"><?= $no++ ?></td>
                                             <td><?= $row->bagian_upk ?></td>
                                             <td><?= $row->no_perkiraan ?></td>
                                             <td><?= $row->nama_perkiraan ?></td>
-                                            <td class="text-center"><?= $row->kategori ?></td>
-                                            <td><?= $row->latar_belakang ?></td>
-                                            <td><?= $row->solusi ?></td>
+                                            <td><?= $row->kategori ?></td>
+                                            <!-- <td><?= $row->latar_belakang ?></td>
+                                            <td><?= $row->solusi ?></td> -->
                                             <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
+                                            <td class="text-end"><?= number_format($row->harga_satuan, 0, ',', '.') ?></td>
                                             <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                            <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td>
                                             <td><?= $row->ket ?></td>
                                             <?php
                                             $username = $this->session->userdata('nama_pengguna');
@@ -135,22 +140,40 @@
                                                 <?php if ($username === 'administrator') : ?>
                                                     <!-- Administrator bisa edit & hapus selama tahun = tahun sekarang dan tidak dikunci -->
                                                     <?php if ($tahun_data == $tahun_sekarang) : ?>
-                                                        <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                            <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
-                                                        </a>
+                                                        <?php if (empty($row->kategori)) : ?>
+                                                            <a href="<?= base_url('admin/usulan_barang/edit_usulan_lain/' . $row->id_usulanBarang) ?>">
+                                                                <i class="fas fa-edit text-dark"></i>
+                                                            </a>
+                                                        <?php else : ?>
+                                                            <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/' . $row->id_usulanBarang) ?>">
+                                                                <i class="fas fa-edit text-success"></i>
+                                                            </a>
+                                                        <?php endif; ?>
                                                         <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
                                                             <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_barang/generate_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
                                                         </a>
                                                     <?php endif; ?>
 
                                                 <?php else : ?>
                                                     <!-- User biasa hanya bisa edit & hapus jika tahun = tahun sekarang dan tidak dikunci -->
                                                     <?php if ($tahun_data == $tahun_sekarang && !$is_locked) : ?>
-                                                        <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                            <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
-                                                        </a>
+                                                        <?php if (empty($row->kategori)) : ?>
+                                                            <a href="<?= base_url('admin/usulan_barang/edit_usulan_lain/' . $row->id_usulanBarang) ?>">
+                                                                <i class="fas fa-edit text-dark"></i>
+                                                            </a>
+                                                        <?php else : ?>
+                                                            <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/' . $row->id_usulanBarang) ?>">
+                                                                <i class="fas fa-edit text-success"></i>
+                                                            </a>
+                                                        <?php endif; ?>
                                                         <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
                                                             <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_barang/generate_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
@@ -160,11 +183,9 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="8" class="text-end">Total</th>
+                                        <th colspan="6" class="text-end">Total</th>
+                                        <th></th>
                                         <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
-                                        <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
-                                                                    return $item->biaya * $item->volume;
-                                                                }, $tampil)), 0, ',', '.') ?></th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -176,7 +197,7 @@
             </div>
         </div>
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -226,5 +247,5 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </main>

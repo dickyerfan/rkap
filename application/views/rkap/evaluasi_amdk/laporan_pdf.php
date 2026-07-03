@@ -98,7 +98,7 @@
                                     $rkap = $row->rkap;
                                     $id = $row->id_evaluasi_amdk;
                                     $naikTurun = $realisasi - $rkap;
-                                    $persen = ($naikTurun / $rkap) * 100;
+                                    $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                 ?>
                                     <tr>
                                         <td class="ps-4">
@@ -112,23 +112,15 @@
                                     </tr>
                                 <?php endforeach; ?>
                                 <tr>
-                                    <td class="ps-3">Nilai Piutang Usaha</td>
+                                    <td class="ps-3">Nilai Produksi Usaha</td>
                                     <td colspan="5"></td>
                                 </tr>
-                                <?php foreach ($piutang_usaha as $row) :
+                                <?php foreach ($produksi_usaha as $row) :
                                     $realisasi = $row->realisasi;
                                     $rkap = $row->rkap;
                                     $id = $row->id_evaluasi_amdk;
                                     $naikTurun = $realisasi - $rkap;
-                                    if ($naikTurun < 0) {
-                                        $naikTurun = 0;
-                                    }
-
-                                    if ($rkap != 0) {
-                                        $persen = ($naikTurun / $rkap) * 100;
-                                    } else {
-                                        $persen = 0; // Atau nilai default lainnya
-                                    }
+                                    $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                 ?>
                                     <tr>
                                         <td class="ps-4">
@@ -138,7 +130,7 @@
                                         <td class="text-end pe-2"><?= $row->rkap; ?></td>
                                         <td class="text-end pe-2"><?= $row->realisasi; ?></td>
                                         <td class="text-end pe-2"><?= $naikTurun; ?></td>
-                                        <td class="text-end pe-2"><?= $persen; ?></td>
+                                        <td class="text-center pe-2"><?= $persen; ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 <tr>
@@ -149,15 +141,8 @@
                                     $realisasi = $row->realisasi;
                                     $rkap = $row->rkap;
                                     $id = $row->id_evaluasi_amdk;
-                                    if ($naikTurun < 0) {
-                                        $naikTurun = 0;
-                                    }
-
-                                    if ($rkap != 0) {
-                                        $persen = ($naikTurun / $rkap) * 100;
-                                    } else {
-                                        $persen = 0; // Atau nilai default lainnya
-                                    }
+                                    $naikTurun = $realisasi - $rkap;
+                                    $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                 ?>
                                     <tr>
                                         <td class="ps-4">

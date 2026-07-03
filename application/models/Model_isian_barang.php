@@ -67,4 +67,14 @@ class Model_isian_barang extends CI_Model
         $this->db->where('tahun_rkap', date('Y'));
         $this->db->update('usulan_barang', $data);
     }
+
+    public function getKategori()
+    {
+        $this->db->select('nama_kategori');
+        $this->db->from('rkap_kategori_barang');
+        $this->db->where('nama_kategori', 'Peralatan kantor');
+        $this->db->or_where('nama_kategori', 'Barang Percetakan');
+        $query = $this->db->get();
+        return $query->result();
+    }
 }

@@ -113,4 +113,59 @@ class Model_usulan_pemeliharaan extends CI_Model
         $query = $this->db->get();
         return $query->result();
     }
+
+    public function getNoPerPemeliharaan()
+    {
+        $this->db->like('kode', '93'); // kondisi contain 93
+        return $this->db->get('no_per')->result();
+    }
+
+    public function getUsulanPemeliharaanAdmin($id_usulanPemeliharaan)
+    {
+        return $this->db
+            ->select('usulan_pemeliharaan.*, rkap_kategori_barang.kode_akun')
+            ->from('usulan_pemeliharaan')
+            ->join('rkap_kategori_barang', 'rkap_kategori_barang.kode_akun = usulan_pemeliharaan.no_perkiraan', 'left')
+            ->where('usulan_pemeliharaan.id_usulanPemeliharaan', (int) $id_usulanPemeliharaan)
+            ->get()
+            ->row();
+    }
+
+    public function insert_or_update_generate_pemeliharaan($data)
+    {
+        $insert_count = 0;
+        $update_count = 0;
+        foreach ($data as $row) {
+
+            $this->db->where('cabang_id', $row['cabang_id']);
+            $this->db->where('no_per_id', $row['no_per_id']);
+            $this->db->where('bulan', $row['bulan']);
+            $cek = $this->db->get('rkap_biaya')->row();
+
+            if ($cek) {
+                $row['ptgs_update'] = $this->session->userdata('nama_lengkap');
+                $this->db->where('id_by', $cek->id_by);
+                $this->db->update('rkap_biaya', $row);
+                $update_count++;
+            } else {
+
+                $this->db->insert('rkap_biaya', $row);
+                $insert_count++;
+            }
+        }
+
+        return [
+            'inserted' => $insert_count,
+            'updated' => $update_count
+        ];
+    }
+
+    public function updateStatusUpload($id_usulanPemeliharaan)
+    {
+        $this->db->where('id_usulanPemeliharaan', $id_usulanPemeliharaan);
+
+        return $this->db->update('usulan_pemeliharaan', [
+            'status_upload' => 1
+        ]);
+    }
 }

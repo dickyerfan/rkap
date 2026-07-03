@@ -9,6 +9,7 @@ class Evaluasi_program extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_evaluasi_program');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -46,13 +47,12 @@ class Evaluasi_program extends CI_Controller
     // Awal Usulan barang
     public function upload()
     {
-
-        $statusUpload = $this->Model_evaluasi_program->getStatusUpload('evaluasi_program');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -99,12 +99,12 @@ class Evaluasi_program extends CI_Controller
     public function upload_usulan()
     {
 
-        $statusUpload = $this->Model_evaluasi_program->getStatusUpload('evaluasi_program');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
                 '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Maaf,</strong> data sudah tidak bisa di input.
+                    <strong>Maaf,</strong> sudah tidak bisa input data baru.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     </button>
                 </div>'
@@ -152,7 +152,7 @@ class Evaluasi_program extends CI_Controller
     public function edit_evaluasi_program($id_evaluasi_program)
     {
         $data['title'] = 'Update Evaluasi & Usulan Program';
-        $statusUpdate = $this->Model_evaluasi_program->getStatusUpdate('evaluasi_program');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -203,7 +203,7 @@ class Evaluasi_program extends CI_Controller
     public function edit_usulan_program($id_usulan)
     {
         $data['title'] = 'Update Evaluasi & Usulan Program';
-        $statusUpdate = $this->Model_evaluasi_program->getStatusUpdate('evaluasi_usulan');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',

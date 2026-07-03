@@ -9,6 +9,7 @@ class Potensi_amdk extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_potensi_amdk');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -68,7 +69,7 @@ class Potensi_amdk extends CI_Controller
     public function upload()
     {
         $data['title'] = 'Input Estimasi Pendapatan';
-        $statusUpload = $this->Model_potensi_amdk->getStatusUpload('potensi_amdk');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
 
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
@@ -129,7 +130,7 @@ class Potensi_amdk extends CI_Controller
     public function edit_potensi_amdk($id_potensi_amdk)
     {
         $data['title'] = 'Update Estimasi Pendapatan';
-        $statusUpdate = $this->Model_potensi_amdk->getStatusUpdate('potensi_amdk');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -179,7 +180,7 @@ class Potensi_amdk extends CI_Controller
     public function upload_biaya()
     {
         $data['title'] = 'Input Estimasi Biaya';
-        $statusUpload = $this->Model_potensi_amdk->getStatusUpload('biaya_amdk');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload();
 
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
@@ -239,7 +240,7 @@ class Potensi_amdk extends CI_Controller
     public function edit_biaya_amdk($id_biaya_amdk)
     {
         $data['title'] = 'Update Biaya AMDK';
-        $statusUpdate = $this->Model_potensi_amdk->getStatusUpdate('biaya_amdk');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate();
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',

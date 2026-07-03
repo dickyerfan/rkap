@@ -31,7 +31,8 @@ class Rkap_admin extends CI_Controller
 
     public function update()
     {
-        $tahun = date('Y') + 1;
+
+        $tahun = $this->input->post('tahun');
         $status = $this->input->post('status_periode');
         $this->Model_status->update_status_periode($tahun, $status);
         $this->session->set_flashdata(

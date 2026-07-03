@@ -38,7 +38,18 @@
                                 </div>
                                 <div class=" form-group mb-3">
                                     <label>Satuan</label>
-                                    <input type="text" name="satuan" class="form-control" required>
+                                    <select name="satuan" class="form-control" required>
+                                        <option value="">-- Pilih Satuan --</option>
+                                        <option value="Buah">Buah</option>
+                                        <option value="Unit">Unit</option>
+                                        <option value="Pcs">Pcs</option>
+                                        <option value="Kg">Kg</option>
+                                        <option value="Meter">Meter</option>
+                                        <option value="Lusin">Lusin</option>
+                                        <option value="Box">Box</option>
+                                    </select>
+
+                                    <!-- <input type="text" name="satuan" class="form-control" required> -->
                                 </div>
                                 <div class=" form-group mb-3">
                                     <label>Volume</label>

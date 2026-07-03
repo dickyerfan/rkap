@@ -104,7 +104,7 @@
                     $kebocoran_air = $produksi_air * $kebocoran_air_persen / 100;
 
                     $air_pelanggan = $produksi_air - $kebocoran_air;
-                    $kebutuhan_air = $row->pola_kon * ($row->plg_aktif + $row->tambah_sr);
+                    $kebutuhan_air = $row->pola_kon * ($row->plg_aktif);
                     $sisa_air = $air_pelanggan - $kebutuhan_air;
                     if ($row->pola_kon != 0) {
                         $potensi = $sisa_air / $row->pola_kon;
@@ -149,7 +149,7 @@
                                             <td>% (Persentase)</td>
                                         </tr>
                                         <tr>
-                                            <td>Jumlah Pelanggan Aktif (DRD Juli <?= $row->tahun_rkap ?>)</td>
+                                            <td>Jumlah Pelanggan Aktif (DRD Juni <?= $row->tahun_rkap ?>)</td>
                                             <td>:</td>
                                             <td><?= number_format($row->plg_aktif, 0, ',', '.'); ?></td>
                                             <td>SR (Sambungan Rumah)</td>
@@ -161,7 +161,7 @@
                                             <td>asumsi</td>
                                         </tr>
                                         <tr>
-                                            <td>Pola Konsumsi Bulan Juli <?= $row->tahun_rkap ?></td>
+                                            <td>Pola Konsumsi Rata2 (s/d Juni) <?= $row->tahun_rkap ?></td>
                                             <td>:</td>
                                             <td><?= number_format($row->pola_kon, 2, ',', '.'); ?></td>
                                             <td>M3 (Meter Kubik)</td>
@@ -198,7 +198,7 @@
                                         </tr>
                                         <tr>
                                             <td>Kebutuhan air</td>
-                                            <td><?= number_format($row->plg_aktif + $row->tambah_sr, 0, ',', '.') ?> x <?= number_format($row->pola_kon, 2, ',', '.') ?></td>
+                                            <td><?= number_format($row->plg_aktif, 0, ',', '.') ?> x <?= number_format($row->pola_kon, 2, ',', '.') ?></td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($kebutuhan_air, 2, ',', '.'); ?></td>
                                             <td>M3</td>

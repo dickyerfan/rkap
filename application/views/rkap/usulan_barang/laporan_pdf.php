@@ -91,9 +91,6 @@
                                 $no = 1;
                                 foreach ($tampil as $row) :
                                     $id = $row->id_usulanBarang;
-                                    $harga = $row->biaya;
-                                    $satuan = $row->volume;
-                                    $jumlah = $harga * $satuan;
                                 ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
@@ -102,11 +99,12 @@
                                         <td><?= $row->latar_belakang ?></td>
                                         <td><?= $row->solusi ?></td>
                                         <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
+                                        <td class="text-center"><?= number_format($row->harga_satuan, 0, ',', '.') ?></td>
                                         <td class="text-center"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                        <td class="text-center"><?= number_format($jumlah, 0, ',', '.') ?></td>
                                         <td><?= $row->ket ?></td>
                                     </tr>
                                 <?php endforeach; ?>
+                            </tbody>
                         </table>
                     </div>
                 </div>

@@ -18,7 +18,11 @@ class Pengaturan extends CI_Controller
     {
         $data['title'] = 'Aktivasi Upload & Update Data ';
         $data['upload'] = $this->Model_pengaturan->cekUpload();
+        $data['upload_bagian'] = $this->Model_pengaturan->cekUploadBagian();
+        $data['upload_amdk'] = $this->Model_pengaturan->cekUploadAmdk();
         $data['update'] = $this->Model_pengaturan->cekUpdate();
+        $data['update_bagian'] = $this->Model_pengaturan->cekUpdateBagian();
+        $data['update_amdk'] = $this->Model_pengaturan->cekUpdateAmdk();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -36,7 +40,47 @@ class Pengaturan extends CI_Controller
         $this->load->view('admin/view_uploadOff', $data);
         $this->load->view('templates/footer');
     }
+    public function uploadOffBagian()
+    {
+        $data['title'] = 'PENGATURAN ';
+        $data['upload_bagian'] = $this->Model_pengaturan->cekUploadBagian();
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/view_uploadOffBagian', $data);
+        $this->load->view('templates/footer');
+    }
+    public function uploadOffAmdk()
+    {
+        $data['title'] = 'PENGATURAN ';
+        $data['upload_amdk'] = $this->Model_pengaturan->cekUploadAmdk();
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/view_uploadOffAmdk', $data);
+        $this->load->view('templates/footer');
+    }
 
+    public function updateOffBagian()
+    {
+        $data['title'] = 'PENGATURAN ';
+        $data['update_bagian'] = $this->Model_pengaturan->cekUpdateBagian();
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/view_updateOffBagian', $data);
+        $this->load->view('templates/footer');
+    }
+    public function updateOffAmdk()
+    {
+        $data['title'] = 'PENGATURAN ';
+        $data['update_amdk'] = $this->Model_pengaturan->cekUpdateAmdk();
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/view_updateOffAmdk', $data);
+        $this->load->view('templates/footer');
+    }
     public function updateOff()
     {
         $data['title'] = 'PENGATURAN ';
@@ -51,6 +95,56 @@ class Pengaturan extends CI_Controller
     public function matikanUpload()
     {
         $this->Model_pengaturan->matikanUploadData();
+        if ($this->db->affected_rows() <= 0) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Maaf,</strong> tidak ada perubahan data
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                      </div>'
+            );
+            redirect('admin/pengaturan');
+        } else {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Sukses,</strong> Status Upload berhasil di update
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                      </div>'
+            );
+            redirect('admin/pengaturan');
+        }
+    }
+    public function matikanUploadBagian()
+    {
+        $this->Model_pengaturan->matikanUploadDataBagian();
+        if ($this->db->affected_rows() <= 0) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Maaf,</strong> tidak ada perubahan data
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                      </div>'
+            );
+            redirect('admin/pengaturan');
+        } else {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Sukses,</strong> Status Upload berhasil di update
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                      </div>'
+            );
+            redirect('admin/pengaturan');
+        }
+    }
+    public function matikanUploadAmdk()
+    {
+        $this->Model_pengaturan->matikanUploadDataAmdk();
         if ($this->db->affected_rows() <= 0) {
             $this->session->set_flashdata(
                 'info',
@@ -99,10 +193,60 @@ class Pengaturan extends CI_Controller
             redirect('admin/pengaturan');
         }
     }
+    public function matikanUpdateBagian()
+    {
+        $this->Model_pengaturan->matikanUpdateDataBagian();
+        if ($this->db->affected_rows() <= 0) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Maaf,</strong> tidak ada perubahan data
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                      </div>'
+            );
+            redirect('admin/pengaturan');
+        } else {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Sukses,</strong> Status Update berhasil di update
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                      </div>'
+            );
+            redirect('admin/pengaturan');
+        }
+    }
+    public function matikanUpdateAmdk()
+    {
+        $this->Model_pengaturan->matikanUpdateDataAmdk();
+        if ($this->db->affected_rows() <= 0) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Maaf,</strong> tidak ada perubahan data
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                      </div>'
+            );
+            redirect('admin/pengaturan');
+        } else {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Sukses,</strong> Status Update berhasil di update
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                      </div>'
+            );
+            redirect('admin/pengaturan');
+        }
+    }
 
     public function aktivasiUser()
     {
-        $data['title'] = 'Aktivasi User / Pengguna ';
+        $data['title'] = 'Aktivasi User (Untuk Mematikan user agar tidak bisa login) ';
         $data['statusPenggunaUpk'] = $this->Model_pengaturan->cekStatusPenggunaUpk();
         $data['statusPenggunaBagian'] = $this->Model_pengaturan->cekStatusPenggunaBagian();
         // $data['statusPengisi'] = $this->Model_pengaturan->cekStatusPengisi();

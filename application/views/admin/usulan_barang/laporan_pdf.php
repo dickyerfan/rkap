@@ -76,7 +76,7 @@
                                     <th rowspan="2" class="align-middle">No</th>
                                     <th rowspan="2" class="align-middle">Bagian/UPK</th>
                                     <th colspan="2">Perkiraan</th>
-                                    <th colspan="5" class="align-middle">URAIAN TENTANG USULAN</th>
+                                    <th colspan="4" class="align-middle">URAIAN TENTANG USULAN</th>
                                     <!-- <th rowspan="2" class="align-middle">Keterangan</th> -->
                                     <!-- <th rowspan="2" class="align-middle">Action</th> -->
                                 </tr>
@@ -84,8 +84,8 @@
                                     <th>No Per</th>
                                     <th>Nama</th>
                                     <th>Kategori</th>
-                                    <th>Latar Belakang</th>
-                                    <th>Solusi/Usulan</th>
+                                    <!-- <th>Latar Belakang</th>
+                                    <th>Solusi/Usulan</th> -->
                                     <th>Volume</th>
                                     <th>Harga</th>
                                     <th>Biaya</th>
@@ -96,21 +96,18 @@
                                 $no = 1;
                                 foreach ($tampil as $row) :
                                     $id = $row->id_usulanBarang;
-                                    $harga = $row->biaya;
-                                    $satuan = $row->volume;
-                                    $jumlah = $harga * $satuan;
                                 ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $row->bagian_upk ?></td>
                                         <td><?= $row->no_perkiraan ?></td>
                                         <td><?= $row->nama_perkiraan ?></td>
-                                        <td class="text-center"><?= $row->kategori ?></td>
-                                        <td><?= $row->latar_belakang ?></td>
-                                        <td><?= $row->solusi ?></td>
+                                        <td><?= $row->kategori ?></td>
+                                        <!-- <td><?= $row->latar_belakang ?></td>
+                                        <td><?= $row->solusi ?></td> -->
                                         <td style="text-align: center;"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
+                                        <td style="text-align: right;"><?= number_format($row->harga_satuan, 0, ',', '.') ?></td>
                                         <td style="text-align: right;"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                        <td style="text-align: right;"><?= number_format($jumlah, 0, ',', '.') ?></td>
                                         <!-- <td><?= $row->ket ?></td> -->
                                         <!-- <td class="text-center">
                                                 <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
@@ -122,11 +119,9 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="8" class="text-end">Total</th>
+                                    <th colspan="6" class="text-end">Total</th>
+                                    <th></th>
                                     <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
-                                    <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
-                                                                return $item->biaya * $item->volume;
-                                                            }, $tampil)), 0, ',', '.') ?></th>
 
                                 </tr>
                             </tfoot>

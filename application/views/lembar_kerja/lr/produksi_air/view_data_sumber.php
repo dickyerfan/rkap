@@ -42,10 +42,10 @@
                             <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/data_sumber') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Reset</button> </a>
                         </div>
                         <div class="navbar-nav ms-auto">
-                            <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/lr/produksi_air/data_sumber/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
+                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> <i class="fas fa-arrow-left"></i> Kembali</button> </a>
                         </div>
                         <div class="navbar-nav">
-                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> <i class="fas fa-arrow-left"></i> Kembali</button> </a>
+                            <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/lr/produksi_air/data_sumber/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
                         </div>
                         <?php if ($this->session->userdata('tipe') == 'admin') : ?>
                             <?php
@@ -54,6 +54,9 @@
                             if (can_input($nama_pengguna, $level, $status_periode, $tahun)) : ?>
                                 <div class="navbar-nav">
                                     <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/input') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> <i class="fas fa-plus"></i> Input Data</button> </a>
+                                </div>
+                                <div class="navbar-nav">
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/copy_data') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> <i class="fas fa-copy"></i> Copi data tahun lalu</button> </a>
                                 </div>
                             <?php endif; ?>
                         <?php endif; ?>

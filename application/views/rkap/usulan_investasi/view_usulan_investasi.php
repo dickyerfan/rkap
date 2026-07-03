@@ -64,6 +64,9 @@
                                             <!-- <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td> -->
                                             <td><?= $row->ket ?></td>
                                             <td class="text-center">
+                                                <a href="<?= base_url('rkap/usulan_inves/detail_usulan_investasi/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                    <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
+                                                </a>
                                                 <a href="<?= base_url('rkap/usulan_inves/edit_usulan_investasi/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
                                                 <!-- <a href="<?= base_url('rkap/usulan_inves/detail_usulan_investasi/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a> -->
                                                 <a href="<?= base_url('rkap/usulan_inves/hapus_usulan_investasi/') ?><?= $id ?>" class="hapus-link"><i class="fas fa-trash text-danger"></i></a>
@@ -80,6 +83,7 @@
                                                                     }, $tampil)), 0, ',', '.') ?></th> -->
                                         <th colspan="2"></th>
                                     </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>

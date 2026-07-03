@@ -114,7 +114,7 @@ class Model_potensi_sr extends CI_Model
         $kap_manf = $kap_manfaat / (3.6 * 30 * $jam_op);
 
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'kap_pro' => (float) $this->input->post('kap_pro', true),
             'kap_manf' => $kap_manf,
             'jam_op' => (float) $this->input->post('jam_op', true),
@@ -177,7 +177,7 @@ class Model_potensi_sr extends CI_Model
     public function uploadData_tbh_airbaku()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'uraian' => $this->input->post('uraian', true),
             'bagian_upk' => $this->session->userdata('upk_bagian')
         ];
@@ -209,7 +209,7 @@ class Model_potensi_sr extends CI_Model
     public function uploadData_ket()
     {
         $data = [
-            'tahun_rkap' => (int) $this->input->post('tahun_rkap', true),
+            'tahun_rkap' => date('Y'),
             'nama_wil' => $this->input->post('nama_wil', true),
             'jumlah_sr' => (int) $this->input->post('jumlah_sr', true),
             'bagian_upk' => $this->session->userdata('upk_bagian')
