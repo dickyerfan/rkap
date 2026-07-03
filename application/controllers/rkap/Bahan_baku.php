@@ -112,11 +112,19 @@ class Bahan_baku extends MY_Controller
                 redirect('rkap/bahan_baku?tahun_rkap=' . $tahun_rkap);
             } else {
                 $data['title'] = 'Input Bahan Baku AMDK';
-                $this->load->view('templates/header', $data);
-                $this->load->view('templates/navbar');
-                $this->load->view('templates/sidebar');
-                $this->load->view('rkap/bahan_baku/upload_bahan_baku', $data);
-                $this->load->view('templates/footer');
+                if ($this->session->userdata('level') == 'admin') {
+                    $this->load->view('templates/header', $data);
+                    $this->load->view('templates/navbar');
+                    $this->load->view('templates/sidebar');
+                    $this->load->view('rkap/bahan_baku/upload_bahan_baku', $data);
+                    $this->load->view('templates/footer');
+                } else {
+                    $this->load->view('templates/pengguna/header', $data);
+                    $this->load->view('templates/pengguna/navbar');
+                    $this->load->view('templates/pengguna/sidebar');
+                    $this->load->view('rkap/bahan_baku/upload_bahan_baku', $data);
+                    $this->load->view('templates/pengguna/footer');
+                }
             }
         }
     }
@@ -171,11 +179,19 @@ class Bahan_baku extends MY_Controller
                 redirect('rkap/bahan_baku?tahun_rkap=' . $tahun_rkap);
             } else {
                 $data['title'] = 'Input Bahan Baku AMDK';
-                $this->load->view('templates/header', $data);
-                $this->load->view('templates/navbar');
-                $this->load->view('templates/sidebar');
-                $this->load->view('rkap/bahan_baku/upload_perlengkapan', $data);
-                $this->load->view('templates/footer');
+                if ($this->session->userdata('level') == 'admin') {
+                    $this->load->view('templates/header', $data);
+                    $this->load->view('templates/navbar');
+                    $this->load->view('templates/sidebar');
+                    $this->load->view('rkap/bahan_baku/upload_perlengkapan', $data);
+                    $this->load->view('templates/footer');
+                } else {
+                    $this->load->view('templates/pengguna/header', $data);
+                    $this->load->view('templates/pengguna/navbar');
+                    $this->load->view('templates/pengguna/sidebar');
+                    $this->load->view('rkap/bahan_baku/upload_perlengkapan', $data);
+                    $this->load->view('templates/pengguna/footer');
+                }
             }
         }
     }

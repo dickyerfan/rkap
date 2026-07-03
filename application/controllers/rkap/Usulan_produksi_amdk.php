@@ -87,11 +87,19 @@ class Usulan_produksi_amdk extends CI_Controller
                     ->get('rkap_amdk_produk')
                     ->result();
                 $data['title'] = 'Input Data Produksi AMDK';
-                $this->load->view('templates/header', $data);
-                $this->load->view('templates/navbar');
-                $this->load->view('templates/sidebar');
-                $this->load->view('rkap/usulan_produksi_amdk/upload_produksi', $data);
-                $this->load->view('templates/footer');
+                if ($this->session->userdata('level') == 'admin') {
+                    $this->load->view('templates/header', $data);
+                    $this->load->view('templates/navbar');
+                    $this->load->view('templates/sidebar');
+                    $this->load->view('rkap/usulan_produksi_amdk/upload_produksi', $data);
+                    $this->load->view('templates/footer');
+                } else {
+                    $this->load->view('templates/pengguna/header', $data);
+                    $this->load->view('templates/pengguna/navbar');
+                    $this->load->view('templates/pengguna/sidebar');
+                    $this->load->view('rkap/usulan_produksi_amdk/upload_produksi', $data);
+                    $this->load->view('templates/pengguna/footer');
+                }
             }
         }
     }
@@ -129,11 +137,19 @@ class Usulan_produksi_amdk extends CI_Controller
             $data['tahun_rkap'] = $tahun;
             $data['title'] = 'Edit Data Produksi AMDK';
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/navbar');
-            $this->load->view('templates/sidebar');
-            $this->load->view('rkap/usulan_produksi_amdk/edit_produksi', $data);
-            $this->load->view('templates/footer');
+            if ($this->session->userdata('level') == 'admin') {
+                $this->load->view('templates/header', $data);
+                $this->load->view('templates/navbar');
+                $this->load->view('templates/sidebar');
+                $this->load->view('rkap/usulan_produksi_amdk/edit_produksi', $data);
+                $this->load->view('templates/footer');
+            } else {
+                $this->load->view('templates/pengguna/header', $data);
+                $this->load->view('templates/pengguna/navbar');
+                $this->load->view('templates/pengguna/sidebar');
+                $this->load->view('rkap/usulan_produksi_amdk/edit_produksi', $data);
+                $this->load->view('templates/pengguna/footer');
+            }
         }
     }
 
@@ -165,11 +181,19 @@ class Usulan_produksi_amdk extends CI_Controller
         // kirim tahun ke model
         $data['data'] = $this->Model_produksi_amdk->getPersen($tahun);
 
-        $this->load->view('templates/pengguna/header', $data);
-        $this->load->view('templates/pengguna/navbar');
-        $this->load->view('templates/pengguna/sidebar');
-        $this->load->view('rkap/usulan_produksi_amdk/view_persen', $data);
-        $this->load->view('templates/pengguna/footer');
+        if ($this->session->userdata('level') == 'admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('rkap/usulan_produksi_amdk/view_persen', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('rkap/usulan_produksi_amdk/view_persen', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function tambah_persen()
@@ -230,12 +254,19 @@ class Usulan_produksi_amdk extends CI_Controller
                 );
                 redirect('rkap/usulan_produksi_amdk/persen');
             }
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/navbar');
-            $this->load->view('templates/sidebar');
-            $this->load->view('rkap/usulan_produksi_amdk/upload_persen', $data);
-            $this->load->view('templates/footer');
+            if ($this->session->userdata('level') == 'admin') {
+                $this->load->view('templates/header', $data);
+                $this->load->view('templates/navbar');
+                $this->load->view('templates/sidebar');
+                $this->load->view('rkap/usulan_produksi_amdk/upload_persen', $data);
+                $this->load->view('templates/footer');
+            } else {
+                $this->load->view('templates/pengguna/header', $data);
+                $this->load->view('templates/pengguna/navbar');
+                $this->load->view('templates/pengguna/sidebar');
+                $this->load->view('rkap/usulan_produksi_amdk/upload_persen', $data);
+                $this->load->view('templates/pengguna/footer');
+            }
         }
     }
 
@@ -282,11 +313,19 @@ class Usulan_produksi_amdk extends CI_Controller
                 );
                 redirect('rkap/usulan_produksi_amdk/persen');
             }
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/navbar');
-            $this->load->view('templates/sidebar');
-            $this->load->view('rkap/usulan_produksi_amdk/edit_persen', $data);
-            $this->load->view('templates/footer');
+            if ($this->session->userdata('level') == 'admin') {
+                $this->load->view('templates/header', $data);
+                $this->load->view('templates/navbar');
+                $this->load->view('templates/sidebar');
+                $this->load->view('rkap/usulan_produksi_amdk/edit_persen', $data);
+                $this->load->view('templates/footer');
+            } else {
+                $this->load->view('templates/pengguna/header', $data);
+                $this->load->view('templates/pengguna/navbar');
+                $this->load->view('templates/pengguna/sidebar');
+                $this->load->view('rkap/usulan_produksi_amdk/edit_persen', $data);
+                $this->load->view('templates/pengguna/footer');
+            }
         }
     }
 }

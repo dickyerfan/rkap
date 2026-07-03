@@ -38,7 +38,7 @@
                             <a class="nav-link fw-bold" target="_blank" href="<?= base_url('rkap/pendapatan_ops_amdk/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
                         </div>
                         <div class="navbar-nav">
-                            <a class="nav-link fw-bold" href="<?= base_url('rkap/pendapatan_ops_amdk/tambah') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input Harga</button> </a>
+                            <a class="nav-link fw-bold" href="<?= base_url('rkap/pendapatan_ops_amdk/tambah') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input/Update Harga</button> </a>
                         </div>
                     </nav>
                 </div>

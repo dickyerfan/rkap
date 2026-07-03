@@ -167,11 +167,19 @@ class Investasi_amdk extends MY_Controller
                 // TAMBAHAN: Kirim data Satuan ke view
                 $data['satuan_list'] = ['unit', 'meter', 'buah', 'set', 'sak', 'm2', 'm3', 'ls'];
 
-                $this->load->view('templates/header', $data);
-                $this->load->view('templates/navbar');
-                $this->load->view('templates/sidebar');
-                $this->load->view('rkap/investasi/upload_investasi', $data);
-                $this->load->view('templates/footer');
+                if ($this->session->userdata('level') == 'admin') {
+                    $this->load->view('templates/header', $data);
+                    $this->load->view('templates/navbar');
+                    $this->load->view('templates/sidebar');
+                    $this->load->view('rkap/investasi/upload_investasi', $data);
+                    $this->load->view('templates/footer');
+                } else {
+                    $this->load->view('templates/pengguna/header', $data);
+                    $this->load->view('templates/pengguna/navbar');
+                    $this->load->view('templates/pengguna/sidebar');
+                    $this->load->view('rkap/investasi/upload_investasi', $data);
+                    $this->load->view('templates/pengguna/footer');
+                }
             }
         }
     }
@@ -293,11 +301,19 @@ class Investasi_amdk extends MY_Controller
                 $data['no_per_id'] = $this->db->get('no_per')->result();
 
                 // Load view lengkap
-                $this->load->view('templates/header', $data);
-                $this->load->view('templates/navbar');
-                $this->load->view('templates/sidebar');
-                $this->load->view('rkap/investasi/edit_investasi', $data);
-                $this->load->view('templates/footer');
+                if ($this->session->userdata('level') == 'admin') {
+                    $this->load->view('templates/header', $data);
+                    $this->load->view('templates/navbar');
+                    $this->load->view('templates/sidebar');
+                    $this->load->view('rkap/investasi/edit_investasi', $data);
+                    $this->load->view('templates/footer');
+                } else {
+                    $this->load->view('templates/pengguna/header', $data);
+                    $this->load->view('templates/pengguna/navbar');
+                    $this->load->view('templates/pengguna/sidebar');
+                    $this->load->view('rkap/investasi/edit_investasi', $data);
+                    $this->load->view('templates/pengguna/footer');
+                }
             }
         }
     }

@@ -102,12 +102,19 @@ class Pemeliharaan extends MY_Controller
                 redirect('rkap/pemeliharaan?tahun_rkap=' . $tahun);
             } else {
                 $data['title'] = 'Input Biaya Pemeliharaan AMDK';
-
-                $this->load->view('templates/header', $data);
-                $this->load->view('templates/navbar');
-                $this->load->view('templates/sidebar');
-                $this->load->view('rkap/pemeliharaan/upload_pemeliharaan', $data);
-                $this->load->view('templates/footer');
+                if ($this->session->userdata('level') == 'admin') {
+                    $this->load->view('templates/header', $data);
+                    $this->load->view('templates/navbar');
+                    $this->load->view('templates/sidebar');
+                    $this->load->view('rkap/pemeliharaan/upload_pemeliharaan', $data);
+                    $this->load->view('templates/footer');
+                } else {
+                    $this->load->view('templates/pengguna/header', $data);
+                    $this->load->view('templates/pengguna/navbar');
+                    $this->load->view('templates/pengguna/sidebar');
+                    $this->load->view('rkap/pemeliharaan/upload_pemeliharaan', $data);
+                    $this->load->view('templates/pengguna/footer');
+                }
             }
         }
     }
