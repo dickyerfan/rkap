@@ -61,7 +61,7 @@
                                         <!-- <th>No</th> -->
                                         <th rowspan="2" class="align-middle">Uraian</th>
                                         <th rowspan="2" class="align-middle">Satuan</th>
-                                        <th colspan="2">S/D Juli <?= $tahun; ?></th>
+                                        <th colspan="2">S/D Juni <?= $tahun; ?></th>
                                         <th colspan="2">Naik/Turun</th>
                                         <!-- <th rowspan="2" class="align-middle">Action</th> -->
                                     </tr>

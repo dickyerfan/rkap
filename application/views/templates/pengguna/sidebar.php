@@ -11,6 +11,10 @@
                         <div class="sb-nav-link-icon"><i class="fa-fw fas fa-tachometer-alt"></i></div>
                         <div style="font-size: 0.8rem;"> Dashboard</div>
                     </a>
+                    <a class="nav-link" href="<?= base_url('struktur') ?>">
+                        <div class="sb-nav-link-icon"><i class="fa-fw fas fa-users"></i></div>
+                        <div style="font-size: 0.8rem;"> Struktur</div>
+                    </a>
 
                     <!-- <a class="nav-link" href="<?= base_url('pengaduan') ?>">
                         <div class="sb-nav-link-icon"><i class="fa-fw fa fa-comments"></i></div>

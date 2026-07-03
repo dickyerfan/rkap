@@ -47,6 +47,7 @@
                                 <a class="nav-link" href="<?= base_url('rkap_admin') ?>" style="font-size: 0.8rem;"> Periode RKAP</a>
                                 <a class="nav-link" href="<?= base_url('admin/usulan_barang/kategori_barang') ?>" style="font-size: 0.8rem;">Kategori Barang</a>
                                 <a class="nav-link" href="<?= base_url('admin/usulan_barang/master_barang') ?>" style="font-size: 0.8rem;">Master Barang</a>
+                                <a class="nav-link" href="<?= base_url('admin/pengaturan/struktur') ?>" style="font-size: 0.8rem;">Struktur Karyawan</a>
 
                             <?php endif; ?>
                             <a class="nav-link" href="<?= base_url('admin/pengaturan/kumpul_data') ?>" style="font-size: 0.8rem;">Cek Pengumpulan Data</a>

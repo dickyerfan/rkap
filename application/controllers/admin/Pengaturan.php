@@ -378,6 +378,114 @@ class Pengaturan extends CI_Controller
         redirect('admin/pengaturan/aktivasiAdmin');
     }
 
+    public function struktur()
+    {
+        $data['title'] = 'Struktur Karyawan';
+        $data['karyawan_aktif'] = $this->db->query("
+            SELECT k.*, b.nama_bagian, s.nama_subag, j.nama_jabatan
+            FROM karyawan k
+            LEFT JOIN bagian b ON k.id_bagian = b.id_bagian
+            LEFT JOIN subag s ON k.id_subag = s.id_subag
+            LEFT JOIN jabatan j ON k.id_jabatan = j.id_jabatan
+            WHERE k.aktif = 1
+            ORDER BY b.nama_bagian DESC, s.nama_subag DESC, j.nama_jabatan , k.nama DESC
+        ")->result();
+        $data['karyawan_purna'] = $this->db->query("
+            SELECT k.*, b.nama_bagian, s.nama_subag, j.nama_jabatan
+            FROM karyawan k
+            LEFT JOIN bagian b ON k.id_bagian = b.id_bagian
+            LEFT JOIN subag s ON k.id_subag = s.id_subag
+            LEFT JOIN jabatan j ON k.id_jabatan = j.id_jabatan
+            WHERE k.aktif = 0
+            ORDER BY k.nama
+        ")->result();
+        $data['bagian'] = $this->db->get('bagian')->result();
+        $data['subag'] = $this->db->get('subag')->result();
+        $data['jabatan'] = $this->db->get('jabatan')->result();
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('admin/view_struktur_karyawan', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function strukturTambah()
+    {
+        $this->db->insert('karyawan', [
+            'id_bagian' => $this->input->post('id_bagian'),
+            'id_subag' => $this->input->post('id_subag'),
+            'id_jabatan' => $this->input->post('id_jabatan'),
+            'nama' => $this->input->post('nama'),
+            'alamat' => $this->input->post('alamat'),
+            'agama' => $this->input->post('agama'),
+            'status_pegawai' => $this->input->post('status_pegawai'),
+            'nik' => $this->input->post('nik'),
+            'no_hp' => $this->input->post('no_hp'),
+            'jenkel' => $this->input->post('jenkel'),
+            'tmp_lahir' => $this->input->post('tmp_lahir'),
+            'tgl_lahir' => $this->input->post('tgl_lahir'),
+            'tgl_masuk' => $this->input->post('tgl_masuk'),
+            'aktif' => 1,
+        ]);
+        $this->session->set_flashdata('info', '
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Sukses,</strong> Karyawan berhasil ditambahkan
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>');
+        redirect('admin/pengaturan/struktur');
+    }
+
+    public function strukturEdit()
+    {
+        $id = $this->input->post('id');
+        $this->db->where('id', $id);
+        $this->db->update('karyawan', [
+            'id_bagian' => $this->input->post('id_bagian'),
+            'id_subag' => $this->input->post('id_subag'),
+            'id_jabatan' => $this->input->post('id_jabatan'),
+            'nama' => $this->input->post('nama'),
+            'alamat' => $this->input->post('alamat'),
+            'agama' => $this->input->post('agama'),
+            'status_pegawai' => $this->input->post('status_pegawai'),
+            'nik' => $this->input->post('nik'),
+            'no_hp' => $this->input->post('no_hp'),
+            'jenkel' => $this->input->post('jenkel'),
+            'tmp_lahir' => $this->input->post('tmp_lahir'),
+            'tgl_lahir' => $this->input->post('tgl_lahir'),
+            'tgl_masuk' => $this->input->post('tgl_masuk'),
+        ]);
+        $this->session->set_flashdata('info', '
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Sukses,</strong> Data karyawan berhasil diupdate
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>');
+        redirect('admin/pengaturan/struktur');
+    }
+
+    public function strukturNonaktifkan($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('karyawan', ['aktif' => 0]);
+        $this->session->set_flashdata('info', '
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Sukses,</strong> Karyawan dinonaktifkan
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>');
+        redirect('admin/pengaturan/struktur');
+    }
+
+    public function strukturAktifkan($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('karyawan', ['aktif' => 1]);
+        $this->session->set_flashdata('info', '
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Sukses,</strong> Karyawan diaktifkan kembali
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>');
+        redirect('admin/pengaturan/struktur');
+    }
+
     // public function kumpul_data()
     // {
     //     $data['title'] = 'Cek Pengumpulan Data';
