@@ -7,7 +7,7 @@
                         <div class="sb-nav-link-icon"><i class="fa-fw fas fa-wallet"></i></div>
                         Beranda
                     </a> -->
-                    <a class="nav-link" href="<?= base_url('pengguna') ?>">
+                    <a class="nav-link" href="<?= base_url('admin/dashboard_upk') ?>">
                         <div class="sb-nav-link-icon"><i class="fa-fw fas fa-tachometer-alt"></i></div>
                         <div style="font-size: 0.8rem;"> Dashboard</div>
                     </a>
@@ -30,7 +30,7 @@
                     $isAmdk = ($upk_bagian === 'amdk');
                     $perencanaan = ($upk_bagian === 'perencanaan');
                     $pemeliharaan = ($upk_bagian === 'pemeliharaan');
-                    $umum = ($upk_bagian === 'umum');
+                    $umum = ($upk_bagian === 'umum' || $upk_bagian === 'hendi' || $upk_bagian === 'yuliatin');
                     $uangLangSpi = ($upk_bagian === 'langganan' || $upk_bagian === 'keuangan' || $upk_bagian === 'spi');
                     // $rencana = ($upk_bagian === 'rencana');
                     // $barang = ($upk_bagian === 'barang');

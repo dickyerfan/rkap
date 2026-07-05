@@ -56,6 +56,7 @@ class model_user extends CI_Model
             'upk_bagian' => $this->input->post('upk_bagian', true),
             'level' => $this->input->post('level', true),
             'tipe' => $this->input->post('tipe', true),
+            'status' => $this->input->post('status', true)
         ];
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('user', $data);

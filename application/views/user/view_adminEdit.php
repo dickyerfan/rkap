@@ -55,6 +55,15 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tipe">Status :</label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="1" <?= $user->status == '1' ? 'selected' : '' ?>>Aktif</option>
+                                        <option value="0" <?= $user->status == '0' ? 'selected' : '' ?>>Tidak Aktif</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <button class="btn btn-primary btn-sm mt-2" name="tambah" type="submit"><i class="fas fa-save"></i> Update</button>
                     </form>
