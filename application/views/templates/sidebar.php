@@ -9,9 +9,12 @@
                     </a> -->
                     <a class="nav-link" href="<?= base_url('dashboard') ?>">
                         <div class="sb-nav-link-icon"><i class="fa-fw fas fa-tachometer-alt"></i></div>
-                        <div style="font-size: 0.8rem;"> Dashboard</div>
+                        <div style="font-size: 0.8rem;"> Struktur</div>
                     </a>
-
+                    <a class="nav-link" href="<?= base_url('admin/dashboard_upk') ?>">
+                        <div class="sb-nav-link-icon"><i class="fa-fw fas fa-chart-line"></i></div>
+                        <div style="font-size: 0.8rem;"> Ringkasan UPK</div>
+                    </a>
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#rkap" aria-expanded="false" aria-controls="rkap">
                         <div class="sb-nav-link-icon"><i class="fa-fw fa fa-file-invoice"></i></div>
                         <div style="font-size: 0.8rem;"> R K A P</div>

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Pengguna extends CI_Controller
+class Dashboard_upk extends MY_Controller
 {
 
     private $cabang_map = [
@@ -27,48 +27,52 @@ class Pengguna extends CI_Controller
         parent::__construct();
         $this->load->model('Model_laba_rugi');
         date_default_timezone_set('Asia/Jakarta');
+        if (!$this->session->userdata('level')) {
+            redirect('auth');
+        }
     }
 
     public function index()
     {
-        if ($this->session->userdata('level') != 'Pengguna') {
-            $this->session->set_flashdata(
-                'info',
-                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>Maaf,</strong> Anda harus login sebagai Pengguna...
-                      </div>'
-            );
-            redirect('auth');
-        }
-
-        $upk_bagian = $this->session->userdata('upk_bagian');
-        $tipe = $this->session->userdata('tipe');
-        $isAmdk = ($upk_bagian === 'amdk');
+        $id_upk = $this->input->get('id_upk');
         $tahun_ini = date('Y');
         $tahun_depan = $tahun_ini + 1;
 
         $data['tahun_ini'] = $tahun_ini;
         $data['tahun_depan'] = $tahun_depan;
 
-        if ($isAmdk) {
+        $data['upk_list'] = $this->db->where('status =', 1)->order_by('kode', 'ASC')->get('rkap_nama_upk')->result();
+        $data['selected_upk'] = $id_upk;
+
+        if ($id_upk === 'amdk') {
+            $data['is_amdk'] = true;
+            $data['title'] = 'DASHBOARD AMDK';
             $data = $this->getAmdkData($data, $tahun_ini, $tahun_depan);
-            $view = 'view_dashboard_pengguna_amdk';
-        } elseif ($tipe === 'upk' && isset($this->cabang_map[$upk_bagian])) {
-            $cabang_id = $this->cabang_map[$upk_bagian];
+            $view = 'admin/dashboard_upk/view_dashboard_upk';
+        } elseif (!empty($id_upk)) {
+            $data['is_amdk'] = false;
+            $upk = $this->db->where('id_upk', $id_upk)->get('rkap_nama_upk')->row();
+            $data['nama_upk'] = $upk->nama_upk ?? '';
+            $upk_bagian = strtolower(str_replace(' ', '', $data['nama_upk']));
+            $cabang_id = $upk->kode ?? '';
             $data['cabang_id'] = $cabang_id;
+            $data['upk_bagian'] = $upk_bagian;
+            $data['title'] = 'DASHBOARD ' . strtoupper($data['nama_upk']);
             $data = $this->getUpkData($data, $tahun_ini, $tahun_depan, $cabang_id, $upk_bagian);
-            $view = 'view_dashboard_pengguna';
+            $view = 'admin/dashboard_upk/view_dashboard_upk';
         } else {
-            $data['title'] = 'Dashboard';
-            $view = 'view_dashboard';
+            $data['is_amdk'] = false;
+            $data['is_total'] = true;
+            $data['title'] = 'DASHBOARD RKAP - KONSOLIDASI';
+            $data = $this->getTotalData($data, $tahun_ini, $tahun_depan);
+            $view = 'admin/dashboard_upk/view_dashboard_upk';
         }
 
-        $data['title'] = 'Dashboard RKAP';
-        $this->load->view('templates/pengguna/header', $data);
-        $this->load->view('templates/pengguna/navbar');
-        $this->load->view('templates/pengguna/sidebar');
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
         $this->load->view($view, $data);
-        $this->load->view('templates/pengguna/footer');
+        $this->load->view('templates/footer');
     }
 
     private function getUpkData($data, $tahun_ini, $tahun_depan, $cabang_id, $upk_bagian)
@@ -122,8 +126,6 @@ class Pengguna extends CI_Controller
         $data['selisih_pola_kon'] = ($data['potensi_sr_depan']->pola_kon ?? 0) - ($data['potensi_sr_ini']->pola_kon ?? 0);
 
         $data['evaluasi_upk_ini'] = $this->db->get_where('evaluasi_upk', ['tahun_rkap' => $tahun_ini, 'bagian_upk' => $upk_bagian])->result();
-
-        $data['nama_upk'] = ucwords(str_replace(['1', '2'], [' 1', ' 2'], $upk_bagian));
 
         return $data;
     }
@@ -180,6 +182,66 @@ class Pengguna extends CI_Controller
             ->join('rkap_amdk_produk pr', 'p.id_produk = pr.id_produk')
             ->where('p.tahun_rkap', $tahun_depan)
             ->get()->result();
+
+        return $data;
+    }
+
+    private function getTotalData($data, $tahun_ini, $tahun_depan)
+    {
+        $codePendapatanUsaha = ['81.01', '81.02', '81.03'];
+        $codeBebanUsaha = ['91', '92', '93', '95'];
+        $codeBebanUmum = ['96'];
+        $codeNonUsaha = ['88', '98'];
+        $codeLuarBiasa = ['89.01.01', '99.01.01'];
+        $codePajak = ['97.01.01', '97.01.02', '97.01.03'];
+
+        $data['pendapatan_ini'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_ini, 'all', $codePendapatanUsaha);
+        $data['pendapatan_depan'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_depan, 'all', $codePendapatanUsaha);
+
+        $data['beban_ini'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_ini, 'all', $codeBebanUsaha);
+        $data['beban_depan'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_depan, 'all', $codeBebanUsaha);
+
+        $data['beban_umum_ini'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_ini, 'all', $codeBebanUmum);
+        $data['beban_umum_depan'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_depan, 'all', $codeBebanUmum);
+
+        $data['non_usaha_ini'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_ini, 'all', $codeNonUsaha);
+        $data['non_usaha_depan'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_depan, 'all', $codeNonUsaha);
+
+        $data['luar_biasa_ini'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_ini, 'all', $codeLuarBiasa);
+        $data['luar_biasa_depan'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_depan, 'all', $codeLuarBiasa);
+
+        $data['pajak_ini'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_ini, 'all', $codePajak);
+        $data['pajak_depan'] = $this->Model_laba_rugi->getTotalsByCodes($tahun_depan, 'all', $codePajak);
+
+        $data['total_pendapatan_ini'] = $this->sumTotals($data['pendapatan_ini']);
+        $data['total_pendapatan_depan'] = $this->sumTotals($data['pendapatan_depan']);
+
+        $data['total_beban_ini'] = $this->sumTotals($data['beban_ini']);
+        $data['total_beban_depan'] = $this->sumTotals($data['beban_depan']);
+
+        $data['total_beban_umum_ini'] = $data['beban_umum_ini']['96']['total'] ?? 0;
+        $data['total_beban_umum_depan'] = $data['beban_umum_depan']['96']['total'] ?? 0;
+
+        $pend_non_usaha_ini = ($data['non_usaha_ini']['88']['total'] ?? 0) - ($data['non_usaha_ini']['98']['total'] ?? 0);
+        $pend_non_usaha_depan = ($data['non_usaha_depan']['88']['total'] ?? 0) - ($data['non_usaha_depan']['98']['total'] ?? 0);
+
+        $data['total_luar_biasa_ini'] = ($data['luar_biasa_ini']['89.01.01']['total'] ?? 0) - ($data['luar_biasa_ini']['99.01.01']['total'] ?? 0);
+        $data['total_luar_biasa_depan'] = ($data['luar_biasa_depan']['89.01.01']['total'] ?? 0) - ($data['luar_biasa_depan']['99.01.01']['total'] ?? 0);
+
+        $data['total_pajak_ini'] = $this->sumTotals($data['pajak_ini']);
+        $data['total_pajak_depan'] = $this->sumTotals($data['pajak_depan']);
+
+        $data['laba_kotor_ini'] = $data['total_pendapatan_ini'] - $data['total_beban_ini'];
+        $data['laba_kotor_depan'] = $data['total_pendapatan_depan'] - $data['total_beban_depan'];
+
+        $data['laba_operasional_ini'] = $data['laba_kotor_ini'] - $data['total_beban_umum_ini'];
+        $data['laba_operasional_depan'] = $data['laba_kotor_depan'] - $data['total_beban_umum_depan'];
+
+        $data['laba_sebelum_pajak_ini'] = $data['laba_operasional_ini'] + $pend_non_usaha_ini;
+        $data['laba_sebelum_pajak_depan'] = $data['laba_operasional_depan'] + $pend_non_usaha_depan;
+
+        $data['laba_bersih_ini'] = $data['laba_sebelum_pajak_ini'] + $data['total_luar_biasa_ini'] - $data['total_pajak_ini'];
+        $data['laba_bersih_depan'] = $data['laba_sebelum_pajak_depan'] + $data['total_luar_biasa_depan'] - $data['total_pajak_depan'];
 
         return $data;
     }

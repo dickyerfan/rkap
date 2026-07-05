@@ -47,6 +47,13 @@
                                     </a>
                                 </div>
                             <?php endif; ?>
+                        <?php else : ?>
+                            <div class="navbar-nav ms-auto">
+                                <!-- <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/rkap_amdk/produksi/tambah_tarif') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input Data</button> </a> -->
+                                <a href="<?= base_url('lembar_kerja/rkap_amdk/produksi/copy_tarif?tahun_rkap=' . ($tahun)) ?>">
+                                    <button class="neumorphic-button"> Copy Data Tahun Sebelumnya</button>
+                                </a>
+                            </div>
                         <?php endif; ?>
                         <div class="navbar-nav">
                             <?php if ($this->session->userdata('level') == 'Admin') : ?>

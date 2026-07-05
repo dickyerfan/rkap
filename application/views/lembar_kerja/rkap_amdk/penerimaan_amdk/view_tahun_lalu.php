@@ -43,6 +43,10 @@
                                     <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/rkap_amdk/penerimaan_amdk/input_tahun_lalu') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fas fa-plus"></i> Input Tahun Lalu</button> </a>
                                 </div>
                             <?php endif; ?>
+                        <?php else : ?>
+                            <div class="navbar-nav ms-2">
+                                <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/rkap_amdk/penerimaan_amdk/input_tahun_lalu') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fas fa-plus"></i> Input Tahun Lalu</button> </a>
+                            </div>
                         <?php endif; ?>
                         <!-- <?php if ($this->session->userdata('tipe') == 'admin') : ?>
                             <?php if (!empty($upk)) : ?>
