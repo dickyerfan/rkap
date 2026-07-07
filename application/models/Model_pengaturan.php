@@ -266,6 +266,7 @@ class Model_pengaturan extends CI_Model
         $this->db->select('upk_bagian');
         $this->db->from('user');
         $this->db->where('tipe', 'upk');
+        $this->db->where('upk_bagian !=', 'amdk');
         $query = $this->db->get();
         return $query->result();
     }
@@ -290,10 +291,23 @@ class Model_pengaturan extends CI_Model
     }
     public function cekEvaluasiUpk()
     {
-        $this->db->select('bagian_upk');
+        $this->db->select('bagian_upk, COUNT(DISTINCT uraian_evaluasi) as jml');
         $this->db->from('evaluasi_upk');
         $this->db->where('tahun_rkap', date('Y'));
+        $this->db->group_by('bagian_upk');
         $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function cekProyeksiUpk()
+    {
+        $query = $this->db->query("
+            SELECT REPLACE(LOWER(rnu.nama_upk), ' ', '') as bagian_upk
+            FROM rkap_evaluasi_pelanggan rep
+            JOIN rkap_nama_upk rnu ON rnu.id_upk = rep.id_upk
+            WHERE rep.tahun_rkap = ?
+            GROUP BY rnu.nama_upk
+        ", [date('Y') + 1]);
         return $query->result();
     }
     public function cekEvaluasiAmdk()

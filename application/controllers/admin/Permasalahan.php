@@ -9,6 +9,7 @@ class Permasalahan extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_permasalahan');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -62,7 +63,7 @@ class Permasalahan extends CI_Controller
     public function upload()
     {
 
-        $statusUpload = $this->Model_permasalahan->getStatusUpload('permasalahan');
+        $statusUpload = $this->Model_pengaturan->getStatusUpload('permasalahan');
         if ($statusUpload !== null && $statusUpload->status == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -116,7 +117,7 @@ class Permasalahan extends CI_Controller
     public function edit_permasalahan($id_permasalahan)
     {
         $data['title'] = 'Update Usulan barang';
-        $statusUpdate = $this->Model_permasalahan->getStatusUpdate('permasalahan');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('permasalahan');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -165,7 +166,7 @@ class Permasalahan extends CI_Controller
 
     public function hapus_usulan_barang($id_permasalahan)
     {
-        $statusUpdate = $this->Model_permasalahan->getStatusUpdate('permasalahan');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('permasalahan');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',

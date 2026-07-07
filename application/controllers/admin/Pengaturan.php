@@ -346,6 +346,8 @@ class Pengaturan extends CI_Controller
         $data['namaBagian'] = $this->Model_pengaturan->cekNamaBagian();
         $data['permasalahan'] = $this->Model_pengaturan->cekPermasalahan();
         $data['evaluasiProgram'] = $this->Model_pengaturan->cekEvaluasiProgram();
+        $data['proyeksiUpk'] = $this->Model_pengaturan->cekProyeksiUpk();
+
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');

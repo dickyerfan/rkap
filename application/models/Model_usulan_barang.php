@@ -225,6 +225,7 @@ class Model_usulan_barang extends CI_Model
             $this->db->group_start();
             $this->db->where('nama_kategori', 'Peralatan kantor');
             $this->db->or_where('nama_kategori', 'Barang Percetakan');
+            $this->db->or_where('nama_kategori', 'Perlengkapan Trandis (UPK)');
             $this->db->group_end();
         }
 

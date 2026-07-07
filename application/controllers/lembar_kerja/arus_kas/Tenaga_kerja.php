@@ -127,7 +127,8 @@ class Tenaga_kerja extends MY_Controller
         if (!can_input(
             $this->session->userdata('nama_pengguna'),
             $this->session->userdata('level'),
-            $this->status_periode
+            $this->status_periode,
+            $this->session->userdata('tahun_rkap') ?: date('Y') + 1
         )) {
             show_error('Aksi edit tidak diperbolehkan pada periode ini.', 403);
         }
@@ -185,18 +186,8 @@ class Tenaga_kerja extends MY_Controller
             $t_pangan = 0;
         }
 
-        // hitung direktur dan manajer
-        if ($pegawai['jabatan'] == 'Manajer') {
-            $t_istri = 0;
-            $t_anak  = 0;
-            $t_jabatan = 0;
-            $t_transport = 0;
-            $t_pangan = 0;
-            $uang_makan = 0;
-            $t_perumahan = 0;
-            $bpjs_tk = 0;
-            $dapenmapamsi = 0;
-        } elseif ($pegawai['jabatan'] == 'Direktur') {
+        // hitung direktur
+        if ($pegawai['jabatan'] == 'Direktur') {
             $t_istri = 0;
             $t_anak  = 0;
             $t_jabatan = 0;
@@ -209,19 +200,7 @@ class Tenaga_kerja extends MY_Controller
 
         $bpjs_kesehatan = ($gaji_pokok + $t_istri + $t_anak + $t_pangan + $t_perumahan) * 0.04;
 
-        if ($pegawai['jabatan'] == 'Manajer') {
-            $t_istri = 0;
-            $t_anak  = 0;
-            $t_jabatan = 0;
-            $t_transport = 0;
-            $t_pangan = 0;
-            $uang_makan = 0;
-            $t_perumahan = 0;
-            $bpjs_tk = 0;
-            $dapenmapamsi = 0;
-        } else {
-            $bpjs_tk = ($gaji_pokok + $t_istri + $t_anak + $t_pangan + $t_perumahan) * 0.0689;
-        }
+        $bpjs_tk = ($gaji_pokok + $t_istri + $t_anak + $t_pangan + $t_perumahan) * 0.0689;
 
         if ($dapenma == 1) {
             $dapenmapamsi = ($gaji_pokok + $t_istri + $t_anak) * 0.1517;
@@ -236,25 +215,7 @@ class Tenaga_kerja extends MY_Controller
         $total_gaji = $gaji_pokok + $t_istri + $t_anak + $t_pangan + $t_jabatan + $t_perumahan
             + $uang_makan + $t_transport + $bpjs_tk + $bpjs_kesehatan + $dapenmapamsi;
 
-        if ($pegawai['jabatan'] == 'Manajer') {
-            $data_update = [
-                'gaji_pokok' => $gaji_pokok,
-                'j_istri' => $j_istri,
-                'j_anak' => $j_anak,
-                't_istri' => $t_istri,
-                't_anak' => $t_anak,
-                't_pangan' => $t_pangan,
-                'uang_makan' => $uang_makan,
-                't_transport' => $t_transport,
-                't_perumahan' => $t_perumahan,
-                't_jabatan' => $t_jabatan,
-                'bpjs_tk' => $bpjs_tk,
-                'bpjs_kesehatan' => $bpjs_kesehatan,
-                'dapenmapamsi' => $dapenmapamsi,
-                'total_gaji' => $total_gaji,
-                'ptgs_update' => $this->session->userdata('nama_lengkap'),
-            ];
-        } elseif ($pegawai['jabatan'] == 'Direktur') {
+        if ($pegawai['jabatan'] == 'Direktur') {
             $data_update = [
                 'gaji_pokok' => $gaji_pokok,
                 'j_istri' => $j_istri,
@@ -390,10 +351,6 @@ class Tenaga_kerja extends MY_Controller
                         }
                     }
 
-                    if ($pegawai['jabatan'] == 'Manajer') {
-                        $bpjs_tk = 0;
-                    }
-
                     $total_gaji = $gaji_pokok_baru + $t_istri + $t_anak + $t_pangan + $data_sebelum['t_jabatan']
                         + $data_sebelum['t_perumahan'] + $data_sebelum['uang_makan'] + $data_sebelum['t_transport']
                         + $bpjs_tk  + $bpjs_kesehatan + $dapenmapamsi;
@@ -504,7 +461,8 @@ class Tenaga_kerja extends MY_Controller
         if (!can_generate(
             $this->session->userdata('nama_pengguna'),
             $this->session->userdata('level'),
-            $this->status_periode
+            $this->status_periode,
+            $this->session->userdata('tahun_rkap') ?: date('Y') + 1
         )) {
             show_error('Fitur generate tidak diperbolehkan pada periode ini.', 403);
         }

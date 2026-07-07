@@ -52,7 +52,7 @@
                                             </option>
                                         <?php endforeach; ?>
                                     </select> -->
-                                    <input type="text" class="form-control" id="nama_perkiraan" name="nama_perkiraan" placeholder="Tidak Perlu di isi" value="<?= set_value('nama_perkiraan'); ?>">
+                                    <input type="text" class="form-control" id="no_perkiraan" name="no_perkiraan" placeholder="Tidak Perlu di isi" value="<?= set_value('no_perkiraan'); ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('no_perkiraan'); ?></small>
                                 </div>
 

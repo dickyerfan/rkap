@@ -32,7 +32,7 @@
                                         <th>Usulan Investasi</th>
                                         <th>Usulan Barang</th>
                                         <th>Usulan Pemeliharaan</th>
-                                        <!-- <th>Evaluasi AMDK</th> -->
+                                        <th>Proyeksi UPK</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -41,10 +41,10 @@
                                     foreach ($namaUpk as $row) :
                                         $SrMatched = false;
                                         $evaluasiMatched = false;
-                                        $evaAmdkMatched = false;
                                         $barangMatched = false;
                                         $investasiMatched = false;
                                         $pemeliharaanMatched = false;
+                                        $proyeksiMatched = false;
 
                                         foreach ($potensiSr as $sr) {
                                             if ($sr->bagian_upk == $row->upk_bagian) {
@@ -53,7 +53,7 @@
                                             }
                                         }
                                         foreach ($evaluasiUpk as $evaluasi) {
-                                            if ($evaluasi->bagian_upk == $row->upk_bagian) {
+                                            if ($evaluasi->bagian_upk == $row->upk_bagian && $evaluasi->jml >= 5) {
                                                 $evaluasiMatched = true;
                                                 break;
                                             }
@@ -78,9 +78,9 @@
                                                 break;
                                             }
                                         }
-                                        foreach ($evaluasiAmdk as $evaAmdk) {
-                                            if ($evaAmdk->bagian_upk == $row->upk_bagian) {
-                                                $evaAmdkMatched = true;
+                                        foreach ($proyeksiUpk as $proyeksi) {
+                                            if ($proyeksi->bagian_upk == $row->upk_bagian) {
+                                                $proyeksiMatched = true;
                                                 break;
                                             }
                                         }
@@ -93,7 +93,7 @@
                                             <td class="text-center fw-bold <?= $investasiMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $investasiMatched ? 'Sudah' : 'Belum'; ?></td>
                                             <td class="text-center fw-bold <?= $barangMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $barangMatched ? 'Sudah' : 'Belum'; ?></td>
                                             <td class="text-center fw-bold <?= $pemeliharaanMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $pemeliharaanMatched ? 'Sudah' : 'Belum'; ?></td>
-                                            <!-- <td class="text-center fw-bold <?= $evaAmdkMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $evaAmdkMatched ? 'Sudah' : '-'; ?></td> -->
+                                            <td class="text-center fw-bold <?= $proyeksiMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $proyeksiMatched ? 'Sudah' : 'Belum'; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

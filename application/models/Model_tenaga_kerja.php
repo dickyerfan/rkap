@@ -260,9 +260,17 @@ class Model_tenaga_kerja extends CI_Model
         if ($pegawai['status_pegawai'] == 'Karyawan Tetap') {
             $tunj_transport = 15000 * $hari_kerja;
             $uang_makan = 10000 * $hari_kerja;
-        } else { // Kontrak
+        } else {
             $tunj_transport = 12500 * $hari_kerja;
             $uang_makan = 5000 * $hari_kerja;
+        }
+
+        // Direktur tidak mendapat tunjangan
+        if ($pegawai['jabatan'] == 'Direktur') {
+            $tunj_istri = 0;
+            $tunj_anak = 0;
+            $tunj_transport = 0;
+            $uang_makan = 0;
         }
 
         $total = $gaji_pokok + $tunj_istri + $tunj_anak  + $tunj_transport + $uang_makan;

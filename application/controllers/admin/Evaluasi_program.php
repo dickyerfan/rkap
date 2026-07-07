@@ -9,6 +9,7 @@ class Evaluasi_program extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_evaluasi_program');
+        $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -57,7 +58,7 @@ class Evaluasi_program extends CI_Controller
     public function edit_evaluasi_program($id_evaluasi_program)
     {
         $data['title'] = 'Update Evaluasi & Usulan Program';
-        $statusUpdate = $this->Model_evaluasi_program->getStatusUpdate('evaluasi_program');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('evaluasi_program');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -108,7 +109,7 @@ class Evaluasi_program extends CI_Controller
     public function edit_usulan_program($id_usulan)
     {
         $data['title'] = 'Update Usulan Program';
-        $statusUpdate = $this->Model_evaluasi_program->getStatusUpdate('evaluasi_usulan');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('evaluasi_usulan');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',

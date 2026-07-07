@@ -20,10 +20,8 @@ class Proyeksi_upk extends CI_Controller
         $tahun = $this->input->get('tahun_rkap') ?: (date('Y') + 1);
         $nama_upk = $this->session->userdata('upk_bagian');
 
-        $upk = $this->db
-            ->where('nama_upk', $nama_upk)
-            ->get('rkap_nama_upk')
-            ->row();
+        $query = $this->db->query("SELECT * FROM rkap_nama_upk WHERE REPLACE(LOWER(nama_upk), ' ', '') = ?", [strtolower($nama_upk)]);
+        $upk = $query->row();
         $id_upk = $upk->id_upk ?? 0;
 
         $data['tahun_rkap'] = $tahun;
@@ -44,10 +42,8 @@ class Proyeksi_upk extends CI_Controller
     {
         $tahun = $this->input->get('tahun_rkap') ?: (date('Y') + 1);
         $nama_upk = $this->session->userdata('upk_bagian');
-        $upk = $this->db
-            ->where('nama_upk', $nama_upk)
-            ->get('rkap_nama_upk')
-            ->row();
+        $query = $this->db->query("SELECT * FROM rkap_nama_upk WHERE REPLACE(LOWER(nama_upk), ' ', '') = ?", [strtolower($nama_upk)]);
+        $upk = $query->row();
         $id_upk = $upk->id_upk ?? 0;
         $data['tahun'] = $tahun;
         $data['tampil'] = $this->Model_proyeksi_upk->getData($tahun, $id_upk);
@@ -76,10 +72,8 @@ class Proyeksi_upk extends CI_Controller
             redirect('rkap/proyeksi_upk');
         } else {
             $nama_upk = $this->session->userdata('upk_bagian');
-            $upk = $this->db
-                ->where('nama_upk', $nama_upk)
-                ->get('rkap_nama_upk')
-                ->row();
+            $query = $this->db->query("SELECT * FROM rkap_nama_upk WHERE REPLACE(LOWER(nama_upk), ' ', '') = ?", [strtolower($nama_upk)]);
+            $upk = $query->row();
             $id_upk = $upk->id_upk ?? 0;
             $tahun = $this->input->post('tahun_rkap') ?: ($this->input->get('tahun_rkap') ?: (date('Y') + 1));
 

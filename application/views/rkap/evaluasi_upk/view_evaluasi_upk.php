@@ -88,7 +88,7 @@
                                         $rkap = $row->rkap;
                                         $id = $row->id_evaluasi_upk;
                                         $naikTurun = $realisasi - $rkap;
-                                        $persen = ($naikTurun / $rkap) * 100;
+                                        $persen = $rkap != 0 ? ($naikTurun / $rkap) * 100 : 0;
                                         // $persentase = abs($persen);
 
                                     ?>
