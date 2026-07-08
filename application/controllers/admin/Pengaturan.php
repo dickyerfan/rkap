@@ -348,11 +348,19 @@ class Pengaturan extends CI_Controller
         $data['evaluasiProgram'] = $this->Model_pengaturan->cekEvaluasiProgram();
         $data['proyeksiUpk'] = $this->Model_pengaturan->cekProyeksiUpk();
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('admin/view_kumpul_data', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('admin/view_kumpul_data', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('admin/view_kumpul_data', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function aktivasiAdmin()

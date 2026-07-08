@@ -45,11 +45,19 @@ class Proyeksi_upk extends CI_Controller
             $data['title'] = 'PROYEKSI / TARGET TAHUN ' . $tahun;
         }
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('admin/proyeksi_upk/view_proyeksi_upk', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('admin/proyeksi_upk/view_proyeksi_upk', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('admin/proyeksi_upk/view_proyeksi_upk', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pdf()

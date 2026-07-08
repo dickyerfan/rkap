@@ -108,6 +108,10 @@
             display: none;
         }
 
+        .sudah-class {
+            color: black !important;
+        }
+
         @media print {
 
             .logo {

@@ -29,11 +29,19 @@ class Evaluasi_upk extends CI_Controller
         // $data['statusEvaluasiUpk'] = $this->Model_evaluasi_upk->getStatusUpdate('evaluasi_upk');
         $data['title'] = 'EVALUASI PENCAPAIAN TAHUN';
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('admin/evaluasi_upk/view_evaluasi_upk', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('admin/evaluasi_upk/view_evaluasi_upk', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('admin/evaluasi_upk/view_evaluasi_upk', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pdf()

@@ -68,7 +68,7 @@ class Dashboard_upk extends MY_Controller
             $view = 'admin/dashboard_upk/view_dashboard_upk';
         }
 
-        if ($this->session->userdata('level') == 'admin') {
+        if ($this->session->userdata('level') == 'Admin') {
             $this->load->view('templates/header', $data);
             $this->load->view('templates/navbar');
             $this->load->view('templates/sidebar');

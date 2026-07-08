@@ -29,11 +29,19 @@ class Potensi_sr extends CI_Controller
         $data['biayaUsulanUmum'] = $this->Model_potensi_sr->getBiayaUsulanUmum($dataUpk, $dataTahun);
 
         $data['title'] = 'ESTIMASI KEBUTUHAN AIR BAKU DAN POTENSI PELANGGAN';
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('admin/potensi_sr/view_potensi_sr', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('admin/potensi_sr/view_potensi_sr', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('admin/potensi_sr/view_potensi_sr', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pdf()
