@@ -25,11 +25,11 @@
                 <tbody>
                     <tr>
                         <td width="8%">
-                            <img src="<?= base_url('assets/img/logo.png'); ?>" alt="Logo" width="40">
+                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
                         </td>
                         <td>
                             <p>Rencana Kerja &amp; Anggaran</p>
-                            <p>PDAM Kabupaten Bondowoso</p>
+                            <p>Perumdam Ijen Tirta Bondowoso</p>
                         </td>
                     </tr>
                 </tbody>

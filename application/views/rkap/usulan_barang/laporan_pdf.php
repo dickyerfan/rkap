@@ -41,14 +41,14 @@
             <table class="table table-borderless table-sm">
                 <tbody>
                     <tr>
-                        <td width="10%">
-                            <img src="<?= base_url('assets/img/logo.png'); ?>" alt="Logo" width="40">
+                        <td width="5%">
+                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
                         </td>
                         <td>
                             <?php foreach ($tahun as $row) :
                             ?>
                                 <p>Rencana Kerja & Anggaran Tahun <?= $row->tahun_rkap + 1; ?></p>
-                                <p>PDAM Kabupaten Bondowoso</p>
+                                <p>Perumdam Ijen Tirta Bondowoso</p>
                             <?php endforeach; ?>
                         </td>
                     </tr>
@@ -93,18 +93,26 @@
                                     $id = $row->id_usulanBarang;
                                 ?>
                                     <tr>
-                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class="text-end"><?= $no++ ?></td>
                                         <td><?= $row->no_perkiraan ?></td>
                                         <td><?= $row->nama_perkiraan ?></td>
                                         <td><?= $row->latar_belakang ?></td>
                                         <td><?= $row->solusi ?></td>
-                                        <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
-                                        <td class="text-center"><?= number_format($row->harga_satuan, 0, ',', '.') ?></td>
-                                        <td class="text-center"><?= number_format($row->biaya, 0, ',', '.') ?></td>
+                                        <td class="text-end"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
+                                        <td class="text-end"><?= number_format($row->harga_satuan, 0, ',', '.') ?></td>
+                                        <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
                                         <td><?= $row->ket ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="6" class="text-end">Total</th>
+                                    <th></th>
+                                    <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

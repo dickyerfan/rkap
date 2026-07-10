@@ -50,7 +50,7 @@ class Evaluasi_program extends CI_Controller
         $data['title'] = 'EVALUASI RKAP TAHUN ';
         $data['title2'] = 'USULAN PROGRAM RKAP TAHUN ';
 
-        $this->pdf->setPaper('folio', 'portrait');
+        $this->pdf->setPaper('folio', 'landscape');
         $this->pdf->filename = "evaluasi_program-{$bagian}-{$tahun_rkap}.pdf";
         $this->pdf->generate('admin/evaluasi_program/laporan_pdf', $data);
     }

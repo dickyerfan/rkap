@@ -46,14 +46,14 @@
             <table class="table table-borderless table-sm">
                 <tbody>
                     <tr>
-                        <td width="10%">
-                            <img src="<?= base_url('assets/img/logo.png'); ?>" alt="Logo" width="40">
+                        <td width="5%">
+                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
                         </td>
                         <td>
                             <?php foreach ($tahun as $row) :
                             ?>
                                 <p>Rencana Kerja & Anggaran Tahun <?= $row->tahun_rkap + 1; ?></p>
-                                <p>PDAM Kabupaten Bondowoso</p>
+                                <p>Perumdam Ijen Tirta Bondowoso</p>
                             <?php endforeach; ?>
                         </td>
                     </tr>
@@ -78,7 +78,7 @@
                                 <tr class="text-center">
                                     <th rowspan="2" class="align-middle">Uraian</th>
                                     <th rowspan="2" class="align-middle">Satuan</th>
-                                    <th colspan="2">S/D Juli <?= date('Y') ?></th>
+                                    <th colspan="2">S/D Juni <?= date('Y') ?></th>
                                     <th colspan="2">Naik/Turun</th>
                                 </tr>
                                 <tr class="text-center">

@@ -688,11 +688,11 @@
                                     data: {
                                         labels: ['Pendapatan Usaha', 'Beban Usaha', 'Laba Usaha', 'Laba Sebelum Pajak'],
                                         datasets: [{
-                                            label: '<?= $tahun_ini ?>',
+                                            label: '<?= $tahun_ini - 1 ?>',
                                             backgroundColor: 'rgba(0,123,255,0.7)',
                                             data: [<?= $total_pendapatan_ini ?>, <?= $total_beban_ini ?>, <?= $laba_usaha_ini ?>, <?= $laba_bersih_ini ?>]
                                         }, {
-                                            label: '<?= $tahun_depan ?>',
+                                            label: '<?= $tahun_depan - 1 ?>',
                                             backgroundColor: 'rgba(40,167,69,0.7)',
                                             data: [<?= $total_pendapatan_depan ?>, <?= $total_beban_depan ?>, <?= $laba_usaha_depan ?>, <?= $laba_bersih_depan ?>]
                                         }]
@@ -712,30 +712,44 @@
                                 });
 
                                 new Chart(document.getElementById('myChartPotensi'), {
-                                    type: 'line',
+                                    type: 'bar',
                                     data: {
                                         labels: ['Pelanggan Aktif', 'Tambahan SR', 'Kap. Produksi', 'Kap. Manfaat', 'Tk. Kebocoran', 'Pola Konsumsi'],
                                         datasets: [{
-                                            label: '<?= $tahun_ini - 1  ?>',
-                                            borderColor: 'rgba(0,123,255,1)',
-                                            pointBackgroundColor: 'rgba(0,123,255,1)',
-                                            fill: false,
+                                            label: '<?= $tahun_ini - 1 ?>',
+                                            backgroundColor: 'rgba(0,123,255,0.7)',
+                                            yAxisID: 'y-left',
                                             data: [
                                                 <?= isset($potensi_sr_ini->plg_aktif) ? $potensi_sr_ini->plg_aktif : 0 ?>,
                                                 <?= isset($potensi_sr_ini->tambah_sr) ? $potensi_sr_ini->tambah_sr : 0 ?>,
+                                                null, null, null, null
+                                            ]
+                                        }, {
+                                            label: '<?= $tahun_depan - 1 ?>',
+                                            backgroundColor: 'rgba(40,167,69,0.7)',
+                                            yAxisID: 'y-left',
+                                            data: [
+                                                <?= isset($potensi_sr_depan->plg_aktif) ? $potensi_sr_depan->plg_aktif : 0 ?>,
+                                                <?= isset($potensi_sr_depan->tambah_sr) ? $potensi_sr_depan->tambah_sr : 0 ?>,
+                                                null, null, null, null
+                                            ]
+                                        }, {
+                                            label: '<?= $tahun_ini - 1 ?> (detail)',
+                                            backgroundColor: 'rgba(0,123,255,0.4)',
+                                            yAxisID: 'y-right',
+                                            data: [
+                                                null, null,
                                                 <?= isset($potensi_sr_ini->kap_pro) ? $potensi_sr_ini->kap_pro : 0 ?>,
                                                 <?= isset($potensi_sr_ini->kap_manf) ? $potensi_sr_ini->kap_manf : 0 ?>,
                                                 <?= isset($potensi_sr_ini->tk_bocor) ? $potensi_sr_ini->tk_bocor : 0 ?>,
                                                 <?= isset($potensi_sr_ini->pola_kon) ? $potensi_sr_ini->pola_kon : 0 ?>
                                             ]
                                         }, {
-                                            label: '<?= $tahun_depan - 1  ?>',
-                                            borderColor: 'rgba(40,167,69,1)',
-                                            pointBackgroundColor: 'rgba(40,167,69,1)',
-                                            fill: false,
+                                            label: '<?= $tahun_depan - 1 ?> (detail)',
+                                            backgroundColor: 'rgba(40,167,69,0.4)',
+                                            yAxisID: 'y-right',
                                             data: [
-                                                <?= isset($potensi_sr_depan->plg_aktif) ? $potensi_sr_depan->plg_aktif : 0 ?>,
-                                                <?= isset($potensi_sr_depan->tambah_sr) ? $potensi_sr_depan->tambah_sr : 0 ?>,
+                                                null, null,
                                                 <?= isset($potensi_sr_depan->kap_pro) ? $potensi_sr_depan->kap_pro : 0 ?>,
                                                 <?= isset($potensi_sr_depan->kap_manf) ? $potensi_sr_depan->kap_manf : 0 ?>,
                                                 <?= isset($potensi_sr_depan->tk_bocor) ? $potensi_sr_depan->tk_bocor : 0 ?>,
@@ -746,14 +760,17 @@
                                     options: {
                                         scales: {
                                             yAxes: [{
-                                                ticks: {
-                                                    beginAtZero: true
-                                                }
+                                                id: 'y-left',
+                                                position: 'left',
+                                                ticks: { beginAtZero: true }
+                                            }, {
+                                                id: 'y-right',
+                                                position: 'right',
+                                                ticks: { beginAtZero: true },
+                                                gridLines: { drawOnChartArea: false }
                                             }]
                                         },
-                                        legend: {
-                                            display: true
-                                        }
+                                        legend: { display: true }
                                     }
                                 });
                             };

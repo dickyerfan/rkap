@@ -46,12 +46,12 @@
             <table class="table table-borderless table-sm">
                 <tbody>
                     <tr>
-                        <td width="10%">
-                            <img src="<?= base_url('assets/img/logo.png'); ?>" alt="Logo" width="40">
+                        <td width="5%">
+                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
                         </td>
                         <td>
                             <p>Rencana Kerja & Anggaran Tahun <?= $tahun + 1; ?></p>
-                            <p>PDAM Kabupaten Bondowoso</p>
+                            <p>Perumdam Ijen Tirta Bondowoso</p>
                         </td>
                     </tr>
                 </tbody>
@@ -76,15 +76,15 @@
                                     <th rowspan="2" class="align-middle">No</th>
                                     <th rowspan="2" class="align-middle">Bagian/UPK</th>
                                     <th colspan="2">Perkiraan</th>
-                                    <th colspan="5" class="align-middle">URAIAN TENTANG USULAN</th>
+                                    <th colspan="3" class="align-middle">URAIAN TENTANG USULAN</th>
                                     <!-- <th rowspan="2" class="align-middle">Keterangan</th> -->
                                     <!-- <th rowspan="2" class="align-middle">Action</th> -->
                                 </tr>
                                 <tr class="text-center">
                                     <th>No Per</th>
                                     <th>Nama</th>
-                                    <th>Latar Belakang</th>
-                                    <th>Solusi/Usulan</th>
+                                    <!-- <th>Latar Belakang</th>
+                                    <th>Solusi/Usulan</th> -->
                                     <th>Volume</th>
                                     <th>Harga</th>
                                     <th>Biaya</th>
@@ -104,8 +104,8 @@
                                         <td><?= $row->bagian_upk ?></td>
                                         <td><?= $row->no_perkiraan ?></td>
                                         <td><?= $row->nama_perkiraan ?></td>
-                                        <td><?= $row->latar_belakang ?></td>
-                                        <td><?= $row->solusi ?></td>
+                                        <!-- <td><?= $row->latar_belakang ?></td>
+                                        <td><?= $row->solusi ?></td> -->
                                         <td style="text-align: center;"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
                                         <td style="text-align: right;"><?= number_format($row->biaya, 0, ',', '.') ?></td>
                                         <td style="text-align: right;"><?= number_format($jumlah, 0, ',', '.') ?></td>
@@ -120,7 +120,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="7" class="text-end">Total</th>
+                                    <th colspan="5" class="text-end">Total</th>
                                     <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
                                     <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
                                                                 return $item->biaya * $item->volume;

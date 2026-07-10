@@ -42,6 +42,28 @@
             height: 2px;
             color: black !important;
         }
+
+        .table-simulasi {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+
+        .table-simulasi th,
+        .table-simulasi td {
+            border: 1px solid black;
+            padding: 4px 8px;
+            text-align: center;
+        }
+
+        .table-simulasi thead tr {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .table-simulasi td.bold {
+            font-weight: bold;
+        }
     </style>
 
 </head>
@@ -53,14 +75,14 @@
             <table class="table table-borderless table-sm">
                 <tbody>
                     <tr>
-                        <td width="10%">
-                            <img src="<?= base_url('assets/img/logo.png'); ?>" alt="Logo" width="40">
+                        <td width="5%">
+                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
                         </td>
                         <td>
                             <?php foreach ($tampil as $row) :
                             ?>
                                 <p>Rencana Kerja & Anggaran Tahun <?= $row->tahun_rkap + 1; ?></p>
-                                <p>PDAM Kabupaten Bondowoso</p>
+                                <p>Perumdam Ijen Tirta Bondowoso</p>
                             <?php endforeach; ?>
                         </td>
                     </tr>
@@ -203,7 +225,41 @@
                     </div>
                 </div>
             <?php endforeach; ?>
-
+            <p class="text-center mt-4">Simulasi Potensi SR Jika Kebocoran Dikurangi</p>
+            <div class="row justify-content-center p-3">
+                <div class="col-lg-10">
+                    <table class="table-simulasi">
+                        <thead>
+                            <tr>
+                                <th>Pengurangan Kebocoran</th>
+                                <th>Kebocoran Baru (%)</th>
+                                <th>Kebutuhan Air Baku</th>
+                                <th>Potensi SR Tambahan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            for ($i = 1; $i <= 15; $i++) {
+                                // Hitung kebocoran baru
+                                $kebocoran_baru = $row->tk_bocor - $i;
+                                // Air pelanggan baru jika kebocoran turun
+                                $air_pelanggan_baru = $produksi_air * (1 - $kebocoran_baru / 100);
+                                // Sisa air setelah kebutuhan saat ini
+                                $sisa_air_baru = $air_pelanggan_baru - $kebutuhan_air;
+                                // Potensi SR baru
+                                $potensi_sr_baru = ($sisa_air_baru > 0) ? $sisa_air_baru / $row->pola_kon : 0;
+                            ?>
+                                <tr>
+                                    <td><?= $i ?>%</td>
+                                    <td><?= number_format($kebocoran_baru, 2, ',', '.') ?></td>
+                                    <td><?= number_format($sisa_air_baru, 0, ',', '.') ?></td>
+                                    <td class="bold"><?= number_format($potensi_sr_baru, 0, ',', '.') ?></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div class="col-lg-9">

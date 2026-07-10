@@ -223,7 +223,41 @@
                         </div>
                     </div>
                 <?php endforeach; ?>
-
+                <h6 class="text-center mt-4">Simulasi Potensi SR Jika Kebocoran Dikurangi</h6>
+                <div class="row justify-content-center p-3">
+                    <div class="col-lg-10">
+                        <table class="table table-bordered table-sm text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Pengurangan Kebocoran</th>
+                                    <th>Kebocoran Baru (%)</th>
+                                    <th>Kebutuhan Air Baku</th>
+                                    <th>Potensi SR Tambahan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                for ($i = 1; $i <= 15; $i++) {
+                                    // Hitung kebocoran baru
+                                    $kebocoran_baru = $row->tk_bocor - $i;
+                                    // Air pelanggan baru jika kebocoran turun
+                                    $air_pelanggan_baru = $produksi_air * (1 - $kebocoran_baru / 100);
+                                    // Sisa air setelah kebutuhan saat ini
+                                    $sisa_air_baru = $air_pelanggan_baru - $kebutuhan_air;
+                                    // Potensi SR baru
+                                    $potensi_sr_baru = ($sisa_air_baru > 0) ? $sisa_air_baru / $row->pola_kon : 0;
+                                ?>
+                                    <tr>
+                                        <td><?= $i ?>%</td>
+                                        <td><?= number_format($kebocoran_baru, 2, ',', '.') ?></td>
+                                        <td><?= number_format($sisa_air_baru, 0, ',', '.') ?></td>
+                                        <td class="fw-bold"><?= number_format($potensi_sr_baru, 0, ',', '.') ?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row justify-content-center px-3">
                         <div class="col-lg-9">

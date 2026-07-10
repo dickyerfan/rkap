@@ -65,7 +65,7 @@ class Usulan_pemeliharaan extends CI_Controller
         $data['tahun'] = $dataTahun;
         $data['title'] = 'USULAN PEMELIHARAAN (RKAP) TAHUN ';
 
-        $this->pdf->setPaper('Folio', 'portrait');
+        $this->pdf->setPaper('Folio', 'landscape');
 
         $safeUpk = preg_replace('/[^A-Za-z0-9_\-]/', '_', $data['namaUpk']);
         $this->pdf->filename = "Usulan_pemel-{$safeUpk}-{$dataTahun}.pdf";

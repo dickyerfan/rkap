@@ -51,7 +51,7 @@ class Permasalahan extends CI_Controller
         $data['title'] = 'PERMASALAHAN YANG PERLU DITINDAK LANJUTI TAHUN ';
 
         // Set paper size and orientation
-        $this->pdf->setPaper('folio', 'portrait');
+        $this->pdf->setPaper('folio', 'landscape');
 
         // $this->pdf->filename = "Potensi Sr.pdf";
         $safeUpk = preg_replace('/[^A-Za-z0-9_\-]/', '_', $data['namaUpk']);
