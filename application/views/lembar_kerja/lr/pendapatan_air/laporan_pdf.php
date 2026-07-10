@@ -110,7 +110,8 @@
                                         $jumlahKolom = 0;
                                         for ($bulan = 1; $bulan <= 12; $bulan++) {
                                             $nilai = isset($blok[$judul][$bulan]) ? $blok[$judul][$bulan] : 0;
-                                            echo "<td class='text-end pe-1'>" . number_format($nilai, 0, ',', '.') . "</td>";
+                                            $desimal = ($judul == 'Pola Konsumsi') ? 2 : 0;
+                                            echo "<td class='text-end pe-1'>" . number_format($nilai, $desimal, ',', '.') . "</td>";
 
                                             if (in_array($judul, ['Pelanggan Akhir', 'Pola Konsumsi', 'Tarif Rata'])) {
                                                 if ($bulan == 12) {
@@ -120,7 +121,8 @@
                                                 $jumlahKolom += $nilai; // normal: sum
                                             }
                                         }
-                                        echo "<td class='text-end pe-1'><b>" . number_format($jumlahKolom, 0, ',', '.') . "</b></td>";
+                                        $desimal = ($judul == 'Pola Konsumsi') ? 2 : 0;
+                                        echo "<td class='text-end pe-1'><b>" . number_format($jumlahKolom, $desimal, ',', '.') . "</b></td>";
                                         echo "</tr>";
                                     }
 
@@ -140,7 +142,8 @@
                                         if (in_array($judul, ['Pola Konsumsi', 'Tarif Rata'])) {
                                             // rata-rata per jenis pelanggan
                                             $nilai = $countJenis > 0 ? $totalBulan / $countJenis : 0;
-                                            echo "<td class='text-end pe-1'>" . number_format($nilai, 0, ',', '.') . "</td>";
+                                            $desimal = ($judul == 'Pola Konsumsi') ? 2 : 0;
+                                            echo "<td class='text-end pe-1'>" . number_format($nilai, $desimal, ',', '.') . "</td>";
 
                                             if ($bulan == 12) {
                                                 $grand = $nilai; // ambil Desember
@@ -156,7 +159,8 @@
                                         }
                                     }
 
-                                    echo "<td class='text-end pe-1'>" . number_format($grand, 0, ',', '.') . "</td>";
+                                    $desimal_grand = ($judul == 'Pola Konsumsi') ? 2 : 0;
+                                    echo "<td class='text-end pe-1'>" . number_format($grand, $desimal_grand, ',', '.') . "</td>";
                                     echo "</tr>";
                                 }
                                 ?>

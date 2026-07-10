@@ -44,8 +44,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Jasa Administrasi</label>
-                            <input type="number" step="1" name="konsumsi_rata" class="form-control" value="<?= number_format($row->konsumsi_rata, 0, '', '') ?>">
+                            <label class="form-label">Pola Konsumsi</label>
+                            <input type="number" step="any" name="konsumsi_rata" class="form-control" value="<?= $row->konsumsi_rata ?>">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Simpan</button>

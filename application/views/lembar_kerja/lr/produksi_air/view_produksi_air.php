@@ -45,6 +45,9 @@
                             <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/lr/produksi_air/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
                         </div>
                         <div class="navbar-nav">
+                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/data_efisiensi') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fas fa-percent"></i> NRW</button></a>
+                        </div>
+                        <div class="navbar-nav">
                             <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/data_sumber') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Data Sumber</button> </a>
                         </div>
                     </nav>

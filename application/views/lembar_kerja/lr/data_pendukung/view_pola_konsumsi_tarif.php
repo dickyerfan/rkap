@@ -91,7 +91,7 @@
                                                 <td><?= htmlspecialchars($row->nama_upk) ?></td>
                                                 <td><?= htmlspecialchars($row->nama_jp) ?></td>
                                                 <td class="text-center"><?= $row->tahun ?></td>
-                                                <td class="text-end"><?= number_format($row->konsumsi_rata, 0, ',', '.') ?></td>
+                                                <td class="text-end"><?= number_format($row->konsumsi_rata, 2, ',', '.') ?></td>
                                                 <td class="text-center">
                                                     <?php if ($this->session->userdata('tipe') == 'admin') : ?>
                                                         <?php

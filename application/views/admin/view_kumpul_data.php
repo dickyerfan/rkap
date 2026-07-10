@@ -114,7 +114,7 @@
                                         <th>Permasalahan</th>
                                         <th>Evaluasi & Usulan</th>
                                         <th>Evaluasi AMDK</th>
-                                        <th>Potensi AMDK</th>
+                                        <!-- <th>Potensi AMDK</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -184,7 +184,7 @@
                                             <td class="text-center fw-bold <?= $masalahMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $masalahMatched ? 'Sudah' : 'Belum'; ?></td>
                                             <td class="text-center fw-bold <?= $evaluasiProgramMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $evaluasiProgramMatched ? 'Sudah' : 'Belum'; ?></td>
                                             <td class="text-center fw-bold <?= $evaluasiAmdkMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $evaluasiAmdkMatched ? 'Sudah' : 'Belum'; ?></td>
-                                            <td class="text-center fw-bold <?= $potensiAmdkMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $potensiAmdkMatched ? 'Sudah' : 'Belum'; ?></td>
+                                            <!-- <td class="text-center fw-bold <?= $potensiAmdkMatched ? 'sudah-class' : ''; ?>" style="color:red;"><?= $potensiAmdkMatched ? 'Sudah' : 'Belum'; ?></td> -->
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

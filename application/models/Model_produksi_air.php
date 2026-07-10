@@ -172,37 +172,33 @@ class Model_produksi_air extends CI_Model
         }
         $sumber = $this->db->get()->result_array();
 
-        // Jika data sumber tidak ditemukan di level UPK, fallback ke data konsolidasi
-        if (empty($sumber) && !empty($upk) && strtolower($upk) !== 'all') {
-            $this->db->from('rkap_sumber');
-            $this->db->where('tahun', $tahun);
-            $sumber = $this->db->get()->result_array();
-        }
-
         // ======================
         // 3️⃣ HITUNG AIR PRODUKSI
         // ======================
+        $efisiensi = $this->getEfisiensi($tahun);
         $air_produksi = [];
-        if (count($sumber) == 1) {
+        if ($total_air_terjual > 0 && count($sumber) == 1) {
             // jika hanya satu sumber, ambil 100%
-            $produksi_total = $total_air_terjual * 100 / 80; // contoh efisiensi 80%
+            $produksi_total = $total_air_terjual * 100 / $efisiensi;
             $air_produksi[] = [
                 'uraian' => $sumber[0]['uraian'],
                 'persen' => 100.00,
                 'produksi_total' => $produksi_total
             ];
-        } elseif (count($sumber) > 1) {
+        } elseif ($total_air_terjual > 0 && count($sumber) > 1) {
             // jika lebih dari satu sumber
             $total_nilai = array_sum(array_column($sumber, 'nilai'));
             if ($total_nilai > 0) {
                 foreach ($sumber as $sb) {
                     $persen = round(($sb['nilai'] / $total_nilai) * 100, 2);
-                    $produksi_sb = ($total_air_terjual * 100 / 80) * $persen / 100;
-                    $air_produksi[] = [
-                        'uraian' => $sb['uraian'],
-                        'persen' => $persen,
-                        'produksi_total' => $produksi_sb
-                    ];
+                    $produksi_sb = ($total_air_terjual * 100 / $efisiensi) * $persen / 100;
+                    if ($produksi_sb > 0) {
+                        $air_produksi[] = [
+                            'uraian' => $sb['uraian'],
+                            'persen' => $persen,
+                            'produksi_total' => $produksi_sb
+                        ];
+                    }
                 }
             }
         }
@@ -255,28 +251,31 @@ class Model_produksi_air extends CI_Model
                 $hasil = $pelanggan * $pola;
 
                 if ($hasil > 0) {
-                    // ambil sumber air
                     $sumber = $this->db->from('rkap_sumber')
                         ->where('tahun', $tahun)
                         ->where('id_upk', $id_upk)
                         ->get()->result_array();
 
-                    $total_nilai = array_sum(array_column($sumber, 'nilai'));
-                    $produksi_total = 0;
-                    if ($total_nilai > 0) {
-                        foreach ($sumber as $sb) {
-                            $persen = round(($sb['nilai'] / $total_nilai) * 100, 2);
-                            $produksi_total += ($hasil * 100 / 80) * $persen / 100;
+                    if (count($sumber) > 0) {
+                        $total_nilai = array_sum(array_column($sumber, 'nilai'));
+                        $produksi_total = 0;
+                        if ($total_nilai > 0) {
+                            foreach ($sumber as $sb) {
+                                $persen = round(($sb['nilai'] / $total_nilai) * 100, 2);
+                                $produksi_total += ($hasil * 100 / $efisiensi) * $persen / 100;
+                            }
+                        } else {
+                            $produksi_total = $hasil * 100 / $efisiensi;
                         }
-                    } else {
-                        $produksi_total = $hasil * 100 / 80; // fallback 80%
-                    }
 
-                    $air_produksi[] = [
-                        'uraian' => strtoupper($nama_upk_item),
-                        'persen' => 100,
-                        'produksi_total' => $produksi_total
-                    ];
+                        if ($produksi_total > 0) {
+                            $air_produksi[] = [
+                                'uraian' => strtoupper($nama_upk_item),
+                                'persen' => 100,
+                                'produksi_total' => $produksi_total
+                            ];
+                        }
+                    }
                 }
             }
 
@@ -362,4 +361,70 @@ class Model_produksi_air extends CI_Model
 
     //     return $hasil;
     // }
+
+    public function getEfisiensi($tahun)
+    {
+        $row = $this->db->get_where('rkap_efisiensi', ['tahun' => $tahun])->row_array();
+        return $row ? (float)$row['efisiensi'] : 80.00;
+    }
+
+    public function getAllEfisiensi()
+    {
+        return $this->db->order_by('tahun', 'DESC')->get('rkap_efisiensi')->result_array();
+    }
+
+    public function getEfisiensiById($id)
+    {
+        return $this->db->get_where('rkap_efisiensi', ['id_efisiensi' => $id])->row_array();
+    }
+
+    public function cekTahunEfisiensi($tahun, $exclude_id = null)
+    {
+        $this->db->where('tahun', $tahun);
+        if ($exclude_id) {
+            $this->db->where('id_efisiensi !=', $exclude_id);
+        }
+        return $this->db->count_all_results('rkap_efisiensi');
+    }
+
+    public function insertEfisiensi($data)
+    {
+        return $this->db->insert('rkap_efisiensi', $data);
+    }
+
+    public function updateEfisiensi($id, $data)
+    {
+        $this->db->where('id_efisiensi', $id);
+        return $this->db->update('rkap_efisiensi', $data);
+    }
+
+    public function deleteEfisiensi($id)
+    {
+        return $this->db->delete('rkap_efisiensi', ['id_efisiensi' => $id]);
+    }
+
+    public function getTotalAirTerjual($tahun, $id_upk = null)
+    {
+        $this->db->select("
+            p.id_upk,
+            nu.nama_upk,
+            COALESCE(SUM(p.jumlah * pk.konsumsi_rata), 0) as total_air_terjual
+        ");
+        $this->db->from('rkap_pelanggan p');
+        $this->db->join('rkap_nama_upk nu', 'p.id_upk = nu.id_upk');
+        $this->db->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left');
+        $this->db->where('p.tahun', $tahun);
+        if ($id_upk) {
+            $this->db->where('p.id_upk', $id_upk);
+        }
+        $this->db->group_by('p.id_upk');
+        return $this->db->get()->result_array();
+    }
+
+    public function countSumber($tahun, $id_upk)
+    {
+        $this->db->where('tahun', $tahun);
+        $this->db->where('id_upk', $id_upk);
+        return $this->db->count_all_results('rkap_sumber');
+    }
 }

@@ -44,19 +44,22 @@
                         <div class="navbar-nav ms-auto">
                             <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> <i class="fas fa-arrow-left"></i> Kembali</button> </a>
                         </div>
-                        <div class="navbar-nav">
+                        <!-- <div class="navbar-nav">
                             <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/lr/produksi_air/data_sumber/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
-                        </div>
+                        </div> -->
                         <?php if ($this->session->userdata('tipe') == 'admin') : ?>
                             <?php
                             $nama_pengguna  = $this->session->userdata('nama_pengguna');
                             $level = $this->session->userdata('level');
                             if (can_input($nama_pengguna, $level, $status_periode, $tahun)) : ?>
                                 <div class="navbar-nav">
-                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/input') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> <i class="fas fa-plus"></i> Input Data</button> </a>
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/input') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> <i class="fas fa-plus"></i> Input Sumber Baru</button> </a>
                                 </div>
                                 <div class="navbar-nav">
                                     <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/copy_data') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> <i class="fas fa-copy"></i> Copi data tahun lalu</button> </a>
+                                </div>
+                                <div class="navbar-nav">
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/produksi_air/generate_sumber?tahun_rkap=' . $tahun) ?>" style="font-size: 0.8rem; color:black;" onclick="return confirm('Generate air produksi untuk UPK yang memiliki 1 sumber? Data yang sudah ada akan diupdate.')"><button class="neumorphic-button"><i class="fas fa-cogs"></i> Generate</button></a>
                                 </div>
                             <?php endif; ?>
                         <?php endif; ?>
