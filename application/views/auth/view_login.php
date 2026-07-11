@@ -48,14 +48,14 @@
     <div class="container py-5">
         <div class="row bg-white justify-content-center p-5 shadow rounded">
             <div class="col-lg-6">
-                <h2 class="display-1 fs-2 text-primary text-center title">PDAM Bondowoso</h2>
-                <p class="display-1 fs-6 text-center text-primary">Silakan login untuk masuk ke Halaman RKAP</p>
-                <img src="<?= base_url('assets/img/hero-carousel/hero5.jpg') ?>" class="img-fluid  gambar" style="height: 380px;">
+                <h2 class="display-1 fs-2 text-primary text-center title">PERUMDAM IJEN TIRTA</h2>
+                <p class="display-1 fs-4 text-center text-primary">Silakan login untuk masuk ke Halaman RKAP</p>
+                <img src="<?= base_url('assets/img/hero-carousel/hero5.jpg') ?>" class="img-fluid  gambar" style="height: 425px;">
             </div>
             <div class="col-lg-6">
                 <div class="card shadow">
                     <div class="card-body text-center">
-                        <img src="<?= base_url('assets/img/logo.png') ?>" class="card-img-top mt-2" alt="Logo Pdam" style="width:20% ;">
+                        <img src="<?= base_url('assets/img/tirta.png') ?>" class="card-img-top mt-2" alt="Logo Pdam" style="width:30% ;">
                         <h2 class="text-primary mt-4 display-6">Silakan <?= strtoupper($title); ?></h2>
                         <?= $this->session->flashdata('info'); ?>
                         <?= $this->session->unset_userdata('info'); ?>

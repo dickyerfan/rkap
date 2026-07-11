@@ -90,7 +90,11 @@
                     <?php endif; ?>
 
                     <div class="navbar-nav">
-                        <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/arus_kas/tenaga_kerja/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
+                        <?php if (empty($upk)) : ?>
+                            <button class="neumorphic-button" onclick="alertKonsolidasi()" style="font-size: 0.8rem;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+                        <?php else : ?>
+                            <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/arus_kas/tenaga_kerja/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
+                        <?php endif; ?>
                     </div>
 
                     </nav>
@@ -372,6 +376,17 @@
         </div>
     </main>
 
+    <script>
+        function alertKonsolidasi() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tidak Dapat Export PDF',
+                text: 'Export PDF tidak tersedia untuk Konsolidasi. Silakan pilih UPK atau Bagian terlebih dahulu.',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        }
+    </script>
     <script>
         document.getElementById('btnGenerate').addEventListener('click', function(e) {
             e.preventDefault();

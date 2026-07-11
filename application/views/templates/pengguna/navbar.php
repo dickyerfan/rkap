@@ -1,8 +1,8 @@
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark logo">
     <!-- Navbar Brand-->
-    <img src="<?= base_url('assets/img/logo.png') ?>" class="navbar-brand ms-3 me-3" style="width:30px ;">
+    <img src="<?= base_url('assets/img/tirta.png') ?>" class="navbar-brand ms-3 me-3" style="width:30px ;">
     <a class="navbar-brand title mt-2" href="<?= base_url('dashboard') ?>">
-        <h6>P D A M <br> Bondowoso</h6>
+        <h6>PERUMDAM<br> IJEN TIRTA</h6>
     </a>
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>

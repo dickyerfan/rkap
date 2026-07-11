@@ -138,11 +138,11 @@
 
     <div id="global-loader" class="loader-wrapper">
         <div class="loader-content">
-            <img src="<?= base_url('assets/img/logo.png') ?>" class="loader-logo" alt="Logo PDAM">
+            <img src="<?= base_url('assets/img/tirta.png') ?>" class="loader-logo" alt="Logo Perumdam Ijen Tirta">
             <div class="drop"></div>
             <br>
             <br>
-            <h5 class="loader-text">Sedang memproses data...<br>Mohon tunggu sebentar</h5>
+            <h5 class="loader-text">Sedang memproses data...<br>sabar ya teman-teman</h5>
         </div>
     </div>
 
