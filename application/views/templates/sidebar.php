@@ -70,6 +70,7 @@
                         <div class="collapse" id="laba_rugi" aria-labelledby="headingOne" data-bs-parent="#laba_rugi">
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="<?= base_url('ringkasan') ?>" style="font-size: 0.8rem;">Ringkasan</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/target_upk') ?>" style="font-size: 0.8rem;">Target</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pelanggan') ?>" style="font-size: 0.8rem;">Perkembangan Pelanggan</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>

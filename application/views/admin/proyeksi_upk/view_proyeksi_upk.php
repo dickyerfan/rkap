@@ -33,7 +33,7 @@
                             <a class="nav-link fw-bold" href="<?= base_url('admin/proyeksi_upk') ?>" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"> Reset</button></a>
                         </div>
                         <div class="navbar-nav ms-auto">
-                            <a class="nav-link fw-bold" href="<?= site_url('admin/proyeksi_upk/export_pdf'); ?>" target="_blank" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
+                            <a class="nav-link fw-bold" href="<?= site_url('admin/proyeksi_upk/export_pdf') . '?tahun_rkap=' . $tahun_rkap . '&id_upk=' . $id_upk; ?>" target="_blank" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
                         </div>
                     </nav>
                 </div>

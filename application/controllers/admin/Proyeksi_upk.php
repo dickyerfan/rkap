@@ -62,22 +62,30 @@ class Proyeksi_upk extends CI_Controller
 
     public function export_pdf()
     {
-        $tahun = $this->input->get('tahun_rkap') ?: (date('Y') + 1);
-        $nama_upk = $this->session->userdata('upk_bagian');
-        $upk = $this->db
-            ->where('nama_upk', $nama_upk)
-            ->get('rkap_nama_upk')
-            ->row();
-        $id_upk = $upk->id_upk ?? 0;
-        $data['tahun'] = $tahun;
-        $data['tampil'] = $this->Model_proyeksi_upk->getData($tahun, $id_upk);
-        $data['title'] = 'PROYEKSI / TARGET TAHUN ' . $tahun;
+        $tahun   = $this->input->get('tahun_rkap') ?: (date('Y') + 1);
+        $id_upk  = $this->input->get('id_upk');
 
-        // Set paper size and orientation
+        if ($id_upk == '') {
+            $judul_upk = 'KONSOLIDASI';
+            $nama_file = 'Konsolidasi';
+        } else {
+            $u = $this->db->where('id_upk', $id_upk)->get('rkap_nama_upk')->row();
+            $judul_upk = 'UPK ' . strtoupper($u->nama_upk ?? '');
+            $nama_file = $u->nama_upk ?? $id_upk;
+        }
+
+        $data['tahun']     = $tahun;
+        $data['judul_upk'] = $judul_upk;
+        $data['tampil']    = $this->Model_proyeksi_upk->getDataAll($tahun, $id_upk);
+
+        if ($tahun == 2025 || $tahun == 2026) {
+            $data['title'] = 'REALISASI PENCAPAIAN TAHUN ' . $tahun;
+        } else {
+            $data['title'] = 'PROYEKSI / TARGET TAHUN ' . $tahun;
+        }
+
         $this->pdf->setPaper('A4', 'landscape');
-
-        // $this->pdf->filename = "Potensi Sr.pdf";
-        $this->pdf->filename = "Proyeksi_upk-{$nama_upk}-{$tahun}.pdf";
+        $this->pdf->filename = "Proyeksi_upk-{$nama_file}-{$tahun}.pdf";
         $this->pdf->generate('admin/proyeksi_upk/laporan_pdf', $data);
     }
 

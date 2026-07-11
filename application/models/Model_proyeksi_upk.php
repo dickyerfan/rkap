@@ -48,6 +48,74 @@ class Model_proyeksi_upk extends CI_Model
         return $this->db->get()->result();
     }
 
+    public function getJumlahRekening($tahun, $id_upk = null)
+    {
+        $this->db->select("bulan, SUM(jumlah) as jumlah_rekening")
+            ->from('rkap_pelanggan')
+            ->where('tahun', $tahun)
+            ->where('id_kd', 6);
+
+        if (!empty($id_upk)) {
+            $this->db->where('id_upk', $id_upk);
+        }
+
+        $this->db->group_by('bulan')->order_by('bulan', 'ASC');
+        return $this->db->get()->result();
+    }
+
+    public function getPemakaian($tahun, $id_upk = null)
+    {
+        $this->db->select("
+                p.bulan,
+                COALESCE(SUM(p.jumlah * pk.konsumsi_rata), 0) as pemakaian
+            ")
+            ->from('rkap_pelanggan p')
+            ->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left')
+            ->where('p.tahun', $tahun)
+            ->where('p.id_kd', 6);
+
+        if (!empty($id_upk)) {
+            $this->db->where('p.id_upk', $id_upk);
+        }
+
+        $this->db->group_by('p.bulan')->order_by('p.bulan', 'ASC');
+        return $this->db->get()->result();
+    }
+
+    public function getPendapatan($tahun, $id_upk = null)
+    {
+        $this->db->select("
+                p.bulan,
+                SUM(p.jumlah * pk.konsumsi_rata * tr.tarif_rata) +
+                SUM(p.jumlah * COALESCE(jt.jasa_pemeliharaan, 0)) +
+                SUM(p.jumlah * COALESCE(jt.jasa_admin, 0)) as pendapatan
+            ")
+            ->from('rkap_pelanggan p')
+            ->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left')
+            ->join('rkap_tarif_rata tr', 'tr.id_upk = p.id_upk AND tr.id_jp = p.id_jp AND tr.tahun = p.tahun', 'left')
+            ->join('rkap_jasa_tambahan jt', 'jt.id_upk = p.id_upk AND jt.id_jp = p.id_jp AND jt.tahun = p.tahun', 'left')
+            ->where('p.tahun', $tahun)
+            ->where('p.id_kd', 6);
+
+        if (!empty($id_upk)) {
+            $this->db->where('p.id_upk', $id_upk);
+        }
+
+        $this->db->group_by('p.bulan')->order_by('p.bulan', 'ASC');
+        return $this->db->get()->result();
+    }
+
+    public function getInfoUpk($id_upk)
+    {
+        return $this->db
+            ->select('rkap_nama_upk.*, user.nama_lengkap as nama_ka_upk')
+            ->from('rkap_nama_upk')
+            ->join('user', 'LOWER(user.nama_pengguna) = LOWER(rkap_nama_upk.nama_upk)', 'left')
+            ->where('rkap_nama_upk.id_upk', $id_upk)
+            ->get()
+            ->row();
+    }
+
     public function cekData($tahun, $id_upk, $bulan)
     {
         return $this->db

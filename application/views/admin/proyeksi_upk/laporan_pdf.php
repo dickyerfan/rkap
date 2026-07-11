@@ -45,13 +45,12 @@
                 5  => 'Mei', 6  => 'Jun', 7  => 'Jul', 8  => 'Agu',
                 9  => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
             ];
-            $nama_upk = (!empty($tampil)) ? $tampil[0]->nama_upk : $this->session->userdata('upk_bagian');
             ?>
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div class="col-lg-6 text-center mb-2">
                         <p class="fw-bold"><?= $title ?></p>
-                        <p class="fw-bold">UPK <?= strtoupper($nama_upk) ?></p>
+                        <p class="fw-bold"><?= strtoupper($judul_upk) ?></p>
                     </div>
                 </div>
                 <div class="row justify-content-center">
