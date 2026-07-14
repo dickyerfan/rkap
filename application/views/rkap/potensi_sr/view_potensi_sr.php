@@ -143,7 +143,7 @@
                                             <td>jam/hari</td>
                                         </tr>
                                         <tr>
-                                            <td>Tingkat Kebocoran</td>
+                                            <td>Air Yang Belum Dimanfaatkan/NRW</td>
                                             <td>:</td>
                                             <td><?= number_format($kebocoran_air_persen, 2, ',', '.'); ?></td>
                                             <td>% (Persentase)</td>
@@ -183,7 +183,7 @@
                                             <td>M3</td>
                                         </tr>
                                         <tr>
-                                            <td>Kebocoran air (....%)</td>
+                                            <td>Air Yang Belum Dimanfaatkan/NRW (....%)</td>
                                             <td><?= number_format($kebocoran_air_persen, 2, ',', '.')  ?> %</td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($kebocoran_air, 2, ',', '.'); ?></td>
@@ -229,8 +229,8 @@
                         <table class="table table-bordered table-sm text-center">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Pengurangan Kebocoran</th>
-                                    <th>Kebocoran Baru (%)</th>
+                                    <th>Pemanfaatan Baru</th>
+                                    <th>Sisa belum di manfaatkan (%)</th>
                                     <th>Kebutuhan Air Baku</th>
                                     <th>Potensi SR Tambahan</th>
                                 </tr>

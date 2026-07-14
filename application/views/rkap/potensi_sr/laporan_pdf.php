@@ -144,8 +144,8 @@
                                         <td><?= number_format($row->jam_op, 1, ',', '.'); ?></td>
                                         <td>jam/hari</td>
                                     </tr>
-                                    <tr>
-                                        <td>Tingkat Kebocoran</td>
+                                    <tr class="fw-bold">
+                                        <td>Air Yang Belum Dimanfaatkan/NRW</td>
                                         <td>:</td>
                                         <td><?= number_format($row->tk_bocor, 2, ',', '.'); ?></td>
                                         <td>% (Persentase)</td>
@@ -179,13 +179,13 @@
                                 <tbody>
                                     <tr>
                                         <td>Produksi air 1 tahun</td>
-                                        <td><?= number_format($row->kap_manf, 2, ',', '.'); ?> x <?= number_format($row->jam_op, 1, ',', '.'); ?> x 30 x 3.600 / 1.000</td>
+                                        <td><?= number_format($row->kap_pro, 2, ',', '.'); ?> x <?= number_format($row->jam_op, 1, ',', '.'); ?> x 30 x 3.600 / 1.000</td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($produksi_air, 2, ',', '.');  ?></td>
                                         <td>M3</td>
                                     </tr>
-                                    <tr>
-                                        <td>Kebocoran air (....%)</td>
+                                    <tr class="fw-bold">
+                                        <td>Air Yang Belum Dimanfaatkan/NRW (....%)</td>
                                         <td><?= number_format($row->tk_bocor, 2, ',', '.')  ?> %</td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($kebocoran_air, 2, ',', '.'); ?></td>
@@ -193,7 +193,7 @@
                                     </tr>
                                     <tr>
                                         <td>Air yang didistribusikan ke pelanggan</td>
-                                        <td>-</td>
+                                        <td><?= number_format($produksi_air, 2, ',', '.') ?> - <?= number_format($kebocoran_air, 2, ',', '.') ?></td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($air_pelanggan, 2, ',', '.'); ?></td>
                                         <td>M3</td>
@@ -207,7 +207,7 @@
                                     </tr>
                                     <tr>
                                         <td>Sisa Air</td>
-                                        <td>-</td>
+                                        <td><?= number_format($air_pelanggan, 2, ',', '.') ?> - <?= number_format($kebutuhan_air, 2, ',', '.') ?></td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($sisa_air, 2, ',', '.'); ?></td>
                                         <td>M3</td>
@@ -231,8 +231,8 @@
                     <table class="table-simulasi">
                         <thead>
                             <tr>
-                                <th>Pengurangan Kebocoran</th>
-                                <th>Kebocoran Baru (%)</th>
+                                <th>Pemanfaatan Baru</th>
+                                <th>Sisa belum di manfaatkan (%)</th>
                                 <th>Kebutuhan Air Baku</th>
                                 <th>Potensi SR Tambahan</th>
                             </tr>

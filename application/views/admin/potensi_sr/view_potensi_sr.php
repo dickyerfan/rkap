@@ -98,13 +98,13 @@
                                             <td>jam/hari</td>
                                         </tr>
                                         <tr class="fw-bold text-danger">
-                                            <td>Tingkat Kebocoran</td>
+                                            <td>Air Yang Belum Dimanfaatkan/NRW</td>
                                             <td>:</td>
                                             <td><?= number_format($row->tk_bocor, 2, ',', '.'); ?></td>
                                             <td>% (Persentase)</td>
                                         </tr>
                                         <tr>
-                                            <td>Jumlah Pelanggan Direkeningkan (DRD Juli <?= $row->tahun_rkap ?>)</td>
+                                            <td>Jumlah Pelanggan Direkeningkan (DRD Juni <?= $row->tahun_rkap ?>)</td>
                                             <td>:</td>
                                             <td><?= number_format($row->plg_aktif, 0, ',', '.'); ?></td>
                                             <td>SR (Sambungan Rumah)</td>
@@ -116,7 +116,7 @@
                                             <td>asumsi</td>
                                         </tr>
                                         <tr>
-                                            <td>Pola Konsumsi rata2 (s/d Juli <?= $row->tahun_rkap ?>)</td>
+                                            <td>Pola Konsumsi rata2 (s/d Juni <?= $row->tahun_rkap ?>)</td>
                                             <td>:</td>
                                             <td><?= number_format($row->pola_kon, 2, ',', '.'); ?></td>
                                             <td>M3 (Meter Kubik)</td>
@@ -138,7 +138,7 @@
                                             <td>M3</td>
                                         </tr>
                                         <tr class="fw-bold text-danger">
-                                            <td>Kebocoran air (....%)</td>
+                                            <td>Air Yang Belum Dimanfaatkan/NRW (....%)</td>
                                             <td><?= number_format($row->tk_bocor, 2, ',', '.')  ?> %</td>
                                             <td>:</td>
                                             <td class="text-end"><?= number_format($kebocoran_air, 2, ',', '.'); ?></td>
@@ -184,8 +184,8 @@
                         <table class="table table-bordered table-sm text-center">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Pengurangan Kebocoran</th>
-                                    <th>Kebocoran Baru (%)</th>
+                                    <th>Pemanfaatan Baru</th>
+                                    <th>Sisa belum di manfaatkan (%)</th>
                                     <th>Kebutuhan Air Baku</th>
                                     <th>Potensi SR Tambahan</th>
                                 </tr>

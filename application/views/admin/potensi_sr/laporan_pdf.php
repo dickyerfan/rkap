@@ -107,13 +107,13 @@
                                         <td>jam/hari</td>
                                     </tr>
                                     <tr class="fw-bold">
-                                        <td>Tingkat Kebocoran</td>
+                                        <td>Air Yang Belum Dimanfaatkan/NRW</td>
                                         <td>:</td>
                                         <td><?= number_format($row->tk_bocor, 2, ',', '.'); ?></td>
                                         <td>% (Persentase)</td>
                                     </tr>
                                     <tr>
-                                        <td>Jumlah Pelanggan Aktif (DRD Juli <?= $row->tahun_rkap ?>)</td>
+                                        <td>Jumlah Pelanggan Aktif (DRD Juni <?= $row->tahun_rkap ?>)</td>
                                         <td>:</td>
                                         <td><?= number_format($row->plg_aktif, 0, ',', '.'); ?></td>
                                         <td>SR (Sambungan Rumah)</td>
@@ -125,7 +125,7 @@
                                         <td>asumsi</td>
                                     </tr>
                                     <tr>
-                                        <td>Pola Konsumsi rata2 (s/d Juli <?= $row->tahun_rkap ?>)</td>
+                                        <td>Pola Konsumsi rata2 (s/d Juni <?= $row->tahun_rkap ?>)</td>
                                         <td>:</td>
                                         <td><?= number_format($row->pola_kon, 2, ',', '.'); ?></td>
                                         <td>M3 (Meter Kubik)</td>
@@ -141,13 +141,13 @@
                                 <tbody>
                                     <tr>
                                         <td>Produksi air 1 tahun</td>
-                                        <td><?= number_format($row->kap_manf, 2, ',', '.'); ?> x <?= number_format($row->jam_op, 1, ',', '.'); ?> x 30 x 3.600 / 1.000</td>
+                                        <td><?= number_format($row->kap_pro, 2, ',', '.'); ?> x <?= number_format($row->jam_op, 1, ',', '.'); ?> x 30 x 3.600 / 1.000</td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($produksi_air, 2, ',', '.');  ?></td>
                                         <td>M3</td>
                                     </tr>
                                     <tr class="fw-bold">
-                                        <td>Kebocoran air (....%)</td>
+                                        <td>Air Yang Belum Dimanfaatkan/NRW (....%)</td>
                                         <td><?= number_format($row->tk_bocor, 2, ',', '.')  ?> %</td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($kebocoran_air, 2, ',', '.'); ?></td>
@@ -155,7 +155,7 @@
                                     </tr>
                                     <tr>
                                         <td>Air yang didistribusikan ke pelanggan</td>
-                                        <td>-</td>
+                                        <td><?= number_format($produksi_air, 2, ',', '.') ?> - <?= number_format($kebocoran_air, 2, ',', '.') ?></td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($air_pelanggan, 2, ',', '.'); ?></td>
                                         <td>M3</td>
@@ -169,13 +169,13 @@
                                     </tr>
                                     <tr>
                                         <td>Sisa Air</td>
-                                        <td>-</td>
+                                        <td><?= number_format($air_pelanggan, 2, ',', '.') ?> - <?= number_format($kebutuhan_air, 2, ',', '.') ?></td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($sisa_air, 2, ',', '.'); ?></td>
                                         <td>M3</td>
                                     </tr>
                                     <tr>
-                                        <td>Potensi penambahan pelanggan tahun 2024</td>
+                                        <td>Potensi penambahan pelanggan tahun <?= $row->tahun_rkap + 1 ?></td>
                                         <td><?= number_format($sisa_air, 2, ',', '.')  ?> / <?= number_format($row->pola_kon, 2, ',', '.'); ?></td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($potensi, 0, ',', '.')  ?></td>
@@ -191,8 +191,8 @@
                             <table class="table table-sm table-bordered tableUtama">
                                 <thead class="table-light">
                                     <tr class="text-center">
-                                        <th>Pengurangan Kebocoran</th>
-                                        <th>Kebocoran Baru (%)</th>
+                                        <th>Pemanfaatan Baru</th>
+                                        <th>Sisa belum di manfaatkan (%)</th>
                                         <th>Kebutuhan Air Baku</th>
                                         <th>Potensi SR Tambahan</th>
                                     </tr>
