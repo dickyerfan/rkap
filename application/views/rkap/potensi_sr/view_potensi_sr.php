@@ -222,7 +222,8 @@
                             </div>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                <?php $last_row = isset($row) ? $row : null; endforeach; ?>
+                <?php if (!empty($last_row)) : ?>
                 <h6 class="text-center mt-4">Simulasi Potensi SR Jika Kebocoran Dikurangi</h6>
                 <div class="row justify-content-center p-3">
                     <div class="col-lg-10">
@@ -239,13 +240,13 @@
                                 <?php
                                 for ($i = 1; $i <= 15; $i++) {
                                     // Hitung kebocoran baru
-                                    $kebocoran_baru = $row->tk_bocor - $i;
+                                    $kebocoran_baru = $last_row->tk_bocor - $i;
                                     // Air pelanggan baru jika kebocoran turun
                                     $air_pelanggan_baru = $produksi_air * (1 - $kebocoran_baru / 100);
                                     // Sisa air setelah kebutuhan saat ini
                                     $sisa_air_baru = $air_pelanggan_baru - $kebutuhan_air;
                                     // Potensi SR baru
-                                    $potensi_sr_baru = ($sisa_air_baru > 0) ? $sisa_air_baru / $row->pola_kon : 0;
+                                    $potensi_sr_baru = ($sisa_air_baru > 0) ? $sisa_air_baru / $last_row->pola_kon : 0;
                                 ?>
                                     <tr>
                                         <td><?= $i ?>%</td>
@@ -258,6 +259,7 @@
                         </table>
                     </div>
                 </div>
+                <?php endif; ?>
                 <div class="card-body">
                     <div class="row justify-content-center px-3">
                         <div class="col-lg-9">
