@@ -198,14 +198,14 @@
                                         <td class="text-end"><?= number_format($air_pelanggan, 2, ',', '.'); ?></td>
                                         <td>M3</td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td>Kebutuhan air</td>
                                         <td><?= number_format($row->plg_aktif, 0, ',', '.') ?> x <?= number_format($row->pola_kon, 2, ',', '.') ?></td>
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($kebutuhan_air, 2, ',', '.'); ?></td>
                                         <td>M3</td>
-                                    </tr>
-                                    <tr>
+                                    </tr> -->
+                                    <!-- <tr>
                                         <td>Sisa Air</td>
                                         <td><?= number_format($air_pelanggan, 2, ',', '.') ?> - <?= number_format($kebutuhan_air, 2, ',', '.') ?></td>
                                         <td>:</td>
@@ -218,20 +218,20 @@
                                         <td>:</td>
                                         <td class="text-end"><?= number_format($potensi, 0, ',', '.')  ?></td>
                                         <td>SR</td>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
-            <p class="text-center mt-4">Simulasi Potensi SR Jika Kebocoran Dikurangi</p>
+            <p class="text-center mt-4">Simulasi Potensi SR Jika NRW Dikurangi</p>
             <div class="row justify-content-center p-3">
                 <div class="col-lg-10">
                     <table class="table-simulasi">
                         <thead>
                             <tr>
-                                <th>Pemanfaatan Baru</th>
+                                <th>Pemanfaatan Baru/Penurunan NRW</th>
                                 <th>Sisa belum di manfaatkan (%)</th>
                                 <th>Kebutuhan Air Baku</th>
                                 <th>Potensi SR Tambahan</th>

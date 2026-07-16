@@ -423,7 +423,7 @@ class Pendapatan_luar_usaha extends MY_Controller
         $cabang_id = $this->input->get('cabang_id') ?: 24;
 
         // ambil list kode perkiraan (misal hanya untuk pendapatan luar usaha & amdk)
-        $no_per_list = $this->db->like('kode', '88.01')->get('no_per')->result_array();
+        $no_per_list = $this->db->like('kode', '88.01')->order_by('kode', 'ASC')->get('no_per')->result_array();
 
         $data = [
             'title'      => 'Input Pendapatan',

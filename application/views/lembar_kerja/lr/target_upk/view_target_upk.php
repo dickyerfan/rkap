@@ -64,60 +64,62 @@
                     <div class="row justify-content-center mt-2">
                         <div class="col-lg-12">
                             <p class="fw-bold mb-1">A. Target Pelanggan</p>
-                            <table class="table table-sm table-bordered" style="font-size: 0.9rem;">
-                                <thead>
-                                    <tr class="text-center">
-                                        <th>No</th>
-                                        <th>Indikator</th>
-                                        <?php foreach ($bulan_list as $b) : ?><th><?= $b ?></th><?php endforeach; ?>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $indikator_list = [
-                                        'sr_baru'     => 'SR Baru',
-                                        'penutupan'   => 'Penutupan',
-                                        'pencabutan'  => 'Pencabutan',
-                                        'pembukaan'   => 'Pembukaan',
-                                        'tera_meter'  => 'Tera Meter',
-                                        'ganti_meter' => 'Ganti Meter',
-                                        'efi_tagih'   => 'Efisiensi Penagihan'
-                                    ];
-                                    $no = 1;
-                                    foreach ($indikator_list as $key => $label) :
-                                        $total = 0;
-                                        $jumlah_bulan = 0;
-                                    ?>
-                                        <tr>
-                                            <td class="text-center"><?= $no++ ?></td>
-                                            <td><?= $label ?></td>
-                                            <?php foreach ($bulan_list as $i => $b) :
-                                                $nilai = 0;
-                                                foreach ($tampil as $row) {
-                                                    if ($row->bulan == $i) {
-                                                        $nilai = $row->$key;
-                                                        break;
-                                                    }
-                                                }
-                                                $total += $nilai;
-                                                if ($nilai != 0) $jumlah_bulan++;
-                                            ?>
-                                                <td class="text-end">
-                                                    <?= ($key == 'efi_tagih') ? number_format($nilai, 2, ',', '.') : number_format($nilai) ?>
-                                                </td>
-                                            <?php endforeach; ?>
-                                            <td class="text-end fw-bold">
-                                                <?php if ($key == 'efi_tagih') :
-                                                    echo number_format(($jumlah_bulan > 0) ? $total / $jumlah_bulan : 0, 2, ',', '.');
-                                                else :
-                                                    echo number_format($total);
-                                                endif; ?>
-                                            </td>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" style="font-size: 0.9rem;">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>No</th>
+                                            <th>Indikator</th>
+                                            <?php foreach ($bulan_list as $b) : ?><th><?= $b ?></th><?php endforeach; ?>
+                                            <th>Total</th>
                                         </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $indikator_list = [
+                                            'sr_baru'     => 'SR Baru',
+                                            'penutupan'   => 'Penutupan',
+                                            'pencabutan'  => 'Pencabutan',
+                                            'pembukaan'   => 'Pembukaan',
+                                            'tera_meter'  => 'Tera Meter',
+                                            'ganti_meter' => 'Ganti Meter',
+                                            'efi_tagih'   => 'Efisiensi Penagihan'
+                                        ];
+                                        $no = 1;
+                                        foreach ($indikator_list as $key => $label) :
+                                            $total = 0;
+                                            $jumlah_bulan = 0;
+                                        ?>
+                                            <tr>
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td><?= $label ?></td>
+                                                <?php foreach ($bulan_list as $i => $b) :
+                                                    $nilai = 0;
+                                                    foreach ($tampil as $row) {
+                                                        if ($row->bulan == $i) {
+                                                            $nilai = $row->$key;
+                                                            break;
+                                                        }
+                                                    }
+                                                    $total += $nilai;
+                                                    if ($nilai != 0) $jumlah_bulan++;
+                                                ?>
+                                                    <td class="text-end">
+                                                        <?= ($key == 'efi_tagih') ? number_format($nilai, 2, ',', '.') : number_format($nilai) ?>
+                                                    </td>
+                                                <?php endforeach; ?>
+                                                <td class="text-end fw-bold">
+                                                    <?php if ($key == 'efi_tagih') :
+                                                        echo number_format(($jumlah_bulan > 0) ? $total / $jumlah_bulan : 0, 2, ',', '.');
+                                                    else :
+                                                        echo number_format($total);
+                                                    endif; ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
@@ -125,66 +127,68 @@
                     <div class="row justify-content-center mt-3">
                         <div class="col-lg-12">
                             <p class="fw-bold mb-1">B. Target Pendapatan</p>
-                            <table class="table table-sm table-bordered" style="font-size: 0.9rem;">
-                                <thead>
-                                    <tr class="text-center">
-                                        <th>No</th>
-                                        <th>Indikator</th>
-                                        <?php foreach ($bulan_list as $b) : ?><th><?= $b ?></th><?php endforeach; ?>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $total_rek = 0;
-                                    $total_pend = 0;
-                                    $total_pakai = 0;
-                                    foreach ($bulan_list as $i => $b) {
-                                        $total_rek   += $rekening_map[$i]  ?? 0;
-                                        $total_pend  += $pendapatan_map[$i] ?? 0;
-                                        $total_pakai += $pemakaian_map[$i] ?? 0;
-                                    }
-                                    $avg_rek = $total_rek / 12;
-                                    $pola_total = ($avg_rek > 0) ? $total_pakai / $avg_rek : 0;
-                                    ?>
-                                    <tr>
-                                        <td class="text-center">1</td>
-                                        <td>Jumlah Rekening</td>
-                                        <?php foreach ($bulan_list as $i => $b) : ?>
-                                            <td class="text-end"><?= number_format($rekening_map[$i] ?? 0) ?></td>
-                                        <?php endforeach; ?>
-                                        <td class="text-end fw-bold"><?= number_format($total_rek) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">2</td>
-                                        <td>Pendapatan (Rp)</td>
-                                        <?php foreach ($bulan_list as $i => $b) : ?>
-                                            <td class="text-end"><?= number_format($pendapatan_map[$i] ?? 0, 0, ',', '.') ?></td>
-                                        <?php endforeach; ?>
-                                        <td class="text-end fw-bold"><?= number_format($total_pend, 0, ',', '.') ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">3</td>
-                                        <td>Pemakaian (m³)</td>
-                                        <?php foreach ($bulan_list as $i => $b) : ?>
-                                            <td class="text-end"><?= number_format($pemakaian_map[$i] ?? 0, 2, ',', '.') ?></td>
-                                        <?php endforeach; ?>
-                                        <td class="text-end fw-bold"><?= number_format($total_pakai, 2, ',', '.') ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">4</td>
-                                        <td>Pola Konsumsi (m³/rek)</td>
-                                        <?php foreach ($bulan_list as $i => $b) :
-                                            $rek   = $rekening_map[$i] ?? 0;
-                                            $pakai = $pemakaian_map[$i] ?? 0;
-                                            $pola  = ($rek > 0) ? $pakai / $rek : 0;
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" style="font-size: 0.9rem;">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>No</th>
+                                            <th>Indikator</th>
+                                            <?php foreach ($bulan_list as $b) : ?><th><?= $b ?></th><?php endforeach; ?>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $total_rek = 0;
+                                        $total_pend = 0;
+                                        $total_pakai = 0;
+                                        foreach ($bulan_list as $i => $b) {
+                                            $total_rek   += $rekening_map[$i]  ?? 0;
+                                            $total_pend  += $pendapatan_map[$i] ?? 0;
+                                            $total_pakai += $pemakaian_map[$i] ?? 0;
+                                        }
+                                        $avg_rek = $total_rek / 12;
+                                        $pola_total = ($avg_rek > 0) ? $total_pakai / $avg_rek : 0;
                                         ?>
-                                            <td class="text-end"><?= number_format($pola, 2, ',', '.') ?></td>
-                                        <?php endforeach; ?>
-                                        <td class="text-end fw-bold"><?= number_format($pola_total, 2, ',', '.') ?></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <tr>
+                                            <td class="text-center">1</td>
+                                            <td>Jumlah Rekening</td>
+                                            <?php foreach ($bulan_list as $i => $b) : ?>
+                                                <td class="text-end"><?= number_format($rekening_map[$i] ?? 0) ?></td>
+                                            <?php endforeach; ?>
+                                            <td class="text-end fw-bold"><?= number_format($total_rek) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center">2</td>
+                                            <td>Pendapatan (Rp)</td>
+                                            <?php foreach ($bulan_list as $i => $b) : ?>
+                                                <td class="text-end"><?= number_format($pendapatan_map[$i] ?? 0, 0, ',', '.') ?></td>
+                                            <?php endforeach; ?>
+                                            <td class="text-end fw-bold"><?= number_format($total_pend, 0, ',', '.') ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center">3</td>
+                                            <td>Pemakaian (m³)</td>
+                                            <?php foreach ($bulan_list as $i => $b) : ?>
+                                                <td class="text-end"><?= number_format($pemakaian_map[$i] ?? 0, 2, ',', '.') ?></td>
+                                            <?php endforeach; ?>
+                                            <td class="text-end fw-bold"><?= number_format($total_pakai, 2, ',', '.') ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center">4</td>
+                                            <td>Pola Konsumsi (m³/rek)</td>
+                                            <?php foreach ($bulan_list as $i => $b) :
+                                                $rek   = $rekening_map[$i] ?? 0;
+                                                $pakai = $pemakaian_map[$i] ?? 0;
+                                                $pola  = ($rek > 0) ? $pakai / $rek : 0;
+                                            ?>
+                                                <td class="text-end"><?= number_format($pola, 2, ',', '.') ?></td>
+                                            <?php endforeach; ?>
+                                            <td class="text-end fw-bold"><?= number_format($pola_total, 2, ',', '.') ?></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
