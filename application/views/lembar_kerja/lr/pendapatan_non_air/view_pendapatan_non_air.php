@@ -52,6 +52,14 @@
                                 <div class="navbar-nav">
                                     <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/pendapatan_non_air/form_generate') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Generate Ke Laba Rugi</button> </a>
                                 </div>
+                                <div class="navbar-nav">
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/tarif_non_air?tahun_rkap=' . $tahun) ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fas fa-cog"></i> Tarif Non Air</button> </a>
+                                </div>
+                                <?php if ($upk) : ?>
+                                    <div class="navbar-nav">
+                                        <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/pendapatan_non_air/form_manual?upk=' . $upk . '&tahun=' . $tahun) ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fas fa-pen"></i> Input Lain-lain</button> </a>
+                                    </div>
+                                <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
                     </nav>

@@ -133,6 +133,19 @@ class Model_pendapatan_non_air extends CI_Model
     }
 
 
+    public function getTarif($tahun, $jenis_pendapatan, $parameter)
+    {
+        $this->db->select('nilai');
+        $this->db->from('rkap_tarif_non_air');
+        $this->db->where([
+            'tahun'            => $tahun,
+            'jenis_pendapatan' => $jenis_pendapatan,
+            'parameter'        => $parameter
+        ]);
+        $query = $this->db->get()->row();
+        return $query ? $query->nilai : 0;
+    }
+
     public function getNoPerId($id_upk, $jenis_pendapatan)
     {
         // mapping urutan UPK ke suffix kode
