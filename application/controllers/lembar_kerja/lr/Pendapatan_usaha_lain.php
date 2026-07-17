@@ -55,6 +55,15 @@ class Pendapatan_usaha_lain extends MY_Controller
 
     public function tambah()
     {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Input data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/lr/pendapatan_usaha_lain?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
         $data['title'] = 'Input Data Pendapatan Usaha Lainnya';
 
         $data['no_per_subsidi']   = $this->db->like('kode', '81.03.03', 'after')->get('no_per')->result();
@@ -68,7 +77,15 @@ class Pendapatan_usaha_lain extends MY_Controller
     }
     public function save()
     {
+        $tahun_wajib = date('Y') + 1;
         $tahun   = $this->input->post('tahun');
+
+        if ($tahun != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Input data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/lr/pendapatan_usaha_lain');
+            return;
+        }
+
         $bulan   = $this->input->post('bulan'); // hanya dipakai untuk subsidi
         $jenis   = $this->input->post('jenis'); // subsidi / penagihan
         $kode    = $this->input->post('kode');  // ex: 81.01.05.02 atau 81.03.01.01

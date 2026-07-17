@@ -126,6 +126,16 @@ class Beban_sumber extends MY_Controller
 
     public function tambah()
     {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Input data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/lr/beban_sumber?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
         // Pindahkan mapping UPK ke sini agar bisa dipakai di form
         $mapping_upk = [
             '01' => 'Bondowoso', '02' => 'Sukosari 1', '03' => 'Maesan', '04' => 'Tegalampel',
@@ -215,6 +225,16 @@ class Beban_sumber extends MY_Controller
 
     public function edit($encoded_key = null)
     {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Edit data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/lr/beban_sumber?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
         $upk = $this->session->userdata('upk');
         $unique_key = base64_decode(urldecode($encoded_key));
         // lalu parse unique_key seperti sebelumnya

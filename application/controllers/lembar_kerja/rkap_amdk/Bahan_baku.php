@@ -116,6 +116,16 @@ class Bahan_baku extends MY_Controller
 
     public function tambah()
     {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Input data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/rkap_amdk/bahan_baku?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
         $data['daftar_bahan'] = [
             'Galon 19L' => ['Galon', 'Tisu', 'Stiker Galon', 'Tutup Galon', 'Liquid Galon'],
             'Gelas 220ml' => ['Cup/Gelas', 'Lid Cup', 'Sedotan', 'Dus 220ml', 'Isolasi'],
@@ -173,6 +183,16 @@ class Bahan_baku extends MY_Controller
 
     public function tambah_perlengkapan()
     {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Input data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/rkap_amdk/bahan_baku?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
         $data['daftar_bahan'] = [
             'Perlengkapan Lab' => ['Aquades', 'MQ Water', 'Petri Film', 'Ozon Reagent', 'Tisu lab', 'Alkohol 90%', 'Pipet Plastik', 'Spiritus', 'Termometer Ruangan'],
             'Perlengkapan Lainnya' => ['Kanibo Mobil & R. Produksi', 'Tisu', 'Sabun Cair', 'Masker', 'Tutup Kepala', 'Sarung tangan', 'Alkohol 90%', 'Selang Bening'],

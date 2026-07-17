@@ -111,6 +111,16 @@ class Biaya extends CI_Controller
 
     public function tambah()
     {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Input data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/rkap_amdk/biaya?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
         if ($this->input->post()) {
             $tahun_rkap = $this->session->userdata('tahun_rkap');
             $no_per_id  = $this->input->post('no_per_id');
