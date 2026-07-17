@@ -81,7 +81,7 @@
                                     </button>
                                 </div>
                                 <div class="navbar-nav">
-                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/beban_trandis/tambah') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input Biaya</button> </a>
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/beban_trandis/tambah?tahun_rkap=' . $tahun) ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input Biaya</button> </a>
                                 </div>
                             <?php endif; ?>
                         <?php endif; ?>

@@ -134,6 +134,8 @@ class Usulan_barang_amdk extends CI_Controller
                 redirect('rkap/usulan_barang_amdk');
             }
 
+            $data['form_action'] = 'rkap/usulan_barang_amdk/update';
+            $data['back_url'] = 'rkap/usulan_barang_amdk';
             $data['kategori_barang'] = $this->Model_rkap_barang->getKategori();
             $data['master_barang'] = $this->Model_rkap_barang->getMasterBarang(date('Y'));
             $masterTerpilih = $this->Model_rkap_barang->cariMasterBarang(

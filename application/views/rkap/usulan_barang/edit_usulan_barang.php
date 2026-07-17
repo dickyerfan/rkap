@@ -4,14 +4,14 @@
             <div class="card">
                 <div class="card-header shadow">
                     <a class="fw-bold text-dark" style="text-decoration:none;"><?= strtoupper($title) ?></a>
-                    <a href="<?= base_url('rkap/usulan_barang') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
+                    <a href="<?= base_url($back_url ?? 'rkap/usulan_barang') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
                 </div>
                 <div class="p-2">
                     <?= $this->session->flashdata('info'); ?>
                     <?= $this->session->unset_userdata('info'); ?>
                 </div>
                 <div class="card-body">
-                    <form class="user" action="<?= base_url('rkap/usulan_barang/update') ?>" method="POST">
+                    <form class="user" action="<?= base_url($form_action ?? 'rkap/usulan_barang/update') ?>" method="POST">
                         <input type="hidden" name="id_usulanBarang" value="<?= (int) $usulan_barang->id_usulanBarang ?>">
                         <div class="row justify-content-center">
                             <div class="col-md-6">

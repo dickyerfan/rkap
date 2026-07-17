@@ -130,6 +130,16 @@ class Beban_trandis extends MY_Controller
 
     public function tambah()
     {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Input data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/lr/beban_trandis?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
         $mapping_upk = [
             '01' => 'Bondowoso', '02' => 'Sukosari 1', '03' => 'Maesan', '04' => 'Tegalampel',
             '05' => 'Tapen', '06' => 'Prajekan', '07' => 'Tlogosari', '08' => 'Wringin',
@@ -140,7 +150,6 @@ class Beban_trandis extends MY_Controller
         ];
 
         if ($this->input->post()) {
-            $tahun_rkap = $this->session->userdata('tahun_rkap');
             $cabang_id  = $this->input->post('cabang_id'); // Ini array
             $no_per_id  = $this->input->post('no_per_id'); // Ini array
             $bulan_dipilih = $this->input->post('bulan');
@@ -228,6 +237,16 @@ class Beban_trandis extends MY_Controller
 
     public function edit($encoded_key = null)
     {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Edit data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/lr/beban_trandis?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
         $upk = $this->session->userdata('upk');
         $unique_key = base64_decode(urldecode($encoded_key));
         // lalu parse unique_key seperti sebelumnya
@@ -248,7 +267,6 @@ class Beban_trandis extends MY_Controller
             $data_update = [];
             $total_updated = 0;
 
-            $tahun_rkap = $this->session->userdata('tahun_rkap');
             $nama_petugas = $this->session->userdata('nama_lengkap');
 
             // Ambil nilai header yang baru (jika diedit)
