@@ -198,7 +198,6 @@
                                         $field = ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'agu', 'sep', 'okt', 'nov', 'des'][$i - 1] . '_t_gaji';
                                         $val = (float)$t->$field;
                                         echo "<td class='text-end'>" . number_format($val, 0, ',', '.') . "</td>";
-                                        $subtotal_bagian[$i] += $val;
                                         $total_tahun_pegawai += $val;
                                     }
                                     echo "<td class='text-end fw-bold'>" . number_format($total_tahun_pegawai, 0, ',', '.') . "</td></tr>";

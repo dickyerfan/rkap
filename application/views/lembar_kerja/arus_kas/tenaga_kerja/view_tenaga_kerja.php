@@ -232,15 +232,24 @@
                                             $nama_pengguna  = $this->session->userdata('nama_pengguna');
                                             $level = $this->session->userdata('level');
                                             if (can_input($nama_pengguna, $level, $status_periode, $tahun)) {
-                                                echo "<a href='" . base_url('lembar_kerja/arus_kas/tenaga_kerja/edit/' . $t->id_pegawai) . "' 
-                                                    class='btn btn-dark btn-sm float-end' style='text-decoration: none;'>
+                                                echo "<div class='float-end' style='display:flex;gap:4px;'>";
+                                                echo "<a href='" . base_url('lembar_kerja/arus_kas/tenaga_kerja/gaji_berkala/' . $t->id_tk) . "' 
+                                                    class='btn btn-success btn-sm' style='text-decoration: none;'>
+                                                    <i class='fa fa-arrow-up'></i> Gaji Berkala
+                                                    </a>";
+                                                echo "<a href='" . base_url('lembar_kerja/arus_kas/tenaga_kerja/kenaikan_pangkat/' . $t->id_tk) . "' 
+                                                    class='btn btn-warning btn-sm' style='text-decoration: none;color:black;'>
+                                                    <i class='fa fa-star'></i> Naik Pangkat
+                                                    </a>";
+                                                echo "<a href='" . base_url('lembar_kerja/arus_kas/tenaga_kerja/pensiun/' . $t->id_tk) . "' 
+                                                    class='btn btn-primary btn-sm' style='text-decoration: none;'>
+                                                    <i class='fa fa-right-from-bracket'></i> Purna
+                                                    </a>";
+                                                echo "<a href='" . base_url('lembar_kerja/arus_kas/tenaga_kerja/edit/' . $t->id_tk) . "' 
+                                                    class='btn btn-dark btn-sm' style='text-decoration: none;'>
                                                     <i class='fa fa-edit'></i> Input Data Gaji
                                                     </a>";
-
-                                                // echo "<a href='" . base_url('lembar_kerja/arus_kas/tenaga_kerja/hapus_setelah_pensiun/' . $t->id_pegawai) . "' 
-                                                //     class='btn btn-dark btn-sm float-end me-2' style='text-decoration: none;'>
-                                                //     <i class='fa fa-edit'></i> Hapus Setelah Pensiun
-                                                //     </a>";
+                                                echo "</div>";
                                             }
                                             echo "</td></tr>";
 

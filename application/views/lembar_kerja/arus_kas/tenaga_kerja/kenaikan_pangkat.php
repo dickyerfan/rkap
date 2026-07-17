@@ -17,7 +17,7 @@
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-lg-6">
-                            <form action="<?= base_url('lembar_kerja/arus_kas/tenaga_kerja/update_pensiun') ?>" method="post">
+                            <form action="<?= base_url('lembar_kerja/arus_kas/tenaga_kerja/update_kenaikan_pangkat') ?>" method="post">
                                 <input type="hidden" name="id_pegawai" value="<?= $pegawai['id'] ?>">
                                 <input type="hidden" name="tahun" value="<?= $tahun ?>">
                                 <input type="hidden" name="bagian" value="<?= $tk['bagian'] ?>">
@@ -33,18 +33,22 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="bulan_pensiun" class="form-label">Pilih Bulan Purna / Pensiun</label>
-                                    <select name="bulan_pensiun" id="bulan_pensiun" class="form-select" required>
+                                    <label for="bulan_pangkat" class="form-label">Bulan Kenaikan Pangkat</label>
+                                    <select name="bulan_pangkat" id="bulan_pangkat" class="form-select" required>
                                         <option value="">--Pilih Bulan--</option>
                                         <?php for ($i = 1; $i <= 12; $i++) : ?>
                                             <option value="<?= $i ?>"><?= date('F', mktime(0, 0, 0, $i, 1)) ?></option>
                                         <?php endfor; ?>
                                     </select>
-                                    <small class="text-muted">Data gaji bulan setelah bulan yang dipilih akan dihapus.</small>
                                 </div>
 
-                                <button type="submit" class="neumorphic-button w-100" onclick="return confirm('Yakin ingin memproses pensiun? Data gaji bulan berikutnya akan dihapus.')">
-                                    <i class="fa-solid fa-right-from-bracket"></i> Proses Purna / Pensiun
+                                <div class="mb-3">
+                                    <label for="gaji_pokok_baru" class="form-label">Gaji Pokok Baru (setelah naik pangkat)</label>
+                                    <input type="number" name="gaji_pokok_baru" id="gaji_pokok_baru" class="form-control" placeholder="Masukkan gaji pokok baru" required>
+                                </div>
+
+                                <button type="submit" class="neumorphic-button w-100">
+                                    <i class="fa-solid fa-check"></i> Terapkan Kenaikan Pangkat
                                 </button>
                             </form>
                         </div>

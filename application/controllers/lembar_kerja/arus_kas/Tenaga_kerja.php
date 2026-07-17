@@ -647,4 +647,314 @@ class Tenaga_kerja extends MY_Controller
         redirect('lembar_kerja/arus_kas/tenaga_kerja/pegawai?upk=' . $upk);
     }
     // end daftar pegawai
+
+    // ------------------------------------------------------------
+    // GAJI BERKALA (per pegawai)
+    // ------------------------------------------------------------
+    public function gaji_berkala($id)
+    {
+        if (!can_input(
+            $this->session->userdata('nama_pengguna'),
+            $this->session->userdata('level'),
+            $this->status_periode,
+            $this->session->userdata('tahun_rkap') ?: date('Y') + 1
+        )) {
+            show_error('Aksi tidak diperbolehkan pada periode ini.', 403);
+        }
+
+        $tk = $this->db->get_where('rkap_tenaga_kerja', ['id_tk' => $id])->row_array();
+        if (!$tk) show_error('Data tidak ditemukan.', 404);
+
+        $pegawai = $this->db->get_where('rkap_pegawai', ['id' => $tk['id_pegawai']])->row_array();
+        if (!$pegawai) show_error('Data pegawai tidak ditemukan.', 404);
+
+        $data['title'] = 'Edit Gaji Berkala';
+        $data['tk'] = $tk;
+        $data['pegawai'] = $pegawai;
+        $data['tahun'] = date('Y', strtotime($tk['bulan']));
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/gaji_berkala', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function update_gaji_berkala()
+    {
+        $id_pegawai = $this->input->post('id_pegawai');
+        $bulan_berkala = (int)$this->input->post('bulan_berkala');
+        $gaji_pokok_baru = (float)$this->input->post('gaji_pokok_baru');
+        $tahun = $this->input->post('tahun');
+        $upk = $this->input->post('bagian');
+
+        if (!$id_pegawai || !$bulan_berkala || !$gaji_pokok_baru) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Data tidak valid.</div>');
+            redirect('lembar_kerja/arus_kas/tenaga_kerja');
+        }
+
+        $pegawai = $this->db->get_where('rkap_pegawai', ['id' => $id_pegawai])->row_array();
+        if (!$pegawai) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Pegawai tidak ditemukan.</div>');
+            redirect('lembar_kerja/arus_kas/tenaga_kerja');
+        }
+
+        // Ambil data tenaga_kerja sebelum bulan berkala sebagai referensi
+        $bulan_sebelum = $bulan_berkala > 1
+            ? sprintf('%04d-%02d-01', $tahun, $bulan_berkala - 1)
+            : sprintf('%04d-12-01', $tahun - 1);
+
+        $data_sebelum = $this->db->get_where('rkap_tenaga_kerja', [
+            'id_pegawai' => $id_pegawai,
+            'bulan' => $bulan_sebelum
+        ])->row_array();
+
+        if (!$data_sebelum) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Data bulan sebelum tidak ditemukan. Generate daftar gaji terlebih dahulu.</div>');
+            redirect('lembar_kerja/arus_kas/tenaga_kerja?upk=' . urlencode($upk) . '&tahun_rkap=' . $tahun);
+        }
+
+        for ($bulan = $bulan_berkala; $bulan <= 12; $bulan++) {
+            $tgl_bulan = sprintf('%04d-%02d-01', $tahun, $bulan);
+            $komponen = $this->_recalculate_components($pegawai, $gaji_pokok_baru, $data_sebelum);
+
+            $data_update = array_merge($komponen, [
+                'ptgs_update' => $this->session->userdata('nama_lengkap'),
+            ]);
+
+            $this->db->where('id_pegawai', $id_pegawai);
+            $this->db->where('bulan', $tgl_bulan);
+            $this->db->update('rkap_tenaga_kerja', $data_update);
+        }
+
+        $this->session->set_flashdata('info', '<div class="alert alert-primary alert-dismissible fade show" role="alert">
+            Gaji berkala berhasil diterapkan mulai bulan ' . date('F', mktime(0, 0, 0, $bulan_berkala, 1)) . '.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>');
+        redirect('lembar_kerja/arus_kas/tenaga_kerja?upk=' . urlencode($upk) . '&tahun_rkap=' . $tahun);
+    }
+
+    // ------------------------------------------------------------
+    // KENAIKAN PANGKAT (per pegawai)
+    // ------------------------------------------------------------
+    public function kenaikan_pangkat($id)
+    {
+        if (!can_input(
+            $this->session->userdata('nama_pengguna'),
+            $this->session->userdata('level'),
+            $this->status_periode,
+            $this->session->userdata('tahun_rkap') ?: date('Y') + 1
+        )) {
+            show_error('Aksi tidak diperbolehkan pada periode ini.', 403);
+        }
+
+        $tk = $this->db->get_where('rkap_tenaga_kerja', ['id_tk' => $id])->row_array();
+        if (!$tk) show_error('Data tidak ditemukan.', 404);
+
+        $pegawai = $this->db->get_where('rkap_pegawai', ['id' => $tk['id_pegawai']])->row_array();
+        if (!$pegawai) show_error('Data pegawai tidak ditemukan.', 404);
+
+        $data['title'] = 'Edit Kenaikan Pangkat';
+        $data['tk'] = $tk;
+        $data['pegawai'] = $pegawai;
+        $data['tahun'] = date('Y', strtotime($tk['bulan']));
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/kenaikan_pangkat', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function update_kenaikan_pangkat()
+    {
+        $id_pegawai = $this->input->post('id_pegawai');
+        $bulan_pangkat = (int)$this->input->post('bulan_pangkat');
+        $gaji_pokok_baru = (float)$this->input->post('gaji_pokok_baru');
+        $tahun = $this->input->post('tahun');
+        $upk = $this->input->post('bagian');
+
+        if (!$id_pegawai || !$bulan_pangkat || !$gaji_pokok_baru) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Data tidak valid.</div>');
+            redirect('lembar_kerja/arus_kas/tenaga_kerja');
+        }
+
+        $pegawai = $this->db->get_where('rkap_pegawai', ['id' => $id_pegawai])->row_array();
+        if (!$pegawai) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Pegawai tidak ditemukan.</div>');
+            redirect('lembar_kerja/arus_kas/tenaga_kerja');
+        }
+
+        $bulan_sebelum = $bulan_pangkat > 1
+            ? sprintf('%04d-%02d-01', $tahun, $bulan_pangkat - 1)
+            : sprintf('%04d-12-01', $tahun - 1);
+
+        $data_sebelum = $this->db->get_where('rkap_tenaga_kerja', [
+            'id_pegawai' => $id_pegawai,
+            'bulan' => $bulan_sebelum
+        ])->row_array();
+
+        if (!$data_sebelum) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Data bulan sebelum tidak ditemukan. Generate daftar gaji terlebih dahulu.</div>');
+            redirect('lembar_kerja/arus_kas/tenaga_kerja?upk=' . urlencode($upk) . '&tahun_rkap=' . $tahun);
+        }
+
+        for ($bulan = $bulan_pangkat; $bulan <= 12; $bulan++) {
+            $tgl_bulan = sprintf('%04d-%02d-01', $tahun, $bulan);
+            $komponen = $this->_recalculate_components($pegawai, $gaji_pokok_baru, $data_sebelum);
+
+            $data_update = array_merge($komponen, [
+                'ptgs_update' => $this->session->userdata('nama_lengkap'),
+            ]);
+
+            $this->db->where('id_pegawai', $id_pegawai);
+            $this->db->where('bulan', $tgl_bulan);
+            $this->db->update('rkap_tenaga_kerja', $data_update);
+        }
+
+        $this->session->set_flashdata('info', '<div class="alert alert-primary alert-dismissible fade show" role="alert">
+            Kenaikan pangkat berhasil diterapkan mulai bulan ' . date('F', mktime(0, 0, 0, $bulan_pangkat, 1)) . '.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>');
+        redirect('lembar_kerja/arus_kas/tenaga_kerja?upk=' . urlencode($upk) . '&tahun_rkap=' . $tahun);
+    }
+
+    // ------------------------------------------------------------
+    // PURNA / PENSIUN (per pegawai)
+    // ------------------------------------------------------------
+    public function pensiun($id)
+    {
+        if (!can_input(
+            $this->session->userdata('nama_pengguna'),
+            $this->session->userdata('level'),
+            $this->status_periode,
+            $this->session->userdata('tahun_rkap') ?: date('Y') + 1
+        )) {
+            show_error('Aksi tidak diperbolehkan pada periode ini.', 403);
+        }
+
+        $tk = $this->db->get_where('rkap_tenaga_kerja', ['id_tk' => $id])->row_array();
+        if (!$tk) show_error('Data tidak ditemukan.', 404);
+
+        $pegawai = $this->db->get_where('rkap_pegawai', ['id' => $tk['id_pegawai']])->row_array();
+        if (!$pegawai) show_error('Data pegawai tidak ditemukan.', 404);
+
+        $data['title'] = 'Edit Purna / Pensiun';
+        $data['tk'] = $tk;
+        $data['pegawai'] = $pegawai;
+        $data['tahun'] = date('Y', strtotime($tk['bulan']));
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('lembar_kerja/arus_kas/tenaga_kerja/update_pensiun', $data);
+        $this->load->view('templates/footer');
+    }
+
+    public function update_pensiun()
+    {
+        $id_pegawai = $this->input->post('id_pegawai');
+        $bulan_pensiun = (int)$this->input->post('bulan_pensiun');
+        $tahun = $this->input->post('tahun');
+        $upk = $this->input->post('bagian');
+
+        if (!$id_pegawai || !$bulan_pensiun) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Data tidak valid.</div>');
+            redirect('lembar_kerja/arus_kas/tenaga_kerja');
+        }
+
+        // Set pegawai tidak aktif
+        $this->db->where('id', $id_pegawai)->update('rkap_pegawai', [
+            'aktif' => 0,
+            'ptgs_update' => $this->session->userdata('nama_lengkap'),
+        ]);
+
+        // Hapus data gaji bulan setelah pensiun
+        $deleted_count = 0;
+        for ($bulan = $bulan_pensiun + 1; $bulan <= 12; $bulan++) {
+            $tgl_bulan = sprintf('%04d-%02d-01', $tahun, $bulan);
+            $this->db->where('id_pegawai', $id_pegawai);
+            $this->db->where('bulan', $tgl_bulan);
+            $this->db->delete('rkap_tenaga_kerja');
+            $deleted_count += $this->db->affected_rows();
+        }
+
+        if ($deleted_count > 0) {
+            $this->session->set_flashdata('info', '<div class="alert alert-primary alert-dismissible fade show" role="alert">
+                Data pensiun berhasil diproses. Data gaji bulan setelah ' . date('F', mktime(0, 0, 0, $bulan_pensiun, 1)) . ' telah dihapus.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>');
+        } else {
+            $this->session->set_flashdata('info', '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Pegawai sudah diproses pensiun. Tidak ada data yang dihapus.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>');
+        }
+
+        redirect('lembar_kerja/arus_kas/tenaga_kerja?upk=' . urlencode($upk) . '&tahun_rkap=' . $tahun);
+    }
+
+    // ------------------------------------------------------------
+    // HELPER: Hitung ulang komponen gaji
+    // ------------------------------------------------------------
+    private function _recalculate_components($pegawai, $gaji_pokok, $data_ref)
+    {
+        $j_istri = (float)($data_ref['j_istri'] ?? 0);
+        $j_anak = (float)($data_ref['j_anak'] ?? 0);
+        $t_perumahan = (float)($data_ref['t_perumahan'] ?? 0);
+        $t_jabatan = (float)($data_ref['t_jabatan'] ?? 0);
+        $t_transport = (float)($data_ref['t_transport'] ?? 0);
+        $uang_makan = (float)($data_ref['uang_makan'] ?? 0);
+        $dapenma = (float)($pegawai['dapenma'] ?? 0);
+
+        if ($pegawai['jabatan'] == 'Direktur') {
+            $t_istri = 0;
+            $t_anak = 0;
+            $t_jabatan = 0;
+            $t_transport = 0;
+            $t_pangan = 0;
+            $uang_makan = 0;
+            $t_perumahan = 0;
+            $dapenmapamsi = 0;
+        } elseif ($pegawai['status_pegawai'] == 'Karyawan Tetap') {
+            $t_istri = 0.10 * $gaji_pokok * $j_istri;
+            $t_anak = 0.05 * $gaji_pokok * $j_anak;
+            $t_pangan = 100000 * (1 + $j_istri + $j_anak);
+        } else {
+            $t_istri = 0;
+            $t_anak = 0;
+            $t_pangan = 0;
+        }
+
+        $bpjs_kesehatan = ($gaji_pokok + $t_istri + $t_anak + $t_pangan + $t_perumahan) * 0.04;
+        $bpjs_tk = ($gaji_pokok + $t_istri + $t_anak + $t_pangan + $t_perumahan) * 0.0689;
+
+        if ($pegawai['jabatan'] == 'Direktur') {
+            $dapenmapamsi = 0;
+        } elseif ($dapenma == 1) {
+            $dapenmapamsi = ($gaji_pokok + $t_istri + $t_anak) * 0.1517;
+        } else {
+            $dapenmapamsi = 0;
+        }
+
+        $total_gaji = $gaji_pokok + $t_istri + $t_anak + $t_pangan + $t_jabatan + $t_perumahan
+            + $uang_makan + $t_transport + $bpjs_tk + $bpjs_kesehatan + $dapenmapamsi;
+
+        return [
+            'gaji_pokok' => $gaji_pokok,
+            'j_istri' => $j_istri,
+            'j_anak' => $j_anak,
+            't_istri' => $t_istri,
+            't_anak' => $t_anak,
+            't_pangan' => $t_pangan,
+            't_jabatan' => $t_jabatan,
+            't_perumahan' => $t_perumahan,
+            't_transport' => $t_transport,
+            'uang_makan' => $uang_makan,
+            'bpjs_kesehatan' => $bpjs_kesehatan,
+            'bpjs_tk' => $bpjs_tk,
+            'dapenmapamsi' => $dapenmapamsi,
+            'total_gaji' => $total_gaji,
+        ];
+    }
 }

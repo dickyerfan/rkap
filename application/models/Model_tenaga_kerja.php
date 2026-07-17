@@ -8,17 +8,17 @@ class Model_tenaga_kerja extends CI_Model
         // Buat filter UPK dinamis
         $filter_upk = "";
         if (!empty($upk)) {
-            $filter_upk = " AND bagian = " . $this->db->escape($upk);
+            $filter_upk = " AND ptk.bagian = " . $this->db->escape($upk);
         }
 
         $query = $this->db->query("
         SELECT 
-        id_tk
-            id_pegawai,
-            bagian,
-            kategori,
-            jabatan,
-            nama,
+            ptk.id_tk,
+            ptk.id_pegawai,
+            ptk.bagian,
+            ptk.kategori,
+            ptk.jabatan,
+            ptk.nama,
 
             -- Gaji Pokok
             MAX(CASE WHEN MONTH(bulan)=1 THEN gaji_pokok END) AS jan_gaji,
@@ -189,9 +189,9 @@ class Model_tenaga_kerja extends CI_Model
             MAX(CASE WHEN MONTH(bulan)=12 THEN total_gaji END) AS des_t_gaji,
             SUM(total_gaji) AS total_tahun
 
-        FROM rkap_tenaga_kerja
-        WHERE YEAR(bulan) = ? $filter_upk
-        GROUP BY nama, jabatan, bagian, id_pegawai, kategori
+        FROM rkap_tenaga_kerja ptk
+        WHERE YEAR(ptk.bulan) = ? $filter_upk
+        GROUP BY ptk.nama, ptk.jabatan, ptk.bagian, ptk.id_pegawai, ptk.kategori
         ORDER BY bagian, jabatan
     ", [$tahun]);
 
