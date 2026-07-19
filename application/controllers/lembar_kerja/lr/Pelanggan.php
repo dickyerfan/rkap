@@ -132,6 +132,28 @@ class Pelanggan extends MY_Controller
         $data['title'] = 'Input Data Perkembangan Pelanggan';
         $data['upk_list'] = $this->db->get('rkap_nama_upk')->result();
         $data['jenis_list'] = $this->db->get('rkap_jenis_plgn')->result();
+
+        $id_upk = $this->input->get('id_upk');
+        $id_jp  = $this->input->get('id_jp');
+        $tahun  = $this->input->get('tahun');
+
+        $data['selected_id_upk'] = $id_upk;
+        $data['selected_id_jp']  = $id_jp;
+        $data['selected_tahun']  = $tahun;
+
+        $existing = [];
+        if ($id_upk && $id_jp && $tahun) {
+            $rows = $this->db->get_where('rkap_pelanggan', [
+                'id_upk' => $id_upk,
+                'id_jp'  => $id_jp,
+                'tahun'  => $tahun
+            ])->result();
+            foreach ($rows as $r) {
+                $existing[$r->bulan][$r->id_kd] = $r->jumlah;
+            }
+        }
+        $data['existing'] = $existing;
+
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
@@ -144,7 +166,11 @@ class Pelanggan extends MY_Controller
         $id_upk = $this->input->post('id_upk');
         $id_jp  = $this->input->post('id_jp');
         $tahun  = $this->input->post('tahun');
-        $bulan  = $this->input->post('bulan');
+
+        $s_baru_arr     = $this->input->post('s_baru');
+        $penutupan_arr  = $this->input->post('penutupan');
+        $pembukaan_arr  = $this->input->post('pembukaan');
+        $pencabutan_arr = $this->input->post('pencabutan');
 
         $kd_awal  = 1;
         $kd_baru  = 2;
@@ -155,106 +181,58 @@ class Pelanggan extends MY_Controller
 
         $now = date('Y-m-d H:i:s');
 
-        // --- hitung sambungan awal ---
-        if ($bulan == 1) {
-            // Januari diinput manual
-            $s_awal = $this->input->post('s_awal') ?: 0;
-        } else {
-            // selain Januari → ambil dari akhir bulan sebelumnya
-            $s_awal = $this->Model_pelanggan->get_jumlah($id_upk, $id_jp, $kd_akhir, $tahun, $bulan - 1);
+        $s_awal = 0;
+        for ($bulan = 1; $bulan <= 12; $bulan++) {
+            if ($bulan == 1) {
+                $s_awal = (int) ($this->input->post('s_awal_1') ?: 0);
+                if ($s_awal == 0) {
+                    $existing_s_awal = $this->Model_pelanggan->get_jumlah($id_upk, $id_jp, $kd_awal, $tahun, 1);
+                    if ($existing_s_awal > 0) {
+                        $s_awal = $existing_s_awal;
+                    }
+                }
+            }
+
+            $s_baru = isset($s_baru_arr[$bulan]) ? (int) $s_baru_arr[$bulan] : 0;
+            $tutup  = isset($penutupan_arr[$bulan]) ? (int) $penutupan_arr[$bulan] : 0;
+            $buka   = isset($pembukaan_arr[$bulan]) ? (int) $pembukaan_arr[$bulan] : 0;
+            $cabut  = isset($pencabutan_arr[$bulan]) ? (int) $pencabutan_arr[$bulan] : 0;
+
+            $s_akhir = $s_awal + $s_baru - $tutup + $buka - $cabut;
+
+            $this->Model_pelanggan->save_or_update([
+                'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_awal,
+                'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_awal,
+                'tgl_update' => $now, 'tgl_upload' => $now
+            ]);
+            $this->Model_pelanggan->save_or_update([
+                'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_baru,
+                'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_baru,
+                'tgl_update' => $now, 'tgl_upload' => $now
+            ]);
+            $this->Model_pelanggan->save_or_update([
+                'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_tutup,
+                'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $tutup,
+                'tgl_update' => $now, 'tgl_upload' => $now
+            ]);
+            $this->Model_pelanggan->save_or_update([
+                'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_buka,
+                'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $buka,
+                'tgl_update' => $now, 'tgl_upload' => $now
+            ]);
+            $this->Model_pelanggan->save_or_update([
+                'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_cabut,
+                'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $cabut,
+                'tgl_update' => $now, 'tgl_upload' => $now
+            ]);
+            $this->Model_pelanggan->save_or_update([
+                'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_akhir,
+                'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_akhir,
+                'tgl_update' => $now, 'tgl_upload' => $now
+            ]);
+
+            $s_awal = $s_akhir;
         }
-
-        // kategori lain tetap input manual
-        $s_baru = $this->input->post('s_baru') ?: 0;
-        $tutup  = $this->input->post('penutupan') ?: 0;
-        $buka   = $this->input->post('pembukaan') ?: 0;
-        $cabut  = $this->input->post('pencabutan') ?: 0;
-
-        // cek duplikasi data / jika error maka kode ini dihapus saja
-        // $cek = $this->db->get_where('rkap_pelanggan', [
-        //     'id_upk' => $id_upk,
-        //     'id_jp'  => $id_jp,
-        //     'tahun'  => $tahun,
-        //     'bulan'  => $bulan
-        // ])->num_rows();
-
-        // if ($cek > 0) {
-        //     $this->session->set_flashdata(
-        //         'info',
-        //         '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-        //     <strong>Gagal!</strong> Data untuk UPK ini pada bulan ' . $bulan . ' tahun ' . $tahun . ' sudah ada. 
-        //     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        // </div>'
-        //     );
-        //     redirect('lembar_kerja/pelanggan');
-        // }
-
-        // simpan awal bulan
-        $this->Model_pelanggan->save_or_update([
-            'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_awal,
-            'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_awal,
-            'tgl_update' => $now, 'tgl_upload' => $now
-        ]);
-
-        // simpan kategori "baru"
-        $this->Model_pelanggan->save_or_update([
-            'id_upk' => $id_upk,
-            'id_jp' => $id_jp,
-            'id_kd' => $kd_baru,
-            'tahun' => $tahun,
-            'bulan' => $bulan,
-            'jumlah' => $s_baru,
-            'tgl_update' => $now,
-            'tgl_upload' => $now
-        ]);
-
-        // simpan kategori "penutupan"
-        $this->Model_pelanggan->save_or_update([
-            'id_upk' => $id_upk,
-            'id_jp' => $id_jp,
-            'id_kd' => $kd_tutup,
-            'tahun' => $tahun,
-            'bulan' => $bulan,
-            'jumlah' => $tutup,
-            'tgl_update' => $now,
-            'tgl_upload' => $now
-        ]);
-
-        // simpan kategori "pembukaan"
-        $this->Model_pelanggan->save_or_update([
-            'id_upk' => $id_upk,
-            'id_jp' => $id_jp,
-            'id_kd' => $kd_buka,
-            'tahun' => $tahun,
-            'bulan' => $bulan,
-            'jumlah' => $buka,
-            'tgl_update' => $now,
-            'tgl_upload' => $now
-        ]);
-
-        // simpan kategori "pencabutan"
-        $this->Model_pelanggan->save_or_update([
-            'id_upk' => $id_upk,
-            'id_jp' => $id_jp,
-            'id_kd' => $kd_cabut,
-            'tahun' => $tahun,
-            'bulan' => $bulan,
-            'jumlah' => $cabut,
-            'tgl_update' => $now,
-            'tgl_upload' => $now
-        ]);
-
-
-        // hitung akhir
-        $s_akhir = $s_awal + $s_baru - $tutup + $buka - $cabut;
-        $this->Model_pelanggan->save_or_update([
-            'id_upk' => $id_upk, 'id_jp' => $id_jp, 'id_kd' => $kd_akhir,
-            'tahun' => $tahun, 'bulan' => $bulan, 'jumlah' => $s_akhir,
-            'tgl_update' => $now, 'tgl_upload' => $now
-        ]);
-
-        // lanjutkan propagasi mulai bulan setelahnya
-        $this->propagate_recursive($id_upk, $id_jp, $tahun, $bulan + 1, $s_akhir);
 
         $this->session->set_flashdata(
             'info',

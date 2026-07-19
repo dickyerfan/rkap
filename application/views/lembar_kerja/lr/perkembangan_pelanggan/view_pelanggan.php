@@ -53,7 +53,7 @@
                             $level = $this->session->userdata('level');
                             if (can_input($nama_pengguna, $level, $status_periode, $tahun_rkap)) : ?>
                                 <div class="navbar-nav">
-                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/pelanggan/tambah') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input Data</button> </a>
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/pelanggan/tambah') . '?id_upk=' . $upk . '&tahun=' . $tahun_rkap ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Input Data</button> </a>
                                 </div>
                             <?php endif; ?>
                         <?php endif; ?>
