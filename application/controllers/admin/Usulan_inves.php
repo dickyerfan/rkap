@@ -9,6 +9,7 @@ class Usulan_inves extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_inves');
+        $this->load->model('Model_investasi');
         $this->load->model('Model_pengaturan');
         $this->load->model('Model_setting');
         $this->load->library('form_validation');
@@ -322,8 +323,17 @@ class Usulan_inves extends CI_Controller
             // );
 
             $this->db->trans_begin();
-            $result = $this->Model_usulan_inves
-                ->insert_or_update_generate_inves($insert);
+            if ($usulan->bagian_upk == 'amdk') {
+                $result1 = $this->Model_usulan_inves->insert_or_update_generate_inves($insert);
+                $result2 = $this->Model_investasi->insert_or_update_amdk($insert);
+                $result = [
+                    'inserted' => $result1['inserted'] + $result2['inserted'],
+                    'updated'  => $result1['updated'] + $result2['updated']
+                ];
+            } else {
+                $result = $this->Model_usulan_inves
+                    ->insert_or_update_generate_inves($insert);
+            }
             $this->Model_usulan_inves->updateStatusUpload($id_usulanInvestasi);
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();

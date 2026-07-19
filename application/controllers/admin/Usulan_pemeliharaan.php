@@ -9,6 +9,7 @@ class Usulan_pemeliharaan extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_pemeliharaan');
+        $this->load->model('Model_amdk_biaya');
         $this->load->model('Model_setting');
         $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
@@ -444,7 +445,11 @@ class Usulan_pemeliharaan extends CI_Controller
             // );
 
             $this->db->trans_begin();
-            $result = $this->Model_usulan_pemeliharaan->insert_or_update_generate_pemeliharaan($insert);
+            if ($usulan->bagian_upk == 'amdk') {
+                $result = $this->Model_amdk_biaya->insert_or_update($insert);
+            } else {
+                $result = $this->Model_usulan_pemeliharaan->insert_or_update_generate_pemeliharaan($insert);
+            }
             $this->Model_usulan_pemeliharaan->updateStatusUpload($id_usulanPemeliharaan);
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();

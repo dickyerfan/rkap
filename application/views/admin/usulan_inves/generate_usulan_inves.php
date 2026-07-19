@@ -50,7 +50,7 @@
                                         </tr>
                                         <tr>
                                             <td>Status</td>
-                                            <td>: Generate ke <strong>Biaya di Laba Rugi</strong></td>
+                                            <td>: Generate ke <strong>Biaya di Investasi</strong></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -109,7 +109,7 @@
         </div>
     </main>
 
-    <!-- <script>
+    <script>
         document.getElementById('semua_bulan').addEventListener('change', function() {
             document.querySelectorAll('.cek-bulan').forEach(function(item) {
                 item.checked = document.getElementById('semua_bulan').checked;
@@ -126,4 +126,4 @@
                 return false;
             }
         });
-    </script> -->
+    </script>

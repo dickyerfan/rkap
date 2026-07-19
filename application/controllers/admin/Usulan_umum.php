@@ -9,6 +9,7 @@ class Usulan_umum extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('Model_usulan_umum');
+        $this->load->model('Model_amdk_biaya');
         $this->load->model('Model_setting');
         $this->load->model('Model_pengaturan');
         $this->load->library('form_validation');
@@ -78,8 +79,9 @@ class Usulan_umum extends CI_Controller
             );
             redirect('admin/usulan_umum');
         } else {
-            $data['no_per'] = $this->Model_usulan_umum->getNoPerUmum();
             $data['usulan_umum'] = $this->Model_usulan_umum->getUsulanUmum($id_usulanUmum);
+            $kode = ($data['usulan_umum']->bagian_upk == 'amdk') ? '98' : '96';
+            $data['no_per'] = $this->Model_usulan_umum->getNoPerUmum($kode);
             $this->load->view('templates/pengguna/header', $data);
             $this->load->view('templates/pengguna/navbar');
             $this->load->view('templates/pengguna/sidebar');
@@ -307,7 +309,7 @@ class Usulan_umum extends CI_Controller
                         $bulan
                     ),
                     'uraian' => $usulan->nama_perkiraan,
-                    'pagu' => $usulan->biaya,
+                    'pagu' => ($usulan->biaya * $usulan->volume),
                     'status' => 0,
                     'status_update' => 0,
                     'ptgs_upload' => $this->session->userdata('nama_lengkap')
@@ -328,7 +330,11 @@ class Usulan_umum extends CI_Controller
             // );
 
             $this->db->trans_begin();
-            $result = $this->Model_usulan_umum->insert_or_update_generate_umum($insert);
+            if ($usulan->bagian_upk == 'amdk') {
+                $result = $this->Model_amdk_biaya->insert_or_update($insert);
+            } else {
+                $result = $this->Model_usulan_umum->insert_or_update_generate_umum($insert);
+            }
             $this->Model_usulan_umum->updateStatusUpload($id_usulanUmum);
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();

@@ -109,7 +109,7 @@
         </div>
     </main>
 
-    <!-- <script>
+    <script>
         document.getElementById('semua_bulan').addEventListener('change', function() {
             document.querySelectorAll('.cek-bulan').forEach(function(item) {
                 item.checked = document.getElementById('semua_bulan').checked;
@@ -126,4 +126,4 @@
                 return false;
             }
         });
-    </script> -->
+    </script>

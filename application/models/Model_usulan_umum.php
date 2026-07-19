@@ -136,9 +136,9 @@ class Model_usulan_umum extends CI_Model
         return $query->result();
     }
 
-    public function getNoPerUmum()
+    public function getNoPerUmum($kode = '96')
     {
-        $this->db->like('kode', '96'); // kondisi contain 96
+        $this->db->like('kode', $kode);
         return $this->db->get('no_per')->result();
     }
 

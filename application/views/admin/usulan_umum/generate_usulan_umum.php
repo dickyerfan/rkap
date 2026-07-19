@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="form-group mb-4">
                                     <label>Biaya</label>
-                                    <input type="text" class="form-control" readonly value="<?= number_format($usulan_umum->biaya, 0, ',', '.') ?>">
+                                    <input type="text" class="form-control" readonly value="<?= number_format($usulan_umum->biaya * $usulan_umum->volume, 0, ',', '.') ?>">
                                 </div>
                                 <div class="alert alert-info">
                                     <table class="table table-borderless table-sm mb-0">
@@ -109,7 +109,7 @@
         </div>
     </main>
 
-    <!-- <script>
+    <script>
         document.getElementById('semua_bulan').addEventListener('change', function() {
             document.querySelectorAll('.cek-bulan').forEach(function(item) {
                 item.checked = document.getElementById('semua_bulan').checked;
@@ -126,4 +126,4 @@
                 return false;
             }
         });
-    </script> -->
+    </script>

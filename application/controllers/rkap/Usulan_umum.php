@@ -234,8 +234,9 @@ class Usulan_Umum extends CI_Controller
             );
             redirect('rkap/usulan_umum');
         } else {
-            $data['no_per'] = $this->Model_usulan_umum->getNoPerUmum();
             $data['usulan_umum'] = $this->Model_usulan_umum->getUsulanUmum($id_usulanUmum);
+            $kode = ($data['usulan_umum']->bagian_upk == 'amdk') ? '98' : '96';
+            $data['no_per'] = $this->Model_usulan_umum->getNoPerUmum($kode);
             $this->load->view('templates/pengguna/header', $data);
             $this->load->view('templates/pengguna/navbar');
             $this->load->view('templates/pengguna/sidebar');
