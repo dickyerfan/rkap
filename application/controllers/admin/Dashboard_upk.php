@@ -26,6 +26,7 @@ class Dashboard_upk extends MY_Controller
     {
         parent::__construct();
         $this->load->model('Model_laba_rugi');
+        $this->load->model('Model_proyeksi_upk');
         date_default_timezone_set('Asia/Jakarta');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -58,7 +59,7 @@ class Dashboard_upk extends MY_Controller
             $data['cabang_id'] = $cabang_id;
             $data['upk_bagian'] = $upk_bagian;
             $data['title'] = 'DASHBOARD ' . strtoupper($data['nama_upk']);
-            $data = $this->getUpkData($data, $tahun_ini, $tahun_depan, $cabang_id, $upk_bagian);
+            $data = $this->getUpkData($data, $tahun_ini, $tahun_depan, $cabang_id, $upk_bagian, $id_upk);
             $view = 'admin/dashboard_upk/view_dashboard_upk';
         } else {
             $data['is_amdk'] = false;
@@ -83,7 +84,7 @@ class Dashboard_upk extends MY_Controller
         }
     }
 
-    private function getUpkData($data, $tahun_ini, $tahun_depan, $cabang_id, $upk_bagian)
+    private function getUpkData($data, $tahun_ini, $tahun_depan, $cabang_id, $upk_bagian, $id_upk = null)
     {
         $codePendapatanUsaha = ['81.01', '81.02', '81.03'];
         $codeBebanUsaha = ['91', '92', '93', '95'];
@@ -134,6 +135,11 @@ class Dashboard_upk extends MY_Controller
         $data['selisih_pola_kon'] = ($data['potensi_sr_depan']->pola_kon ?? 0) - ($data['potensi_sr_ini']->pola_kon ?? 0);
 
         $data['evaluasi_upk_ini'] = $this->db->get_where('evaluasi_upk', ['tahun_rkap' => $tahun_ini, 'bagian_upk' => $upk_bagian])->result();
+
+        // --- Perbandingan Target UPK (bulan per bulan) ---
+        $tahun_lalu = $tahun_ini;
+        $tahun_sekarang = $tahun_depan;
+        $data = $this->getPerbandinganData($data, $tahun_lalu, $tahun_sekarang, $id_upk);
 
         return $data;
     }
@@ -251,7 +257,48 @@ class Dashboard_upk extends MY_Controller
         $data['laba_bersih_ini'] = $data['laba_sebelum_pajak_ini'] + $data['total_luar_biasa_ini'] - $data['total_pajak_ini'];
         $data['laba_bersih_depan'] = $data['laba_sebelum_pajak_depan'] + $data['total_luar_biasa_depan'] - $data['total_pajak_depan'];
 
+        $tahun_lalu = $tahun_ini;
+        $tahun_sekarang = $tahun_depan;
+        $data = $this->getPerbandinganData($data, $tahun_lalu, $tahun_sekarang, null);
+
         return $data;
+    }
+
+    public function export_pdf()
+    {
+        $id_upk = $this->input->get('id_upk');
+
+        if ($id_upk === 'amdk') {
+            redirect('admin/dashboard_upk');
+        }
+
+        $tahun_ini = date('Y');
+        $tahun_depan = $tahun_ini + 1;
+
+        $data['tahun_ini'] = $tahun_ini;
+        $data['tahun_depan'] = $tahun_depan;
+        $data['is_amdk'] = false;
+
+        if (!empty($id_upk)) {
+            $upk = $this->db->where('id_upk', $id_upk)->get('rkap_nama_upk')->row();
+            $data['nama_upk'] = $upk->nama_upk ?? '';
+            $upk_bagian = strtolower(str_replace(' ', '', $data['nama_upk']));
+            $cabang_id = $upk->kode ?? '';
+            $data['cabang_id'] = $cabang_id;
+            $data['upk_bagian'] = $upk_bagian;
+            $data = $this->getUpkData($data, $tahun_ini, $tahun_depan, $cabang_id, $upk_bagian, $id_upk);
+
+            $nama_file = 'Dashboard_RKAP_' . strtoupper(str_replace(' ', '', $data['nama_upk']));
+        } else {
+            $data['is_total'] = true;
+            $data = $this->getTotalData($data, $tahun_ini, $tahun_depan);
+
+            $nama_file = 'Dashboard_RKAP_KONSOLIDASI';
+        }
+
+        $this->pdf->setPaper('Folio', 'landscape');
+        $this->pdf->filename = $nama_file . '.pdf';
+        $this->pdf->generate('admin/dashboard_upk/laporan_pdf', $data);
     }
 
     private function sumTotals($data)
@@ -261,5 +308,84 @@ class Dashboard_upk extends MY_Controller
             $total += $item['total'] ?? 0;
         }
         return $total;
+    }
+
+    private function mapMonthly($rows, $field = null)
+    {
+        $map = [];
+        foreach ($rows as $r) {
+            $b = (int) $r->bulan;
+            $map[$b] = $field ? (float) ($r->$field ?? 0) : $r;
+        }
+        return $map;
+    }
+
+    private function getPelangganMonthly($tahun, $id_upk = null)
+    {
+        $this->db
+            ->select('bulan, id_kd, SUM(jumlah) as total')
+            ->from('rkap_pelanggan')
+            ->where('tahun', $tahun)
+            ->where_in('id_kd', [2, 3, 4, 5])
+            ->group_by('bulan, id_kd')
+            ->order_by('bulan, id_kd');
+
+        if (!empty($id_upk)) {
+            $this->db->where('id_upk', $id_upk);
+        }
+
+        $rows = $this->db->get()->result();
+
+        $map = [];
+        foreach ($rows as $r) {
+            $b = (int) $r->bulan;
+            $kd = (int) $r->id_kd;
+            $map[$b][$kd] = (float) $r->total;
+        }
+        return $map;
+    }
+
+    private function getPerbandinganData($data, $tahun_lalu, $tahun_sekarang, $id_upk)
+    {
+        $data['tahun_lalu'] = $tahun_lalu;
+        $data['tahun_sekarang'] = $tahun_sekarang;
+
+        $data['pelanggan_lalu'] = $this->getPelangganMonthly($tahun_lalu, $id_upk);
+        $data['pelanggan_sekarang'] = $this->getPelangganMonthly($tahun_sekarang, $id_upk);
+
+        // ambil tera_meter, ganti_meter, efi_tagih dari rkap_evaluasi_pelanggan (target_upk)
+        $extra_lalu = $this->Model_proyeksi_upk->getDataAll($tahun_lalu, $id_upk);
+        $extra_sekarang = $this->Model_proyeksi_upk->getDataAll($tahun_sekarang, $id_upk);
+        $data['extra_lalu'] = $this->mapMonthly($extra_lalu);
+        $data['extra_sekarang'] = $this->mapMonthly($extra_sekarang);
+
+        $data['jml_rekening_lalu'] = $this->mapMonthly(
+            $this->Model_proyeksi_upk->getJumlahRekening($tahun_lalu, $id_upk),
+            'jumlah_rekening'
+        );
+        $data['jml_rekening_sekarang'] = $this->mapMonthly(
+            $this->Model_proyeksi_upk->getJumlahRekening($tahun_sekarang, $id_upk),
+            'jumlah_rekening'
+        );
+
+        $data['pemakaian_lalu'] = $this->mapMonthly(
+            $this->Model_proyeksi_upk->getPemakaian($tahun_lalu, $id_upk),
+            'pemakaian'
+        );
+        $data['pemakaian_sekarang'] = $this->mapMonthly(
+            $this->Model_proyeksi_upk->getPemakaian($tahun_sekarang, $id_upk),
+            'pemakaian'
+        );
+
+        $data['pendapatan_lalu'] = $this->mapMonthly(
+            $this->Model_proyeksi_upk->getPendapatan($tahun_lalu, $id_upk),
+            'pendapatan'
+        );
+        $data['pendapatan_sekarang'] = $this->mapMonthly(
+            $this->Model_proyeksi_upk->getPendapatan($tahun_sekarang, $id_upk),
+            'pendapatan'
+        );
+
+        return $data;
     }
 }

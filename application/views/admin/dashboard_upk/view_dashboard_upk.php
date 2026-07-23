@@ -24,7 +24,10 @@
                         <!-- ============ TOTAL / KONSOLIDASI ============ -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="fw-bold">Laba Rugi RKAP Konsolidasi</h5>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="fw-bold">Laba Rugi RKAP Konsolidasi</h5>
+                                    <a href="<?= base_url('admin/dashboard_upk/export_pdf?id_upk=' . $selected_upk) ?>" target="_blank" class="btn btn-sm btn-primary mb-2"><i class="fa-solid fa-file-pdf"></i> Export PDF</a>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped table-sm">
                                         <thead class="text-center table-dark">
@@ -484,7 +487,10 @@
                         <!-- ============ UPK ============ -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="fw-bold">Ringkasan Laba Rugi <?= strtoupper($nama_upk) ?></h5>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="fw-bold">Ringkasan Laba Rugi <?= strtoupper($nama_upk) ?></h5>
+                                    <a href="<?= base_url('admin/dashboard_upk/export_pdf?id_upk=' . $selected_upk) ?>" target="_blank" class="btn btn-sm btn-primary mb-2"><i class="fa-solid fa-file-pdf"></i> Export PDF</a>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped table-sm">
                                         <thead class="text-center table-dark">
@@ -762,20 +768,202 @@
                                             yAxes: [{
                                                 id: 'y-left',
                                                 position: 'left',
-                                                ticks: { beginAtZero: true }
+                                                ticks: {
+                                                    beginAtZero: true
+                                                }
                                             }, {
                                                 id: 'y-right',
                                                 position: 'right',
-                                                ticks: { beginAtZero: true },
-                                                gridLines: { drawOnChartArea: false }
+                                                ticks: {
+                                                    beginAtZero: true
+                                                },
+                                                gridLines: {
+                                                    drawOnChartArea: false
+                                                }
                                             }]
                                         },
-                                        legend: { display: true }
+                                        legend: {
+                                            display: true
+                                        }
                                     }
                                 });
                             };
                         </script>
 
+                    <?php endif; ?>
+
+                    <?php if (empty($is_amdk)) : ?>
+                        <!-- ============ PERBANDINGAN TARGET UPK ============ -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="fw-bold">Perbandingan Target Pelanggan (RKAP) <?= $tahun_lalu ?> vs <?= $tahun_sekarang ?></h5>
+                                    <!-- <a href="<?= base_url('admin/dashboard_upk/export_pdf?id_upk=' . $selected_upk) ?>" target="_blank" class="btn btn-sm btn-primary"><i class="fa-solid fa-file-pdf"></i> Export PDF</a> -->
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-sm" style="font-size:0.8rem">
+                                        <thead class="text-center table-dark">
+                                            <tr>
+                                                <th style="min-width:120px">Uraian</th>
+                                                <th style="min-width:50px">Thn</th>
+                                                <?php for ($m = 1; $m <= 12; $m++) : ?>
+                                                    <th><?= date("M", mktime(0, 0, 0, $m, 1)) ?></th>
+                                                <?php endfor; ?>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $kd_map = [
+                                                'sr_baru' => ['label' => 'SR Baru', 'kd' => 2],
+                                                'penutupan' => ['label' => 'Penutupan', 'kd' => 3],
+                                                'pembukaan' => ['label' => 'Pembukaan', 'kd' => 4],
+                                                'pencabutan' => ['label' => 'Pencabutan', 'kd' => 5],
+                                                'tera_meter' => ['label' => 'Tera Meter', 'kd' => 'tm'],
+                                                'ganti_meter' => ['label' => 'Ganti Meter', 'kd' => 'gm'],
+                                                'efi_tagih' => ['label' => 'Efisiensi Tagih (%)', 'kd' => 'et'],
+                                            ];
+                                            foreach ($kd_map as $fld => $info) :
+                                                $total_lalu = 0;
+                                                $total_sekarang = 0;
+                                                for ($m = 1; $m <= 12; $m++) {
+                                                    if (in_array($info['kd'], [2, 3, 4, 5])) {
+                                                        $v_lalu = $pelanggan_lalu[$m][$info['kd']] ?? 0;
+                                                        $v_sekarang = $pelanggan_sekarang[$m][$info['kd']] ?? 0;
+                                                    } else {
+                                                        $col = ($info['kd'] == 'tm') ? 'tera_meter' : (($info['kd'] == 'gm') ? 'ganti_meter' : 'efi_tagih');
+                                                        $v_lalu = isset($extra_lalu[$m]) ? (float)($extra_lalu[$m]->$col ?? 0) : 0;
+                                                        $v_sekarang = isset($extra_sekarang[$m]) ? (float)($extra_sekarang[$m]->$col ?? 0) : 0;
+                                                    }
+                                                    $total_lalu += $v_lalu;
+                                                    $total_sekarang += $v_sekarang;
+                                                    ${'row_' . $fld . '_lalu'}[$m] = $v_lalu;
+                                                    ${'row_' . $fld . '_sekarang'}[$m] = $v_sekarang;
+                                                }
+                                                if ($fld == 'efi_tagih') {
+                                                    $total_lalu = $total_lalu / 12;
+                                                    $total_sekarang = $total_sekarang / 12;
+                                                }
+                                            ?>
+                                                <tr class="table-secondary fw-bold">
+                                                    <td colspan="15"><?= $info['label'] ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td><?= $tahun_lalu ?></td>
+                                                    <?php for ($m = 1; $m <= 12; $m++) : $val = ${'row_' . $fld . '_lalu'}[$m]; ?>
+                                                        <td class="text-end"><?= $fld == 'efi_tagih' ? number_format($val, 2, ',', '.') . '%' : number_format($val, 0, ',', '.') ?></td>
+                                                    <?php endfor; ?>
+                                                    <td class="text-end fw-bold"><?= $fld == 'efi_tagih' ? number_format($total_lalu, 2, ',', '.') . '%' : number_format($total_lalu, 0, ',', '.') ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td><?= $tahun_sekarang ?></td>
+                                                    <?php for ($m = 1; $m <= 12; $m++) : $val = ${'row_' . $fld . '_sekarang'}[$m]; ?>
+                                                        <td class="text-end"><?= $fld == 'efi_tagih' ? number_format($val, 2, ',', '.') . '%' : number_format($val, 0, ',', '.') ?></td>
+                                                    <?php endfor; ?>
+                                                    <td class="text-end fw-bold"><?= $fld == 'efi_tagih' ? number_format($total_sekarang, 2, ',', '.') . '%' : number_format($total_sekarang, 0, ',', '.') ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td>Selisih</td>
+                                                    <?php for ($m = 1; $m <= 12; $m++) :
+                                                        $sel = ${'row_' . $fld . '_sekarang'}[$m] - ${'row_' . $fld . '_lalu'}[$m];
+                                                    ?>
+                                                        <td class="text-end <?= $sel >= 0 ? 'text-success' : 'text-danger' ?>"><?= $fld == 'efi_tagih' ? number_format($sel, 2, ',', '.') . '%' : number_format($sel, 0, ',', '.') ?></td>
+                                                    <?php endfor; ?>
+                                                    <td class="text-end fw-bold <?= ($total_sekarang - $total_lalu) >= 0 ? 'text-success' : 'text-danger' ?>"><?= $fld == 'efi_tagih' ? number_format($total_sekarang - $total_lalu, 2, ',', '.') . '%' : number_format($total_sekarang - $total_lalu, 0, ',', '.') ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="fw-bold">Perbandingan Target Pendapatan (RKAP) <?= $tahun_lalu ?> vs <?= $tahun_sekarang ?></h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-sm" style="font-size:0.8rem">
+                                        <thead class="text-center table-dark">
+                                            <tr>
+                                                <th style="min-width:120px">Uraian</th>
+                                                <th style="min-width:50px">Thn</th>
+                                                <?php for ($m = 1; $m <= 12; $m++) : ?>
+                                                    <th><?= date("M", mktime(0, 0, 0, $m, 1)) ?></th>
+                                                <?php endfor; ?>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $pend_fields = [
+                                                'jml_rekening' => 'Jumlah Rekening',
+                                                'pemakaian' => 'Pemakaian (m³)',
+                                                'pendapatan' => 'Pendapatan (Rp)',
+                                                'pola_konsumsi' => 'Pola Konsumsi (m³/rek)',
+                                            ];
+                                            foreach ($pend_fields as $fld => $label) :
+                                                if ($fld == 'pola_konsumsi') {
+                                                    $total_lalu = 0;
+                                                    $total_sekarang = 0;
+                                                    for ($m = 1; $m <= 12; $m++) {
+                                                        $jml_lalu = $jml_rekening_lalu[$m] ?? 0;
+                                                        $jml_sekarang = $jml_rekening_sekarang[$m] ?? 0;
+                                                        $pakai_lalu = $pemakaian_lalu[$m] ?? 0;
+                                                        $pakai_sekarang = $pemakaian_sekarang[$m] ?? 0;
+                                                        ${'row_lalu'}[$m] = $jml_lalu > 0 ? round($pakai_lalu / $jml_lalu, 2) : 0;
+                                                        ${'row_sekarang'}[$m] = $jml_sekarang > 0 ? round($pakai_sekarang / $jml_sekarang, 2) : 0;
+                                                        $total_lalu += ${'row_lalu'}[$m];
+                                                        $total_sekarang += ${'row_sekarang'}[$m];
+                                                    }
+                                                } else {
+                                                    $arr_lalu = ${$fld . '_lalu'};
+                                                    $arr_sekarang = ${$fld . '_sekarang'};
+                                                    $total_lalu = array_sum($arr_lalu);
+                                                    $total_sekarang = array_sum($arr_sekarang);
+                                                    for ($m = 1; $m <= 12; $m++) {
+                                                        ${'row_lalu'}[$m] = $arr_lalu[$m] ?? 0;
+                                                        ${'row_sekarang'}[$m] = $arr_sekarang[$m] ?? 0;
+                                                    }
+                                                }
+                                            ?>
+                                                <tr class="table-secondary fw-bold">
+                                                    <td colspan="15"><?= $label ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td><?= $tahun_lalu ?></td>
+                                                    <?php for ($m = 1; $m <= 12; $m++) : ?>
+                                                        <td class="text-end"><?= $fld == 'pendapatan' ? number_format(${'row_lalu'}[$m], 0, ',', '.') : number_format(${'row_lalu'}[$m], ($fld == 'pola_konsumsi' ? 2 : 0), ',', '.') ?></td>
+                                                    <?php endfor; ?>
+                                                    <td class="text-end fw-bold"><?= $fld == 'pendapatan' ? number_format($total_lalu, 0, ',', '.') : number_format($total_lalu, ($fld == 'pola_konsumsi' ? 2 : 0), ',', '.') ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td><?= $tahun_sekarang ?></td>
+                                                    <?php for ($m = 1; $m <= 12; $m++) : ?>
+                                                        <td class="text-end"><?= $fld == 'pendapatan' ? number_format(${'row_sekarang'}[$m], 0, ',', '.') : number_format(${'row_sekarang'}[$m], ($fld == 'pola_konsumsi' ? 2 : 0), ',', '.') ?></td>
+                                                    <?php endfor; ?>
+                                                    <td class="text-end fw-bold"><?= $fld == 'pendapatan' ? number_format($total_sekarang, 0, ',', '.') : number_format($total_sekarang, ($fld == 'pola_konsumsi' ? 2 : 0), ',', '.') ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td>Selisih</td>
+                                                    <?php for ($m = 1; $m <= 12; $m++) :
+                                                        $sel = ${'row_sekarang'}[$m] - ${'row_lalu'}[$m];
+                                                    ?>
+                                                        <td class="text-end <?= $sel >= 0 ? 'text-success' : 'text-danger' ?>"><?= $fld == 'pendapatan' ? number_format($sel, 0, ',', '.') : number_format($sel, ($fld == 'pola_konsumsi' ? 2 : 0), ',', '.') ?></td>
+                                                    <?php endfor; ?>
+                                                    <td class="text-end fw-bold <?= ($total_sekarang - $total_lalu) >= 0 ? 'text-success' : 'text-danger' ?>"><?= $fld == 'pendapatan' ? number_format($total_sekarang - $total_lalu, 0, ',', '.') : number_format($total_sekarang - $total_lalu, ($fld == 'pola_konsumsi' ? 2 : 0), ',', '.') ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
