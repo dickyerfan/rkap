@@ -92,8 +92,7 @@
                                 </div> -->
                                 <div class="form-group">
                                     <label for="no_perkiraan">No Perkiraan :</label>
-                                    <input type="hidden" name="no_perkiraan" value="<?= $usulan_umum->no_perkiraan; ?>">
-                                    <select class="form-control  select2" id="no_perkiraan" name="no_perkiraan" disabled>
+                                    <select class="form-control  select2" id="no_perkiraan" name="no_perkiraan">
                                         <option value="">-- Pilih No Perkiraan --</option>
                                         <?php foreach ($no_per as $row) : ?>
                                             <option value="<?= $row->kode; ?>" <?= ($usulan_umum->no_perkiraan == $row->kode) ? 'selected' : ''; ?>>

@@ -80,7 +80,10 @@ class Usulan_umum extends CI_Controller
             redirect('admin/usulan_umum');
         } else {
             $data['usulan_umum'] = $this->Model_usulan_umum->getUsulanUmum($id_usulanUmum);
-            $kode = ($data['usulan_umum']->bagian_upk == 'amdk') ? '98' : '96';
+            $kode = ['91', '92', '93', '96'];
+            if ($data['usulan_umum']->bagian_upk == 'amdk') {
+                $kode[] = '98';
+            }
             $data['no_per'] = $this->Model_usulan_umum->getNoPerUmum($kode);
             $this->load->view('templates/pengguna/header', $data);
             $this->load->view('templates/pengguna/navbar');

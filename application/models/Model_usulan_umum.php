@@ -138,7 +138,15 @@ class Model_usulan_umum extends CI_Model
 
     public function getNoPerUmum($kode = '96')
     {
-        $this->db->like('kode', $kode);
+        if (is_array($kode)) {
+            $this->db->group_start();
+            foreach ($kode as $k) {
+                $this->db->or_like('kode', $k);
+            }
+            $this->db->group_end();
+        } else {
+            $this->db->like('kode', $kode);
+        }
         return $this->db->get('no_per')->result();
     }
 
