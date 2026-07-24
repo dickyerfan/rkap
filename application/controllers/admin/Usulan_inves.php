@@ -148,7 +148,7 @@ class Usulan_inves extends CI_Controller
 
     public function hapus_usulan_investasi($id_usulanInvestasi)
     {
-        $statusUpdate = $this->Model_usulan_inves->getStatusUpdate('usulan_investasi');
+        $statusUpdate = $this->Model_pengaturan->getStatusUpdate('usulan_investasi');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
