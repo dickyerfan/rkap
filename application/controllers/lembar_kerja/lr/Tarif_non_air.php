@@ -79,6 +79,17 @@ class Tarif_non_air extends MY_Controller
             redirect('lembar_kerja/lr/tarif_non_air?tahun_rkap=' . $row->tahun);
         }
 
+        if (trim($nilai) === '' || !is_numeric(str_replace(',', '.', $nilai))) {
+            $this->session->set_flashdata(
+                'info',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Gagal,</strong> Nilai tidak boleh kosong atau tidak valid.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>'
+            );
+            redirect('lembar_kerja/lr/tarif_non_air/edit/' . $id);
+        }
+
         $this->Model_tarif_non_air->update_tarif($id, str_replace(',', '.', $nilai));
 
         $this->session->set_flashdata(

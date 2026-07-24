@@ -32,11 +32,12 @@
                         <div class="mb-3">
                             <label class="form-label">Nilai</label>
                             <?php if ($row->parameter == 'bulan_promo') : ?>
-                                <input type="text" name="nilai" class="form-control" value="<?= htmlspecialchars($row->nilai) ?>">
+                                <input type="text" name="nilai" class="form-control" value="<?= htmlspecialchars($row->nilai) ?>" required>
                                 <small class="text-muted">Isi nomor bulan pisah koma, contoh: 1,8</small>
                             <?php else : ?>
-                                <input type="number" step="any" name="nilai" class="form-control" value="<?= number_format($row->nilai, 2, '.', '') ?>">
+                                <input type="number" step="any" name="nilai" class="form-control" value="<?= number_format($row->nilai, 2, '.', '') ?>" required>
                             <?php endif; ?>
+                            <div class="invalid-feedback">Nilai tidak boleh kosong.</div>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Simpan</button>

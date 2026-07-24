@@ -123,16 +123,22 @@
                                                         <td><?= htmlspecialchars($p->parameter) ?></td>
                                                         <td><?= isset($ket[$p->parameter]) ? $ket[$p->parameter] : '' ?></td>
                                                         <td class="text-end fw-bold">
-                                                            <?php if (isset($fmt[$p->parameter])) : ?>
+                                                            <?php
+                                                            $nilai = $p->nilai;
+                                                            $is_empty = ($nilai === null || $nilai === '' || $nilai === '0' || $nilai === 0);
+                                                            ?>
+                                                            <?php if ($is_empty) : ?>
+                                                                <span class="text-muted">-</span>
+                                                            <?php elseif (isset($fmt[$p->parameter])) : ?>
                                                                 <?php if ($fmt[$p->parameter] == 'rp') : ?>
-                                                                    <?= 'Rp ' . number_format($p->nilai, 0, ',', '.') ?>
+                                                                    <?= 'Rp ' . number_format((float)$nilai, 0, ',', '.') ?>
                                                                 <?php elseif ($fmt[$p->parameter] == 'pct') : ?>
-                                                                    <?= number_format($p->nilai * 100, 1, ',', '.') . '%' ?>
+                                                                    <?= number_format((float)$nilai * 100, 1, ',', '.') . '%' ?>
                                                                 <?php else : ?>
-                                                                    <?= htmlspecialchars($p->nilai) ?>
+                                                                    <?= htmlspecialchars($nilai) ?>
                                                                 <?php endif; ?>
                                                             <?php else : ?>
-                                                                <?= number_format($p->nilai, 2, ',', '.') ?>
+                                                                <?= number_format((float)$nilai, 2, ',', '.') ?>
                                                             <?php endif; ?>
                                                         </td>
                                                         <td class="text-center">
