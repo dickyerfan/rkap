@@ -239,10 +239,22 @@ class Model_pendapatan_air extends CI_Model
             $this->db->where('id_upk', $upk);
         }
 
-        // $this->db->where('id_upk', $upk);
         $this->db->where('tahun', $tahun);
         $query = $this->db->get();
         return $query->result();
+    }
+
+    public function getTangkiAirByNoPer($no_per_id, $tahun)
+    {
+        $this->db->from('rkap_tangki_air');
+        $this->db->where('no_per_id', $no_per_id);
+        $this->db->where('tahun', $tahun);
+        $query = $this->db->get();
+        $result = [];
+        foreach ($query->result() as $row) {
+            $result[(int)$row->bulan] = $row;
+        }
+        return $result;
     }
 
     public function save_tangki_air($data)

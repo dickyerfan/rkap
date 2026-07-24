@@ -166,10 +166,18 @@ class Pendapatan_air extends MY_Controller
     public function tangki_air()
     {
         $tahun = $this->input->get('tahun') ?: date('Y') + 1;
+        $no_per_id = $this->input->get('no_per_id');
         $data['tahun'] = $tahun;
+        $data['selected_no_per'] = $no_per_id;
+
         $no_per_list = $this->db->like('kode', '81.01.05.01')->get('no_per')->result_array();
         $data['no_per_list'] = $no_per_list;
         $data['title'] = 'Form Pendapatan Tangki Air';
+
+        $data['tangki_air_existing'] = [];
+        if ($no_per_id) {
+            $data['tangki_air_existing'] = $this->Model_pendapatan_air->getTangkiAirByNoPer($no_per_id, $tahun);
+        }
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
@@ -180,49 +188,61 @@ class Pendapatan_air extends MY_Controller
 
     public function save()
     {
-        // === Ambil data input ===
         $tahun = $this->input->post('tahun');
-        $bulan = $this->input->post('bulan');
+        $no_per_id = $this->input->post('no_per_id');
+        $penggunaan = $this->input->post('penggunaan_rata2');
+        $m3 = $this->input->post('m3_rata2');
+        $tarif = $this->input->post('tarif_rata2');
 
-        $data = [
-            'cabang_id'        => 25, // kode bagian langganan
-            'id_upk'           => 1,  // UPK Bondowoso
-            'tahun'            => $tahun,
-            'bulan'            => $bulan,
-            'no_per_id'        => $this->input->post('no_per_id'),
-            'penggunaan_rata2' => $this->input->post('penggunaan_rata2'),
-            'm3_rata2'         => $this->input->post('m3_rata2'),
-            'tarif_rata2'      => $this->input->post('tarif_rata2')
-        ];
+        $cabang_id = 25;
+        $id_upk = 1;
 
-        // === Simpan / Update ke tabel rkap_tangki_air ===
-        $this->Model_pendapatan_air->save_tangki_air($data);
+        $total_disimpan = 0;
 
-        // === Hitung nilai pagu ===
-        $pagu = $data['m3_rata2'] * $data['penggunaan_rata2'] * $data['tarif_rata2'];
+        for ($bulan = 1; $bulan <= 12; $bulan++) {
+            $peng = isset($penggunaan[$bulan]) ? $penggunaan[$bulan] : 0;
+            $m3_val = isset($m3[$bulan]) ? $m3[$bulan] : 0;
+            $tarif_val = isset($tarif[$bulan]) ? $tarif[$bulan] : 0;
 
-        // === Format tanggal untuk field tanggal (tgl 01 setiap bulan) ===
-        $tanggal = $tahun . '-' . str_pad($bulan, 2, '0', STR_PAD_LEFT) . '-01';
-        // === Susun data rekap ===
-        $rekap = [
-            'id_upk'    => $data['id_upk'],
-            'cabang_id' => $data['cabang_id'],
-            'no_per_id' => $data['no_per_id'],
-            'bulan'     => $tanggal,
-            'pagu'      => $pagu
-        ];
+            if ($peng == 0 && $m3_val == 0 && $tarif_val == 0) {
+                continue;
+            }
 
-        // === Simpan atau update ke tabel rkap_rekap ===
-        $this->Model_pendapatan_air->save_rekap_tangki($rekap);
+            $data = [
+                'cabang_id'        => $cabang_id,
+                'id_upk'           => $id_upk,
+                'tahun'            => $tahun,
+                'bulan'            => $bulan,
+                'no_per_id'        => $no_per_id,
+                'penggunaan_rata2' => $peng,
+                'm3_rata2'         => $m3_val,
+                'tarif_rata2'      => $tarif_val
+            ];
 
-        // === Flash message & redirect ===
+            $this->Model_pendapatan_air->save_tangki_air($data);
+
+            $pagu = $m3_val * $peng * $tarif_val;
+            $tanggal = $tahun . '-' . str_pad($bulan, 2, '0', STR_PAD_LEFT) . '-01';
+
+            $rekap = [
+                'id_upk'    => $id_upk,
+                'cabang_id' => $cabang_id,
+                'no_per_id' => $no_per_id,
+                'bulan'     => $tanggal,
+                'pagu'      => $pagu
+            ];
+
+            $this->Model_pendapatan_air->save_rekap_tangki($rekap);
+            $total_disimpan++;
+        }
+
         $this->session->set_flashdata(
             'info',
             '<div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Berhasil!</strong> Pendapatan Tangki Air berhasil disimpan dan direkap.
+            <strong>Berhasil!</strong> Data Pendapatan Tangki Air berhasil disimpan untuk ' . $total_disimpan . ' bulan.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>'
         );
-        redirect('lembar_kerja/lr/pendapatan_air');
+        redirect('lembar_kerja/lr/pendapatan_air?tahun=' . $tahun . '&no_per_id=' . $no_per_id);
     }
 }

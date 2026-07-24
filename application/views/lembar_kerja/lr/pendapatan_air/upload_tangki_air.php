@@ -11,45 +11,81 @@
                     <?= $this->session->unset_userdata('info'); ?>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <form action="<?= site_url('lembar_kerja/lr/pendapatan_air/save') ?>" method="post">
-                                <input type="text" name="tahun" class="form-control" value="<?= $tahun ?>" readonly>
-                                <div class="mb-3">
-                                    <label for="no_per_id">Kode Perkiraan</label>
-                                    <select name="no_per_id" id="no_per_id" class="form-control" required>
-                                        <option value="">-- Pilih Kode --</option>
-                                        <?php foreach ($no_per_list as $np) : ?>
-                                            <option value="<?= $np['kode'] ?>">
-                                                <?= $np['kode'] ?> - <?= $np['name'] ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <label for="bulan">Bulan</label>
-                                    <select name="bulan" id="bulan" class="form-control" required>
-                                        <?php for ($i = 1; $i <= 12; $i++) : ?>
-                                            <option value="<?= $i; ?>"><?= date('F', mktime(0, 0, 0, $i, 10)); ?></option>
-                                        <?php endfor; ?>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <label for="penggunaan_rata2">Jumlah Penggunaan rata2</label>
-                                    <input type="number" step="0.01" name="penggunaan_rata2" class="form-control" required>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <label for="m3_rata2">Jumlah M3 rata2</label>
-                                    <input type="number" step="0.01" name="m3_rata2" class="form-control" required>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <label for="tarif_rata2">Tarif rata2</label>
-                                    <input type="number" step="0.01" name="tarif_rata2" class="form-control" required>
-                                </div>
-                                <button type="submit" class="neumorphic-button mt-2">Simpan</button>
-                            </form>
+                    <form action="<?= site_url('lembar_kerja/lr/pendapatan_air/tangki_air') ?>" method="get" id="formFilter">
+                        <input type="hidden" name="tahun" value="<?= $tahun ?>">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="no_per_id"><strong>Kode Perkiraan</strong></label>
+                                <select name="no_per_id" id="no_per_id" class="form-control" required onchange="document.getElementById('formFilter').submit();">
+                                    <option value="">-- Pilih Kode Perkiraan --</option>
+                                    <?php foreach ($no_per_list as $np) : ?>
+                                        <option value="<?= $np['kode'] ?>" <?= $selected_no_per == $np['kode'] ? 'selected' : '' ?>>
+                                            <?= $np['kode'] ?> - <?= $np['name'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    </form>
+
+                    <?php if ($selected_no_per) : ?>
+                        <form action="<?= site_url('lembar_kerja/lr/pendapatan_air/save') ?>" method="post">
+                            <input type="hidden" name="tahun" value="<?= $tahun ?>">
+                            <input type="hidden" name="no_per_id" value="<?= $selected_no_per ?>">
+
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" style="font-size: 0.8rem;">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="text-center" style="width: 200px;">URAIAN</th>
+                                            <?php
+                                            $nama_bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                                            foreach ($nama_bulan as $nb) :
+                                            ?>
+                                                <th class="text-center"><?= $nb ?></th>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Jumlah Penggunaan rata2</strong></td>
+                                            <?php for ($i = 1; $i <= 12; $i++) : ?>
+                                                <td>
+                                                    <input type="number" step="0.01" name="penggunaan_rata2[<?= $i ?>]"
+                                                        class="form-control form-control-sm text-end"
+                                                        value="<?= isset($tangki_air_existing[$i]) ? $tangki_air_existing[$i]->penggunaan_rata2 : 0 ?>">
+                                                </td>
+                                            <?php endfor; ?>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Jumlah M3 rata2</strong></td>
+                                            <?php for ($i = 1; $i <= 12; $i++) : ?>
+                                                <td>
+                                                    <input type="number" step="0.01" name="m3_rata2[<?= $i ?>]"
+                                                        class="form-control form-control-sm text-end"
+                                                        value="<?= isset($tangki_air_existing[$i]) ? $tangki_air_existing[$i]->m3_rata2 : 0 ?>">
+                                                </td>
+                                            <?php endfor; ?>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tarif rata2</strong></td>
+                                            <?php for ($i = 1; $i <= 12; $i++) : ?>
+                                                <td>
+                                                    <input type="number" step="0.01" name="tarif_rata2[<?= $i ?>]"
+                                                        class="form-control form-control-sm text-end"
+                                                        value="<?= isset($tangki_air_existing[$i]) ? $tangki_air_existing[$i]->tarif_rata2 : 0 ?>">
+                                                </td>
+                                            <?php endfor; ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <button type="submit" class="neumorphic-button mt-2">
+                                <i class="fas fa-save"></i> Simpan Semua Bulan
+                            </button>
+                        </form>
+                    <?php endif; ?>
 
                 </div>
             </div>
