@@ -12,6 +12,7 @@ class Usulan_barang extends CI_Controller
         $this->load->model('Model_rkap_barang');
         $this->load->model('Model_pengaturan');
         $this->load->model('Model_setting');
+        $this->load->model('Model_amdk_biaya');
         $this->load->library('form_validation');
         if (!$this->session->userdata('level')) {
             redirect('auth');
@@ -380,11 +381,41 @@ class Usulan_barang extends CI_Controller
             }
 
             // Simpan
+            //     $this->db->trans_begin();
+            //     $result = $this->Model_usulan_barang
+            //         ->insert_or_update_generate_barang($insert);
+            //     $this->Model_usulan_barang
+            //         ->updateStatusUpload($id_usulanBarang);
+            //     if ($this->db->trans_status() === FALSE) {
+            //         $this->db->trans_rollback();
+            //         $this->session->set_flashdata(
+            //             'info',
+            //             '<div class="alert alert-danger">
+            //     Generate gagal.
+            // </div>'
+            //         );
+            //     } else {
+            //         $this->db->trans_commit();
+            //         $this->session->set_flashdata(
+            //             'info',
+            //             '<div class="alert alert-success">
+            //     Berhasil Generate Biaya (Laba Rugi).<br>
+            //     Proses Insert : <b>' . $result['inserted'] . '</b><br>
+            //     Proses Update : <b>' . $result['updated'] . '</b>
+            // </div>'
+            //         );
+            //     }
+
+            //     redirect('admin/usulan_barang');
+            // }
+
             $this->db->trans_begin();
-            $result = $this->Model_usulan_barang
-                ->insert_or_update_generate_barang($insert);
-            $this->Model_usulan_barang
-                ->updateStatusUpload($id_usulanBarang);
+            if ($usulan->bagian_upk == 'amdk') {
+                $result = $this->Model_amdk_biaya->insert_or_update($insert);
+            } else {
+                $result = $this->Model_usulan_barang->insert_or_update_generate_umum($insert);
+            }
+            $this->Model_usulan_barang->updateStatusUpload($id_usulanBarang);
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
                 $this->session->set_flashdata(
@@ -398,13 +429,12 @@ class Usulan_barang extends CI_Controller
                 $this->session->set_flashdata(
                     'info',
                     '<div class="alert alert-success">
-            Berhasil Generate Biaya (Laba Rugi).<br>
+            Berhasil Generate Usulan Umum.<br>
             Proses Insert : <b>' . $result['inserted'] . '</b><br>
             Proses Update : <b>' . $result['updated'] . '</b>
         </div>'
                 );
             }
-
             redirect('admin/usulan_barang');
         }
 

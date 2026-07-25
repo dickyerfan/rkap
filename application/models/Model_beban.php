@@ -76,7 +76,8 @@ class Model_beban extends CI_Model
 
                 $this->db->from('rkap_biaya r');
                 $this->db->join('no_per np', 'r.no_per_id = np.kode', 'left');
-                $this->db->like('np.kode', $kode, 'after');
+                // $this->db->like('np.kode', $kode, 'after'); // KODE LAMA - diganti 25 Jul 2026
+                $this->db->like('r.no_per_id', $kode, 'after');
                 $this->db->where('YEAR(r.bulan)', (int)$tahun);
 
                 if ($upk != 'all' && $upk !== '' && $upk !== null) {
@@ -244,7 +245,8 @@ class Model_beban extends CI_Model
 
                 $this->db->from('rkap_biaya r');
                 $this->db->join('no_per np', 'r.no_per_id = np.kode', 'left');
-                $this->db->like('np.kode', $kode, 'after');
+                // $this->db->like('np.kode', $kode, 'after'); // KODE LAMA - diganti 25 Jul 2026
+                $this->db->like('r.no_per_id', $kode, 'after');
                 $this->db->where('YEAR(r.bulan)', (int)$tahun);
 
                 if ($upk != 'all' && $upk !== '' && $upk !== null) {
@@ -515,7 +517,8 @@ class Model_beban extends CI_Model
                 $q1 = $this->db->select($select_columns, FALSE)
                     ->from('rkap_biaya r')
                     ->join('no_per np', 'r.no_per_id = np.kode', 'left')
-                    ->like('np.kode', $kode, 'after')
+                    // ->like('np.kode', $kode, 'after') // KODE LAMA - diganti 25 Jul 2026
+                    ->like('r.no_per_id', $kode, 'after')
                     ->where('YEAR(r.bulan)', (int)$tahun);
 
                 if ($upk != 'all' && $upk !== '' && $upk !== null) {
@@ -529,7 +532,8 @@ class Model_beban extends CI_Model
                 $q2 = $this->db->select($select_columns, FALSE)
                     ->from('rkap_amdk_biaya r') // <--- TABEL BARU
                     ->join('no_per np', 'r.no_per_id = np.kode', 'left')
-                    ->like('np.kode', $kode, 'after')
+                    // ->like('np.kode', $kode, 'after') // KODE LAMA - diganti 25 Jul 2026
+                    ->like('r.no_per_id', $kode, 'after')
                     ->where('YEAR(r.bulan)', (int)$tahun);
 
                 if ($upk != 'all' && $upk !== '' && $upk !== null) {
@@ -720,7 +724,8 @@ class Model_beban extends CI_Model
 
                 $this->db->from('rkap_biaya r');
                 $this->db->join('no_per np', 'r.no_per_id = np.kode', 'left');
-                $this->db->like('np.kode', $kode, 'after');
+                // $this->db->like('np.kode', $kode, 'after'); // KODE LAMA - diganti 25 Jul 2026
+                $this->db->like('r.no_per_id', $kode, 'after');
                 $this->db->where('YEAR(r.bulan)', (int)$tahun);
 
                 if ($upk != 'all' && $upk !== '' && $upk !== null) {
@@ -887,7 +892,8 @@ class Model_beban extends CI_Model
 
                 $this->db->from('rkap_biaya r');
                 $this->db->join('no_per np', 'r.no_per_id = np.kode', 'left');
-                $this->db->like('np.kode', $kode, 'after');
+                // $this->db->like('np.kode', $kode, 'after'); // KODE LAMA - diganti 25 Jul 2026
+                $this->db->like('r.no_per_id', $kode, 'after');
                 $this->db->where('YEAR(r.bulan)', (int)$tahun);
 
                 if ($upk != 'all' && $upk !== '' && $upk !== null) {
