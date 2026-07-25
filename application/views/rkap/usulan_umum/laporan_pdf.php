@@ -63,7 +63,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-6 text-center mb-2">
                         <p><?= $title . ' ' .  date('Y') + 1 ?></p>
-                        <p><?= strtoupper($this->session->userdata('nama_pengguna'));  ?></p>
+                        <p><?= strtoupper($namaUpk);  ?></p>
                     </div>
                 </div>
                 <div class="row justify-content-center">
@@ -73,14 +73,12 @@
                                 <tr class="text-center">
                                     <th rowspan="2" class="align-middle">No</th>
                                     <th colspan="2">Perkiraan</th>
-                                    <th colspan="5" class="align-middle">URAIAN TENTANG USULAN</th>
-                                    <th rowspan="2" class="align-middle">Keterangan</th>
+                                    <th colspan="3" class="align-middle">URAIAN TENTANG USULAN</th>
+                                    <!-- <th rowspan="2" class="align-middle">Keterangan</th> -->
                                 </tr>
                                 <tr class="text-center">
                                     <th>No Per</th>
                                     <th>Nama</th>
-                                    <th>Latar Belakang</th>
-                                    <th>Solusi/Usulan</th>
                                     <th>Volume</th>
                                     <th>Harga</th>
                                     <th>Biaya</th>
@@ -99,14 +97,22 @@
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $row->no_perkiraan ?></td>
                                         <td><?= $row->nama_perkiraan ?></td>
-                                        <td><?= $row->latar_belakang ?></td>
-                                        <td><?= $row->solusi ?></td>
-                                        <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
-                                        <td class="text-center"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                        <td class="text-center"><?= number_format($jumlah, 0, ',', '.') ?></td>
-                                        <td><?= $row->ket ?></td>
+                                        <td style="text-align: right;"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
+                                        <td style="text-align: right;"><?= number_format($row->biaya, 0, ',', '.') ?></td>
+                                        <td style="text-align: right;"><?= number_format($jumlah, 0, ',', '.') ?></td>
+                                        <!-- <td><?= $row->ket ?></td> -->
                                     </tr>
                                 <?php endforeach; ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4" class="text-end">Total</th>
+                                    <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
+                                    <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
+                                                                return $item->biaya * $item->volume;
+                                                            }, $tampil)), 0, ',', '.') ?></th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

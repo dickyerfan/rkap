@@ -98,6 +98,10 @@ class Usulan_umum extends CI_Controller
         $this->Model_usulan_umum->updateData();
         $updated_rows = $this->db->affected_rows();
 
+        $bagian_upk = $this->input->post('bagian_upk');
+        $tahun_rkap = date('Y');
+        $redirect_url = 'admin/usulan_umum?bagian_upk=' . urlencode($bagian_upk) . '&tahun_rkap=' . $tahun_rkap;
+
         if ($updated_rows <= 0) {
             $this->session->set_flashdata(
                 'info',
@@ -107,7 +111,7 @@ class Usulan_umum extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('admin/usulan_umum');
+            redirect($redirect_url);
         } else {
             // Cek apakah ada file yang diupload
             if (!empty($_FILES['foto_ket']['name'])) {
@@ -140,7 +144,7 @@ class Usulan_umum extends CI_Controller
                     // Jika proses upload gagal
                     $error_msg = $this->upload->display_errors();
                     $this->session->set_flashdata('info', $error_msg);
-                    redirect('admin/usulan_umum');
+                    redirect($redirect_url);
                 }
             }
 
@@ -152,7 +156,7 @@ class Usulan_umum extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('admin/usulan_umum');
+            redirect($redirect_url);
         }
     }
 

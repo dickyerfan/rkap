@@ -239,8 +239,11 @@ class Biaya extends CI_Controller
         $this->db->delete('rkap_amdk_arus_kas');
 
         // ------------------------------
-        // 3. Insert ulang subtotals ke arus kas
+        // 3. Insert ulang subtotals ke arus kas & rekap
         // ------------------------------
+        $id_upk = 23;
+        $cabang_id = 13;
+
         foreach ($grouped as $parent => $data_parent) {
 
             foreach ($map_bulan as $b => $nama_bulan) {
@@ -249,20 +252,41 @@ class Biaya extends CI_Controller
 
                 $bulan_date = sprintf("%d-%02d-01", $tahun, $b);
 
+                // --- ke arus kas ---
                 $insert = [
                     'no_per_id' => $parent,
                     'bulan'     => $bulan_date,
                     'pagu'      => $nilai
                 ];
-
                 $this->db->insert('rkap_amdk_arus_kas', $insert);
+
+                // --- ke rekap (untuk laba rugi) ---
+                $cek = $this->db->get_where('rkap_rekap', [
+                    'no_per_id' => $parent,
+                    'bulan'     => $bulan_date,
+                    'id_upk'    => $id_upk,
+                ])->row();
+
+                if ($cek) {
+                    $this->db->where('id', $cek->id)->update('rkap_rekap', [
+                        'pagu' => $nilai
+                    ]);
+                } else {
+                    $this->db->insert('rkap_rekap', [
+                        'id_upk'    => $id_upk,
+                        'cabang_id' => $cabang_id,
+                        'no_per_id' => $parent,
+                        'bulan'     => $bulan_date,
+                        'pagu'      => $nilai
+                    ]);
+                }
             }
         }
 
         $this->session->set_flashdata(
             'info',
             '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Sukses!</strong> Semua data biaya AMDK berhasil digenerate ke Laba Rugi.
+                <strong>Sukses!</strong> Semua data biaya AMDK berhasil digenerate ke Laba Rugi & Arus Kas.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>'
         );

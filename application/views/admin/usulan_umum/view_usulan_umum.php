@@ -74,7 +74,7 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-6 text-center">
                             <h5><?= $title . ' ' .  $tahun + 1 ?></h5>
-                            <h5>KATEGORI <?= strtoupper($kategori);  ?></h5>
+                            <h5><?= strtoupper($namaUpk);  ?></h5>
                         </div>
                     </div>
                     <div class="row justify-content-center">

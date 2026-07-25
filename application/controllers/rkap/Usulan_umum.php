@@ -252,6 +252,11 @@ class Usulan_Umum extends CI_Controller
     {
         $this->Model_usulan_umum->updateData();
         $updated_rows = $this->db->affected_rows();
+
+        $bagian_upk = $this->input->post('bagian_upk');
+        $tahun_rkap = date('Y');
+        $redirect_url = 'rkap/usulan_umum?bagian_upk=' . urlencode($bagian_upk) . '&tahun_rkap=' . $tahun_rkap;
+
         if ($updated_rows <= 0) {
             $this->session->set_flashdata(
                 'info',
@@ -261,7 +266,7 @@ class Usulan_Umum extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('rkap/usulan_umum');
+            redirect($redirect_url);
         } else {
             // Cek apakah ada file yang diupload
             if (!empty($_FILES['foto_ket']['name'])) {
@@ -294,7 +299,7 @@ class Usulan_Umum extends CI_Controller
                     // Jika proses upload gagal
                     $error_msg = $this->upload->display_errors();
                     $this->session->set_flashdata('info', $error_msg);
-                    redirect('rkap/usulan_umum');
+                    redirect($redirect_url);
                 }
             }
 
@@ -306,7 +311,7 @@ class Usulan_Umum extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('rkap/usulan_umum');
+            redirect($redirect_url);
         }
     }
 
@@ -350,18 +355,19 @@ class Usulan_Umum extends CI_Controller
 
     public function export_pdf()
     {
+        $bagian_upk = $this->input->get('bagian_upk');
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: date('Y');
+        $kategori = $this->input->get('kategori');
+
+        $data['tampil'] = $this->Model_usulan_umum->getFiltered($bagian_upk, $tahun_rkap, $kategori);
         $data['tahun'] = $this->Model_usulan_umum->getTahun();
-        $data['tampil'] = $this->Model_usulan_umum->getData();
         $data['title'] = 'USULAN PERMINTAAN BAGIAN UMUM (RKAP) TAHUN ';
+        $data['bagian_upk'] = $bagian_upk;
+        $data['namaUpk'] = $bagian_upk ? $bagian_upk : 'SEMUA';
+        $data['kategori'] = $kategori ? $kategori : 'SEMUA';
 
-        $upk_bagian = $this->session->userdata('upk_bagian');
-        $tahun = date('Y');
-
-        // Set paper size and orientation
         $this->pdf->setPaper('A4', 'portrait');
-
-        // $this->pdf->filename = "Potensi Sr.pdf";
-        $this->pdf->filename = "Usulan Umum-{$upk_bagian}-{$tahun}.pdf";
+        $this->pdf->filename = "Usulan Umum-{$bagian_upk}-{$tahun_rkap}.pdf";
         $this->pdf->generate('rkap/usulan_umum/laporan_pdf', $data);
     }
 }

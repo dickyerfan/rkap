@@ -333,35 +333,35 @@ class Bahan_baku extends MY_Controller
             return;
         }
 
-        // 🔹 Mapping id_produk ke akun & uraian
+        // 🔹 Mapping nama_produk ke akun & uraian
         $mapping = [
-            1 => ['no_per_id' => '98.02.05.01', 'uraian' => 'Bahan Baku Galon'],
-            2 => ['no_per_id' => '98.02.05.02', 'uraian' => 'Bahan Baku Gelas 220 ml'],
-            3 => ['no_per_id' => '98.02.05.03', 'uraian' => 'Bahan Baku Botol 330 ml'],
-            4 => ['no_per_id' => '98.02.05.04', 'uraian' => 'Bahan Baku Botol 500 ml'],
-            5 => ['no_per_id' => '98.02.05.06', 'uraian' => 'Bahan Baku Botol 250 ml'],
-            6 => ['no_per_id' => '98.02.05.05', 'uraian' => 'Bahan Baku Botol 1500 ml'],
-            7 => ['no_per_id' => '98.02.05.07', 'uraian' => 'Perlengkapan Lab'],
-            8 => ['no_per_id' => '98.02.05.09', 'uraian' => 'Perlengkapan Lainnya'],
+            'Galon 19L'            => ['no_per_id' => '98.02.05.01', 'uraian' => 'Bahan Baku Galon'],
+            'Gelas 220ml'          => ['no_per_id' => '98.02.05.02', 'uraian' => 'Bahan Baku Gelas 220 ml'],
+            'Botol 330ml'          => ['no_per_id' => '98.02.05.03', 'uraian' => 'Bahan Baku Botol 330 ml'],
+            'Botol 500ml'          => ['no_per_id' => '98.02.05.04', 'uraian' => 'Bahan Baku Botol 500 ml'],
+            'Botol 1500ml'         => ['no_per_id' => '98.02.05.05', 'uraian' => 'Bahan Baku Botol 1500 ml'],
+            'Botol 250ml'          => ['no_per_id' => '98.02.05.06', 'uraian' => 'Bahan Baku Botol 250 ml'],
+            'Perlengkapan Lab'     => ['no_per_id' => '98.02.05.07', 'uraian' => 'Perlengkapan Lab'],
+            'Perlengkapan Lainnya' => ['no_per_id' => '98.02.05.09', 'uraian' => 'Perlengkapan Lainnya'],
         ];
 
-        // 🔹 Kelompokkan data berdasarkan id_produk
+        // 🔹 Kelompokkan data berdasarkan nama_produk
         $grouped = [];
         foreach ($bahan_baku as $bahan) {
-            $id_produk = (int)$bahan['id_produk'];
-            if (!isset($grouped[$id_produk])) {
-                $grouped[$id_produk] = 0;
+            $nama_produk = $bahan['nama_produk'];
+            if (!isset($grouped[$nama_produk])) {
+                $grouped[$nama_produk] = 0;
             }
-            $grouped[$id_produk] += (float)$bahan['total_tahun'];
+            $grouped[$nama_produk] += (float)$bahan['total_tahun'];
         }
 
         $this->db->trans_start();
 
-        foreach ($grouped as $id_produk => $total_tahun) {
-            if (!isset($mapping[$id_produk])) continue;
+        foreach ($grouped as $nama_produk => $total_tahun) {
+            if (!isset($mapping[$nama_produk])) continue;
 
-            $no_per_id = $mapping[$id_produk]['no_per_id'];
-            $uraian = $mapping[$id_produk]['uraian'];
+            $no_per_id = $mapping[$nama_produk]['no_per_id'];
+            $uraian = $mapping[$nama_produk]['uraian'];
             $pagu_bulan = round($total_tahun / 12, 2);
 
             // 🔹 Hapus data lama (agar tidak dobel)

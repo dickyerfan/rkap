@@ -63,7 +63,7 @@
                             <a class="nav-link fw-bold" href="<?= base_url('rkap/usulan_umum') ?>" style="font-size: 0.8rem; color:black;"><button class=" neumorphic-button"> Reset</button></a>
                         </div>
                         <div class="navbar-nav ms-auto">
-                            <a href="<?= base_url('rkap/usulan_umum/export_pdf') ?>" target="_blank" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
+                            <a href="<?= base_url('rkap/usulan_umum/export_pdf?bagian_upk=' . urlencode($bagian_upk) . '&tahun_rkap=' . $tahun_rkap . '&kategori=' . urlencode($kategori)) ?>" target="_blank" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
                         </div>
                         <div class="navbar-nav ms-2">
                             <a href="<?= base_url('rkap/usulan_umum/upload') ?>"><button class="float-end neumorphic-button"><i class="fas fa-plus"></i> Upload data</button></a>
@@ -79,7 +79,7 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-6 text-center">
                             <h5><?= $title . ' ' .  date('Y') + 1 ?></h5>
-                            <h5><?= strtoupper($this->session->userdata('nama_pengguna'));  ?></h5>
+                            <h5><?= strtoupper($namaUpk);  ?></h5>
                         </div>
                     </div>
                     <div class="row justify-content-center">

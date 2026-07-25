@@ -43,7 +43,7 @@
                             </div> -->
                             <div class="navbar-nav">
                                 <button id="btnGenerate" class="neumorphic-button" style="font-size: 0.8rem; color:black;">
-                                    Generate ke Arus Kas
+                                    Generate ke Laba Rugi & Arus Kas
                                 </button>
                             </div>
                             <div class="navbar-nav">
@@ -198,7 +198,7 @@
             <p style="font-size:18px; margin-top:10px;">
                 Pastikan semua data <b>Biaya AMDK</b> sudah <b>final</b> sebelum melakukan generate.
                 <br><br>
-                Proses ini akan <b>memasukkan data</b> ke <br> <b>LAPORAN LABA RUGI</b>.
+                Proses ini akan <b>memasukkan data</b> ke <br> <b>LAPORAN LABA RUGI & ARUS KAS</b>.
             </p>
         `,
                 icon: 'warning',

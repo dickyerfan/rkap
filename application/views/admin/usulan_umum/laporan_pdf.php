@@ -65,7 +65,7 @@
                 <div class="row justify-content-center mb-1">
                     <div class="col-lg-6 text-center">
                         <p><?= $title . ' ' .  $tahun + 1 ?></p>
-                        <p>KATEGORI <?= strtoupper($kategori);  ?></p>
+                        <p><?= strtoupper($namaUpk);  ?></p>
                     </div>
                 </div>
                 <div class="row justify-content-center">
@@ -125,7 +125,6 @@
                                     <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
                                                                 return $item->biaya * $item->volume;
                                                             }, $tampil)), 0, ',', '.') ?></th>
-
                                 </tr>
                             </tfoot>
                         </table>
