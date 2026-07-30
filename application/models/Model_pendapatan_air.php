@@ -195,9 +195,10 @@ class Model_pendapatan_air extends CI_Model
 
         // loop bulan 1-12
         for ($bulan = 1; $bulan <= 12; $bulan++) {
-            // hapus dulu agar tidak dobel
+            // hapus dulu agar tidak dobel (hanya 3 kode air)
             $this->db->where('id_upk', $upk);
             $this->db->where('bulan', sprintf('%04d-%02d-01', $tahun, $bulan));
+            $this->db->where_in('no_per_id', [$kode['penjualan'], $kode['pemeliharaan'], $kode['admin']]);
             $this->db->delete('rkap_rekap');
 
             // insert penjualan air
