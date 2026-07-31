@@ -119,6 +119,7 @@ class Model_usulan_pemeliharaan extends CI_Model
         $this->db->like('kode', '91');
         $this->db->or_like('kode', '92');
         $this->db->or_like('kode', '93');
+        $this->db->or_like('kode', '96');
         $this->db->or_like('kode', '98.02');
         return $this->db->get('no_per')->result();
     }
