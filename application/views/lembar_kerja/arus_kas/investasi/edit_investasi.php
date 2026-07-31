@@ -74,7 +74,7 @@
                                         <select name="sat" class="form-select" required>
                                             <option value="">-- Pilih Satuan --</option>
                                             <?php foreach ($satuan_list as $sat) : ?>
-                                                <option value="<?= $sat ?>" <?= ($satuan_awal == $sat) ? 'selected' : '' ?>>
+                                                <option value="<?= $sat ?>" <?= (strtolower($satuan_awal) == strtolower($sat)) ? 'selected' : '' ?>>
                                                     <?= ucfirst($sat) ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -83,7 +83,7 @@
                                     <div class="col-md-4">
                                         <label>
                                             nilai (Rp)</label>
-                                        <input type="text" name="pagu" class="form-control" value="<?= number_format($harga_awal, 0, ',', '.') ?>" onkeyup="formatRupiah(this)" required>
+                                        <input type="text" name="pagu" id="pagu_global" class="form-control rupiah" value="<?= number_format($harga_awal, 0, ',', '.') ?>" required>
                                     </div>
                                 </div>
 
@@ -108,18 +108,24 @@
                                                 $id_inves = $data_bulan['id_inves'] ?? '';
                                                 $vol = $data_bulan['vol'] ?? 0;
                                                 $pagu = $data_bulan['pagu'] ?? 0;
+                                                $bulan_row = $data_bulan ? (int)date('n', strtotime($data_bulan['bulan'])) : $i;
                                             ?>
                                                 <tr>
-                                                    <td><?= $nama_bulan[$i] ?></td>
+                                                    <td>
+                                                        <select class="form-select form-select-sm bulan-select" name="bulan[]">
+                                                            <?php foreach ($nama_bulan as $num => $nama) : ?>
+                                                                <option value="<?= $num ?>" <?= ($bulan_row == $num) ? 'selected' : '' ?>><?= $nama ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </td>
                                                     <td>
                                                         <input type="text" class="form-control form-control-sm" readonly value="<?= $id_inves ?>" name="id_inves[]">
-                                                        <input type="hidden" name="original_pagu[]" value="<?= $pagu ?>">
                                                     </td>
                                                     <td>
-                                                        <input type="number" class="form-control form-control-sm vol-input" value="<?= $vol ?>" name="vol[]" onchange="hitungPagu(this)">
+                                                        <input type="number" class="form-control form-control-sm vol-input" value="<?= $vol ?>" name="vol[]">
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control form-control-sm pagu-display" readonly value="<?= number_format($pagu, 0, ',', '.') ?>">
+                                                        <input type="text" class="form-control form-control-sm pagu-bulanan" name="pagu_bulanan[]" value="<?= number_format($pagu, 0, ',', '.') ?>">
                                                     </td>
                                                 </tr>
                                             <?php endfor; ?>
@@ -131,69 +137,67 @@
                             </form>
 
                             <script>
-                                // FUNGSI FORMAT RUPIAH
-                                function formatRupiah(input) {
-                                    let value = input.value;
-                                    // 1. Hapus semua karakter selain angka, koma, dan titik
-                                    value = value.replace(/[^0-9]/g, '');
-
-                                    // 2. Format ribuan dengan titik
-                                    let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-                                    input.value = formatted;
-
-                                    // PENTING: Setelah format, panggil ulang perhitungan pagu untuk semua baris
-                                    let volInputs = document.querySelectorAll('.vol-input');
-                                    volInputs.forEach(input => {
-                                        hitungPagu(input);
-                                    });
+                                // ==== FORMAT DAN KONVERSI RUPIAH ====
+                                function formatRupiah(value) {
+                                    value = value.replace(/[^,\d]/g, '');
+                                    const parts = value.split(',');
+                                    let integer = parts[0];
+                                    const remainder = integer.length % 3;
+                                    let rupiah = integer.substr(0, remainder);
+                                    const thousands = integer.substr(remainder).match(/\d{3}/gi);
+                                    if (thousands) {
+                                        const separator = remainder ? '.' : '';
+                                        rupiah += separator + thousands.join('.');
+                                    }
+                                    return parts[1] !== undefined ? rupiah + ',' + parts[1] : rupiah;
                                 }
 
-                                // FUNGSI UNTUK MENGHITUNG PAGU BULANAN
-                                function hitungPagu(volInput) {
-                                    let row = volInput.closest('tr');
-                                    let vol = parseFloat(volInput.value) || 0;
-
-                                    // Ambil harga dari input Harga Satuan (global)
-                                    let hargaInputGlobal = document.querySelector('input[name="harga"]');
-                                    let hargaString = hargaInputGlobal.value.replace(/\./g, '').replace(/,/g, '.'); // Bersihkan format Rupiah
-                                    let harga = parseFloat(hargaString) || 0;
-
-                                    // Hitung Pagu
-                                    let pagu = vol * harga;
-
-                                    // Tampilkan Pagu (di kolom terakhir)
-                                    let paguDisplay = row.querySelector('.pagu-display');
-
-                                    // Format pagu untuk tampilan (tanpa .00 jika integer)
-                                    paguDisplay.value = pagu.toLocaleString('id-ID', {
-                                        minimumFractionDigits: 0,
-                                        maximumFractionDigits: 0
-                                    });
+                                function unformatRupiah(value) {
+                                    return parseInt(value.replace(/\./g, '').replace(/[^0-9]/g, '')) || 0;
                                 }
 
-                                // Panggil hitungPagu saat harga satuan global berubah (saat keyup)
-                                document.querySelector('input[name="harga"]').addEventListener('keyup', function() {
-                                    let volInputs = document.querySelectorAll('.vol-input');
-                                    volInputs.forEach(input => {
-                                        hitungPagu(input);
+                                // ==== EVENT SAAT NILAI GLOBAL DIEDIT ====
+                                const inputPagu = document.getElementById('pagu_global');
+                                inputPagu.addEventListener('input', function() {
+                                    // format tampilan
+                                    this.value = formatRupiah(this.value);
+
+                                    // ambil nilai numerik
+                                    const newVal = unformatRupiah(this.value);
+
+                                    // update semua pagu bulanan ke nilai baru
+                                    document.querySelectorAll('.pagu-bulanan').forEach(el => {
+                                        el.value = formatRupiah(newVal.toString());
                                     });
                                 });
 
-                                // Panggil hitungPagu saat form dimuat pertama kali
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    let volInputs = document.querySelectorAll('.vol-input');
-                                    volInputs.forEach(input => {
-                                        hitungPagu(input);
+                                // ==== EVENT UNTUK MASING-MASING PAGU BULANAN ====
+                                document.querySelectorAll('.pagu-bulanan').forEach(el => {
+                                    el.addEventListener('input', function() {
+                                        this.value = formatRupiah(this.value);
                                     });
                                 });
 
-                                // Inisialisasi Select2 (jika menggunakan library Select2)
+                                // ==== HAPUS TITIK SEBELUM SUBMIT ====
+                                document.querySelector('form').addEventListener('submit', function() {
+                                    document.querySelectorAll('input[name="pagu"], input[name="pagu_bulanan[]"]').forEach(el => {
+                                        el.value = unformatRupiah(el.value);
+                                    });
+                                });
+
+                                // ==== INISIALISASI SELECT2 ====
                                 if (typeof $('.select2').select2 === 'function') {
                                     $('.select2').select2({
                                         theme: 'bootstrap-5'
                                     });
                                 }
+
+                                document.querySelectorAll('.rupiah').forEach(function(input) {
+                                    input.addEventListener('input', function(e) {
+                                        let value = e.target.value.replace(/[^0-9]/g, '');
+                                        e.target.value = new Intl.NumberFormat('id-ID').format(value);
+                                    });
+                                });
                             </script>
                         </div>
                     </div>

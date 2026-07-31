@@ -241,6 +241,10 @@ class Investasi extends MY_Controller
     public function edit($cabang_id, $no_per_id, $uraian_encoded)
     {
         $uraian = base64_decode($uraian_encoded);
+
+        $tahun_rkap = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: date('Y') + 1;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
         // Pemetaan nama UPK
         $mapping_upk = [
             '01' => 'Bondowoso', '02' => 'Sukosari 1', '03' => 'Maesan', '04' => 'Tegalampel',
@@ -254,7 +258,6 @@ class Investasi extends MY_Controller
         // 🟢 1. Jika form disubmit (POST)
         if ($this->input->post()) {
             $post = $this->input->post();
-            $data_update = [];
             $total_updated = 0;
 
             $tahun_rkap = $this->session->userdata('tahun_rkap');
@@ -264,37 +267,67 @@ class Investasi extends MY_Controller
             $new_no_per_id = $post['no_per_id'];
             $new_uraian    = $post['uraian'];
             $new_cabang_id = $post['cabang_id_utama']; // UPK
+            $new_sat       = $post['sat'];
 
-            // Bersihkan nilai pagu (pastikan float)
-            $new_pagu_clean = preg_replace("/[^0-9]/", "", $post['pagu']);
-            $new_pagu_clean = (float)$new_pagu_clean;
+            // --- Identifikasi data lama (kombinasi asli dari URL) ---
+            $cabang_id_lama = $cabang_id;
+            $no_per_id_lama = $no_per_id;
+            $uraian_lama    = $uraian;
 
-            // Loop semua bulan yang dikirim dari form
-            foreach ($post['id_inves'] as $key => $id_inves) {
-                $vol_clean = preg_replace("/[^0-9]/", "", $post['vol'][$key]);
-                $vol_clean = (float)$vol_clean;
-
-                // Catatan: variabel $nilai_pagu sebelumnya tidak didefinisikan
-                // jadi kita hapus saja syarat itu agar update tetap jalan
-                if ($id_inves) {
-                    $data_update[] = [
-                        'id_inves'      => $id_inves,
-                        'cabang_id'     => $new_cabang_id,
-                        'no_per_id'     => $new_no_per_id,
-                        'uraian'        => $new_uraian,
-                        'vol'           => $vol_clean,
-                        'sat'           => $post['sat'],
-                        'pagu'          => $new_pagu_clean,
-                        'ptgs_update'   => $nama_petugas,
-                        'tgl_update'    => date('Y-m-d H:i:s')
-                    ];
-                }
+            // Ambil data lama utk mempertahankan ptgs_upload
+            $old_rows = $this->Model_investasi->get_data_to_edit($cabang_id_lama, $no_per_id_lama, $uraian_lama, $tahun_rkap);
+            $ptgs_upload_map = [];
+            foreach ($old_rows as $r) {
+                $key_month = (int)date('n', strtotime($r['bulan']));
+                $ptgs_upload_map[$key_month] = $r['ptgs_upload'];
             }
 
-            // Jalankan update batch via Model
-            if (!empty($data_update)) {
-                $result = $this->Model_investasi->update_batch_investasi($data_update);
-                $total_updated = $result;
+            // Hapus semua data lama tahun ini utk kombinasi ini
+            $this->db->where('cabang_id', $cabang_id_lama);
+            $this->db->where('no_per_id', $no_per_id_lama);
+            $this->db->where('uraian', $uraian_lama);
+            $this->db->where('YEAR(bulan)', (int)$tahun_rkap);
+            $this->db->delete('rkap_investasi');
+
+            // Looping data bulanan yang dikirim dari form (name="bulan[]", "id_inves[]", "vol[]", "pagu_bulanan[]")
+            $bulan_sel = isset($post['bulan']) ? $post['bulan'] : [];
+            $vol_arr   = isset($post['vol']) ? $post['vol'] : [];
+            $pagu_arr  = isset($post['pagu_bulanan']) ? $post['pagu_bulanan'] : [];
+
+            // Gabungkan per bulan (jika dua baris memilih bulan sama, yang terakhir menang)
+            $data_baru = [];
+            foreach ($bulan_sel as $i => $bulan_num) {
+                $bulan_num = (int)$bulan_num;
+                if ($bulan_num < 1 || $bulan_num > 12) continue;
+
+                $vol_raw = isset($vol_arr[$i]) ? $vol_arr[$i] : 0;
+                $vol_clean = preg_replace('/[^0-9.,]/', '', $vol_raw);
+                $vol_val = (float)str_replace(',', '.', $vol_clean);
+
+                $pagu_raw = isset($pagu_arr[$i]) ? $pagu_arr[$i] : 0;
+                $pagu_clean = preg_replace('/[^0-9]/', '', $pagu_raw);
+                $pagu_val = $pagu_clean === '' ? 0 : (float)$pagu_clean;
+
+                // Hanya simpan bulan yang punya nilai pagu
+                if ($pagu_val <= 0) continue;
+
+                $data_baru[$bulan_num] = [
+                    'cabang_id'    => $new_cabang_id,
+                    'no_per_id'    => $new_no_per_id,
+                    'uraian'       => $new_uraian,
+                    'bulan'        => sprintf('%04d-%02d-01', $tahun_rkap, $bulan_num),
+                    'vol'          => $vol_val,
+                    'sat'          => $new_sat,
+                    'pagu'         => $pagu_val,
+                    'ptgs_upload'  => isset($ptgs_upload_map[$bulan_num]) ? $ptgs_upload_map[$bulan_num] : $nama_petugas,
+                    'ptgs_update'  => $nama_petugas,
+                    'tgl_update'   => date('Y-m-d H:i:s')
+                ];
+            }
+
+            if (!empty($data_baru)) {
+                $this->db->insert_batch('rkap_investasi', array_values($data_baru));
+                $total_updated = count($data_baru);
             }
 
             // Pesan sukses
@@ -319,7 +352,7 @@ class Investasi extends MY_Controller
             $uraian = urldecode($uraian);
 
             // Ambil data dari model
-            $data_edit = $this->Model_investasi->get_data_to_edit($cabang_id, $no_per_id, $uraian);
+            $data_edit = $this->Model_investasi->get_data_to_edit($cabang_id, $no_per_id, $uraian, $tahun_rkap);
 
             if (empty($data_edit)) {
                 show_error('Data investasi tidak ditemukan.');

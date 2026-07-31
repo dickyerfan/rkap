@@ -286,11 +286,16 @@ class Model_investasi extends CI_Model
         ];
     }
 
-    public function get_data_to_edit($cabang_id, $no_per_id, $uraian)
+    public function get_data_to_edit($cabang_id, $no_per_id, $uraian, $tahun = null)
     {
         $this->db->where('cabang_id', $cabang_id);
         $this->db->where('no_per_id', $no_per_id);
         $this->db->where('uraian', $uraian);
+
+        if ($tahun !== null && $tahun !== '' && $tahun !== 0) {
+            $this->db->where('YEAR(bulan)', (int)$tahun);
+        }
+
         // Kita ambil semua bulan untuk item uraian ini
         $this->db->order_by('bulan', 'ASC');
 
