@@ -252,7 +252,6 @@ class Beban_sumber extends MY_Controller
         if ($this->input->post()) {
             // --- LOGIKA UPDATE DATA ---
             $post = $this->input->post();
-            $data_update = [];
             $total_updated = 0;
 
             $tahun_rkap = $this->session->userdata('tahun_rkap');
@@ -263,36 +262,61 @@ class Beban_sumber extends MY_Controller
             $new_uraian = $post['uraian'];
             $new_cabang_id = $post['cabang_id_utama'];
 
-            $new_pagu_raw = isset($post['pagu']) ? $post['pagu'] : 0;
-            $new_pagu_clean = preg_replace('/[^0-9]/', '', $new_pagu_raw);
-            $new_pagu = (int)$new_pagu_clean;
+            // --- Identifikasi data lama (kombinasi asli dari unique_key) ---
+            list($cabang_id_lama, $no_per_id_lama, $uraian_raw_lama) = explode('-', $unique_key, 3);
+            $uraian_lama = str_replace('_', ' ', $uraian_raw_lama);
 
-            // Bersihkan harga global yang dikirim (input name="harga")
-            $new_harga_clean = isset($post['harga']) ? preg_replace('/[^0-9]/', '', $post['harga']) : '';
-            $new_harga_clean = $new_harga_clean === '' ? 0 : (float)$new_harga_clean;
-
-            // Looping data bulanan yang dikirim dari form
-            foreach ($post['id_by'] as $key => $id_by) {
-
-
-                // Hanya update jika ada perubahan volume atau harga, atau jika pagu > 0
-                if ($id_by) {
-                    $data_update[] = [
-                        'id_by'      => $id_by,
-                        'cabang_id'     => $new_cabang_id,
-                        'no_per_id'     => $new_no_per_id,
-                        'uraian'        => $new_uraian,
-                        'pagu'          => $new_pagu,
-                        'ptgs_update'   => $nama_petugas,
-                        'tgl_update'    => date('Y-m-d H:i:s')
-                    ];
-                }
+            // Ambil data lama utk mempertahankan ptgs_upload
+            $old_rows = $this->Model_beban->get_data_to_edit($cabang_id_lama, $no_per_id_lama, $uraian_lama, $tahun_rkap);
+            $ptgs_upload_map = [];
+            foreach ($old_rows as $r) {
+                $key_month = (int)date('n', strtotime($r['bulan']));
+                $ptgs_upload_map[$key_month] = $r['ptgs_upload'];
             }
 
-            // Jalankan update batch di Model
-            if (!empty($data_update)) {
-                $result = $this->Model_beban->update_batch($data_update);
-                $total_updated = $result;
+            // Hapus semua data lama tahun ini utk kombinasi ini
+            $this->db->where('cabang_id', $cabang_id_lama);
+            $this->db->where('no_per_id', $no_per_id_lama);
+            $this->db->where('uraian', $uraian_lama);
+            $this->db->where('YEAR(bulan)', (int)$tahun_rkap);
+            $this->db->delete('rkap_biaya');
+
+            // Looping data bulanan yang dikirim dari form (name="bulan[]", "id_by[]", "pagu_bulanan[]")
+            $bulan_sel   = isset($post['bulan']) ? $post['bulan'] : [];
+            $pagu_arr    = isset($post['pagu_bulanan']) ? $post['pagu_bulanan'] : [];
+
+            // Gabungkan per bulan (jika dua baris memilih bulan sama, yang terakhir menang)
+            $data_baru = [];
+            foreach ($bulan_sel as $i => $bulan_num) {
+                $bulan_num = (int)$bulan_num;
+                if ($bulan_num < 1 || $bulan_num > 12) continue;
+
+                $pagu_raw = isset($pagu_arr[$i]) ? $pagu_arr[$i] : 0;
+                $pagu_clean = preg_replace('/[^0-9]/', '', $pagu_raw);
+                $pagu_val = $pagu_clean === '' ? 0 : (int)$pagu_clean;
+
+                // Hanya simpan bulan yang punya nilai
+                if ($pagu_val <= 0) continue;
+
+                // Tentukan status otomatis (91.05 -> status 1)
+                $status = (preg_match('/^91\.05(\.|$)/', $new_no_per_id)) ? 1 : 0;
+
+                $data_baru[$bulan_num] = [
+                    'cabang_id'    => $new_cabang_id,
+                    'no_per_id'    => $new_no_per_id,
+                    'uraian'       => $new_uraian,
+                    'bulan'        => sprintf('%04d-%02d-01', $tahun_rkap, $bulan_num),
+                    'pagu'         => $pagu_val,
+                    'status'       => $status,
+                    'ptgs_upload'  => isset($ptgs_upload_map[$bulan_num]) ? $ptgs_upload_map[$bulan_num] : $nama_petugas,
+                    'ptgs_update'  => $nama_petugas,
+                    'tgl_update'   => date('Y-m-d H:i:s')
+                ];
+            }
+
+            if (!empty($data_baru)) {
+                $this->db->insert_batch('rkap_biaya', array_values($data_baru));
+                $total_updated = count($data_baru);
             }
 
             // Notifikasi dan Redirect
@@ -313,7 +337,7 @@ class Beban_sumber extends MY_Controller
             $uraian = str_replace('_', ' ', $uraian_raw);
 
             //Ambil data yang akan diedit dari Model
-            $data_edit = $this->Model_beban->get_data_to_edit($cabang_id, $no_per_id, $uraian);
+            $data_edit = $this->Model_beban->get_data_to_edit($cabang_id, $no_per_id, $uraian, $tahun_rkap);
 
             if (empty($data_edit)) {
                 show_404();

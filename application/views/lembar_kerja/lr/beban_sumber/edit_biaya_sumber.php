@@ -82,9 +82,16 @@
                                                 $data_bulan = $data_per_bulan[$i] ?? null;
                                                 $id_by = $data_bulan['id_by'] ?? ($data_bulan['id_by'] ?? '');
                                                 $pagu_bulan = $data_bulan['pagu'] ?? 0;
+                                                $bulan_row = $data_bulan ? (int)date('n', strtotime($data_bulan['bulan'])) : $i;
                                             ?>
                                                 <tr>
-                                                    <td><?= $nama_bulan[$i] ?></td>
+                                                    <td>
+                                                        <select class="form-select form-select-sm bulan-select" name="bulan[]">
+                                                            <?php foreach ($nama_bulan as $num => $nama) : ?>
+                                                                <option value="<?= $num ?>" <?= ($bulan_row == $num) ? 'selected' : '' ?>><?= $nama ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </td>
                                                     <td>
                                                         <input type="text" class="form-control form-control-sm" readonly value="<?= $id_by ?>" name="id_by[]">
                                                     </td>
