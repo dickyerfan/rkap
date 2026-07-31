@@ -122,6 +122,10 @@ class Usulan_inves extends CI_Controller
 
     public function update()
     {
+        $bagian_upk = $this->input->post('bagian_upk');
+        $tahun_rkap = date('Y');
+        $redirect_url = 'admin/usulan_inves?bagian_upk=' . urlencode($bagian_upk) . '&tahun_rkap=' . $tahun_rkap;
+
         $this->Model_usulan_inves->updateData();
         if ($this->db->affected_rows() <= 0) {
             $this->session->set_flashdata(
@@ -132,7 +136,7 @@ class Usulan_inves extends CI_Controller
                         </button>
                       </div>'
             );
-            redirect('admin/usulan_inves');
+            redirect($redirect_url);
         } else {
             $this->session->set_flashdata(
                 'info',
@@ -142,7 +146,7 @@ class Usulan_inves extends CI_Controller
                         </button>
                       </div>'
             );
-            redirect('admin/usulan_inves');
+            redirect($redirect_url);
         }
     }
 

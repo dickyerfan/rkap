@@ -37,7 +37,42 @@
                                     <input type="number" step="1" class="form-control" id="volume" name="volume" value="<?= $usulan_pemeliharaan->volume; ?>">
                                     <small class="form-text text-danger pl-3"><?= form_error('volume'); ?></small>
                                 </div>
-
+                                <div class="form-group">
+                                    <label for="bagian_upk">Bagian UPK:</label>
+                                    <select name="bagian_upk" id="bagian_upk" class="form-select">
+                                        <option value="">Pilih Bagian UPK</option>
+                                        <option value="pusat" <?= $usulan_pemeliharaan->bagian_upk == "pusat" ? 'selected' : '' ?>>pusat</option>
+                                        <option value="umum" <?= $usulan_pemeliharaan->bagian_upk == "umum" ? 'selected' : '' ?>>umum</option>
+                                        <option value="keuangan" <?= $usulan_pemeliharaan->bagian_upk == "keuangan" ? 'selected' : '' ?>>keuangan</option>
+                                        <option value="langganan" <?= $usulan_pemeliharaan->bagian_upk == "langganan" ? 'selected' : '' ?>>langganan</option>
+                                        <option value="pemeliharaan" <?= $usulan_pemeliharaan->bagian_upk == "pemeliharaan" ? 'selected' : '' ?>>pemeliharaan</option>
+                                        <option value="perencanaan" <?= $usulan_pemeliharaan->bagian_upk == "perencanaan" ? 'selected' : '' ?>>perencanaan</option>
+                                        <option value="spi" <?= $usulan_pemeliharaan->bagian_upk == "spi" ? 'selected' : '' ?>>spi</option>
+                                        <option value="bondowoso" <?= $usulan_pemeliharaan->bagian_upk == "bondowoso" ? 'selected' : '' ?>>bondowoso</option>
+                                        <option value="sukosari1" <?= $usulan_pemeliharaan->bagian_upk == "sukosari1" ? 'selected' : '' ?>>sukosari1</option>
+                                        <option value="maesan" <?= $usulan_pemeliharaan->bagian_upk == "maesan" ? 'selected' : '' ?>>maesan</option>
+                                        <option value="tegalampel" <?= $usulan_pemeliharaan->bagian_upk == "tegalampel" ? 'selected' : '' ?>>tegalampel</option>
+                                        <option value="tapen" <?= $usulan_pemeliharaan->bagian_upk == "tapen" ? 'selected' : '' ?>>tapen</option>
+                                        <option value="prajekan" <?= $usulan_pemeliharaan->bagian_upk == "prajekan" ? 'selected' : '' ?>>prajekan</option>
+                                        <option value="tlogosari" <?= $usulan_pemeliharaan->bagian_upk == "tlogosari" ? 'selected' : '' ?>>tlogosari</option>
+                                        <option value="wringin" <?= $usulan_pemeliharaan->bagian_upk == "wringin" ? 'selected' : '' ?>>wringin</option>
+                                        <option value="curahdami" <?= $usulan_pemeliharaan->bagian_upk == "curahdami" ? 'selected' : '' ?>>curahdami</option>
+                                        <option value="tamanan" <?= $usulan_pemeliharaan->bagian_upk == "tamanan" ? 'selected' : '' ?>>tamanan</option>
+                                        <option value="tenggarang" <?= $usulan_pemeliharaan->bagian_upk == "tenggarang" ? 'selected' : '' ?>>tenggarang</option>
+                                        <option value="tamankrocok" <?= $usulan_pemeliharaan->bagian_upk == "tamankrocok" ? 'selected' : '' ?>>tamankrocok</option>
+                                        <option value="wonosari" <?= $usulan_pemeliharaan->bagian_upk == "wonosari" ? 'selected' : '' ?>>wonosari</option>
+                                        <option value="klabang" <?= $usulan_pemeliharaan->bagian_upk == "klabang" ? 'selected' : '' ?>>klabang</option>
+                                        <option value="sukosari2" <?= $usulan_pemeliharaan->bagian_upk == "sukosari2" ? 'selected' : '' ?>>sukosari2</option>
+                                        <option value="amdk" <?= $usulan_pemeliharaan->bagian_upk == "amdk" ? 'selected' : '' ?>>amdk</option>
+                                        <!-- <?php
+                                                $upk = $this->Model_usulan_pemeliharaan->getUpk();
+                                                foreach ($upk as $row) {
+                                                    echo '<option value="' . $row->upk_bagian . '" ' . ($usulan_pemeliharaan->bagian_upk == $row->upk_bagian ? 'selected' : '') . '>' . $row->upk_bagian . '</option>';
+                                                }
+                                                ?> -->
+                                    </select>
+                                    <small class="form-text text-danger pl-3"><?= form_error('bagian_upk'); ?></small>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <!-- <div class="form-group">

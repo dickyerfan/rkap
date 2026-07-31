@@ -171,11 +171,11 @@ class Usulan_pemeliharaan extends CI_Controller
         } else {
             $data['no_per'] = $this->Model_usulan_pemeliharaan->getNoPerPemeliharaan();
             $data['usulan_pemeliharaan'] = $this->Model_usulan_pemeliharaan->getUsulanPemeliharaan($id_usulanPemeliharaan);
-            $this->load->view('templates/pengguna/header', $data);
-            $this->load->view('templates/pengguna/navbar');
-            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
             $this->load->view('admin/usulan_pemeliharaan/edit_usulan_pemeliharaan', $data);
-            $this->load->view('templates/pengguna/footer');
+            $this->load->view('templates/footer');
         }
     }
 
@@ -207,6 +207,11 @@ class Usulan_pemeliharaan extends CI_Controller
 
     public function update()
     {
+
+        $bagian_upk = $this->input->post('bagian_upk');
+        $tahun_rkap = date('Y');
+        $redirect_url = 'admin/usulan_pemeliharaan?bagian_upk=' . urlencode($bagian_upk) . '&tahun_rkap=' . $tahun_rkap;
+
         $this->Model_usulan_pemeliharaan->updateData();
         $updated_rows = $this->db->affected_rows();
 
@@ -219,7 +224,7 @@ class Usulan_pemeliharaan extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('admin/usulan_pemeliharaan');
+            redirect($redirect_url);
         } else {
             // Cek apakah ada file yang diupload
             if (!empty($_FILES['foto_ket']['name'])) {
@@ -252,7 +257,7 @@ class Usulan_pemeliharaan extends CI_Controller
                     // Jika proses upload gagal
                     $error_msg = $this->upload->display_errors();
                     $this->session->set_flashdata('info', $error_msg);
-                    redirect('admin/usulan_pemeliharaan');
+                    redirect($redirect_url);
                 }
             }
 
@@ -264,7 +269,7 @@ class Usulan_pemeliharaan extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('admin/usulan_pemeliharaan');
+            redirect($redirect_url);
         }
     }
 

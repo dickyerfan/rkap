@@ -91,6 +91,13 @@ class Model_usulan_inves extends CI_Model
             ->row();
     }
 
+    public function getUpk()
+    {
+        $this->db->where('tipe', 'upk');
+        $query = $this->db->get('user');
+        return $query->result();
+    }
+
     public function updateData()
     {
         date_default_timezone_set('Asia/Jakarta');
