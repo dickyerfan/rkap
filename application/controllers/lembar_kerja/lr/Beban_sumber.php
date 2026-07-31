@@ -363,7 +363,7 @@ class Beban_sumber extends MY_Controller
             $this->load->view('templates/header', $data);
             $this->load->view('templates/navbar');
             $this->load->view('templates/sidebar');
-            $this->load->view('lembar_kerja/LR/beban_sumber/edit_biaya_sumber', $data);
+            $this->load->view('lembar_kerja/lr/beban_sumber/edit_biaya_sumber', $data);
             $this->load->view('templates/footer');
         }
     }
