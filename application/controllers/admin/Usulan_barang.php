@@ -413,7 +413,7 @@ class Usulan_barang extends CI_Controller
             if ($usulan->bagian_upk == 'amdk') {
                 $result = $this->Model_amdk_biaya->insert_or_update($insert);
             } else {
-                $result = $this->Model_usulan_barang->insert_or_update_generate_umum($insert);
+                $result = $this->Model_usulan_barang->insert_or_update_generate_barang($insert);
             }
             $this->Model_usulan_barang->updateStatusUpload($id_usulanBarang);
             if ($this->db->trans_status() === FALSE) {

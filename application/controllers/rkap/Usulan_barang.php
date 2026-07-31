@@ -108,7 +108,12 @@ class Usulan_barang extends CI_Controller
 
                 $kode_akun = $barang->kode_akun;
 
-                if ($kode_upk) {
+                $bagian_upk = $this->session->userdata('upk_bagian');
+                $kategori_pusat = ['93.02.10', '91.03.70', '92.02.90'];
+
+                if ($bagian_upk === 'pemeliharaan' && in_array($kode_akun, $kategori_pusat)) {
+                    $data['no_perkiraan'] = $kode_akun . '.00';
+                } elseif ($kode_upk) {
                     $data['no_perkiraan'] = $kode_akun . '.' . $kode_upk;
                 } else {
                     $data['no_perkiraan'] = $kode_akun;
