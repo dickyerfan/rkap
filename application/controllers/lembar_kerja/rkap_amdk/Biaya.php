@@ -26,12 +26,21 @@ class Biaya extends CI_Controller
         $data['biaya'] = $this->Model_amdk_biaya->get_biaya($tahun);
         $data['title'] = 'RENCANA BIAYA UNIT AMDK <br> TAHUN ANGGARAN ';
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/rkap_amdk/biaya/view_biaya', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/rkap_amdk/biaya/view_biaya', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/rkap_amdk/biaya/view_biaya', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
+
 
     public function export_pdf()
     {

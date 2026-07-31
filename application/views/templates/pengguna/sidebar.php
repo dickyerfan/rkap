@@ -108,6 +108,39 @@
                                 <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
                                 <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                                 <a class="nav-link" href="<?= base_url('admin/pengaturan/kumpul_data') ?>" style="font-size: 0.8rem;">Cek Pengumpulan Data</a>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkUang" aria-expanded="false" aria-controls="lkUang">
+                                    <div style="font-size: 0.8rem;"> Lembar Kerja</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="lkUang" aria-labelledby="headingOne" data-bs-parent="#rkap">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkPerumdam" aria-expanded="false" aria-controls="lkPerumdam">
+                                            <div style="font-size: 0.8rem;"> Perumdam</div>
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="lkPerumdam" aria-labelledby="headingOne" data-bs-parent="#lkPerumdam">
+                                            <nav class="nav" style="flex-direction: column;">
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/target_upk') ?>" style="font-size: 0.8rem;">Target</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/arus_kas') ?>" style="font-size: 0.8rem;">Proyeksi Arus Kas</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/investasi') ?>" style="font-size: 0.8rem;">Investasi</a>
+                                            </nav>
+                                        </div>
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkAmdk" aria-expanded="false" aria-controls="lkAmdk">
+                                            <div style="font-size: 0.8rem;"> AMDK</div>
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="lkAmdk" aria-labelledby="headingOne" data-bs-parent="#lkAmdk">
+                                            <nav class="nav" style="flex-direction: column;">
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/laba_rugi_amdk') ?>" style="font-size: 0.8rem;">Laba Rugi AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/arus_kas_amdk') ?>" style="font-size: 0.8rem;">Arus Kas AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/biaya') ?>" style="font-size: 0.8rem;">Biaya AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/pendapatan_ops') ?>" style="font-size: 0.8rem;">Pendapatan AMDK</a>
+                                            </nav>
+                                        </div>
+                                    </nav>
+                                </div>
+
                             <?php else : ?>
                                 <a class="nav-link" href="<?= base_url('rkap/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
                                 <a class="nav-link" href="<?= base_url('rkap/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>

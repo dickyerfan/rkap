@@ -157,12 +157,19 @@ class Laba_rugi extends MY_Controller
         $data['laporan'] = $totals;
         $data['format_template'] = $format;
 
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/lr/laba_rugi/view_laba_rugi', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/lr/laba_rugi/view_laba_rugi', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/lr/laba_rugi/view_laba_rugi', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
 

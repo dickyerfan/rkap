@@ -56,9 +56,16 @@
                         <div class="navbar-nav ms-auto">
                             <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/lr/laba_rugi/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
                         </div>
-                        <div class="navbar-nav ms-2">
-                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/laba_rugi/pajak') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Perhitungan Pajak</button> </a>
-                        </div>
+                        <?php if ($this->session->userdata('level') == 'Admin') : ?>
+                            <?php
+                            $nama_pengguna  = $this->session->userdata('nama_pengguna');
+                            $level = $this->session->userdata('level');
+                            if (can_input($nama_pengguna, $level, $status_periode, $tahun)) : ?>
+                                <div class="navbar-nav ms-2">
+                                    <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/laba_rugi/pajak') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Perhitungan Pajak</button> </a>
+                                </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
                     </nav>
                 </div>
                 <div class="p-2">
