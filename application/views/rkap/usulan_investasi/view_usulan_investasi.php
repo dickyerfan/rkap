@@ -3,7 +3,7 @@
         <div class="container-fluid px-2 mt-2">
             <div class="card mb-1">
                 <div class="card-header shadow">
-                    <nav class="navbar navbar-light bg-light">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <div class="navbar-nav">
                             <a href="<?= base_url('rkap/usulan_inves/export_pdf') ?>" target="_blank" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
                         </div>
@@ -25,7 +25,8 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
-                            <table class="table table-sm table-bordered" style="font-size: 0.7rem;">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" style="font-size: 0.7rem;">
                                 <thead>
                                     <tr class="text-center">
                                         <th rowspan="2" class="align-middle">No</th>
@@ -85,6 +86,7 @@
                                     </tr>
                                 </tfoot>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>

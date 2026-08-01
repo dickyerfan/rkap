@@ -6,12 +6,12 @@
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <a class="fw-bold text-dark pe-2" style="text-decoration:none;">Pilih Wilayah & Tahun</a>
                         <form action="<?= base_url('admin/usulan_inves') ?>" method="get">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px;">
                                 <?php
                                 $bagian_upk = isset($_GET['bagian_upk']) ? $_GET['bagian_upk'] : '';
                                 $tahun_rkap = isset($_GET['tahun_rkap']) ? $_GET['tahun_rkap'] : date('Y');
                                 ?>
-                                <select name="bagian_upk" class="form-select select2" style="width: 170px; " aria-label="Default select example">
+                                <select name="bagian_upk" class="form-select select2" style="width: 170px; max-width: 100%; " aria-label="Default select example">
                                     <option value="">Pilih Bagian/UPK</option>
                                     <option value="pusat" <?= $bagian_upk == 'pusat' ? 'selected' : '' ?>>Pusat</option>
                                     <option value="bondowoso" <?= $bagian_upk == 'bondowoso' ? 'selected' : '' ?>>Bondowoso</option>
@@ -37,7 +37,7 @@
                                     <option value="spi" <?= $bagian_upk == 'spi' ? 'selected' : '' ?>>SPI</option>
                                     <option value="amdk" <?= $bagian_upk == 'amdk' ? 'selected' : '' ?>>A M D K</option>
                                 </select>
-                                <select name="tahun_rkap" class="form-select" style="width: 100px; margin-left:10px;">
+                                <select name="tahun_rkap" class="form-select" style="width: 100px; max-width: 100%; margin-left:10px;">
                                     <?php
                                     $mulai = date('Y') - 2;
                                     $tahun_rkap = (int)$tahun_rkap;
@@ -72,7 +72,8 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
-                            <table class="table table-sm table-bordered" style="font-size: 0.7rem;" id="example">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" style="font-size: 0.7rem;" id="example">
                                 <thead>
                                     <tr class="text-center">
                                         <th rowspan="2" class="align-middle">No</th>
@@ -167,6 +168,7 @@
                                     </tr>
                                 </tfoot>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>
