@@ -6,8 +6,8 @@
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <a class="fw-bold text-dark pe-2" style="text-decoration:none;">Pilih Wilayah & Tahun</a>
                         <form action="<?= base_url('admin/potensi_sr') ?>" method="post">
-                            <div style="display: flex; align-items: center;">
-                                <select name="bagian_upk" class="form-select" style="width: 150px; margin-right: 10px;" aria-label="Default select example">
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px;">
+                                <select name="bagian_upk" class="form-select" style="width: 150px; max-width: 100%; margin-right: 10px;" aria-label="Default select example">
                                     <option value="bondowoso">Bondowoso</option>
                                     <option value="sukosari1">Sukosari 1</option>
                                     <option value="maesan">Maesan</option>
@@ -181,6 +181,7 @@
                 <h6 class="text-center mt-4">Simulasi Potensi SR Jika NRW Dikurangi</h6>
                 <div class="row justify-content-center p-3">
                     <div class="col-lg-10">
+                        <div class="table-responsive">
                         <table class="table table-bordered table-sm text-center">
                             <thead class="table-light">
                                 <tr>
@@ -211,6 +212,7 @@
                                 <?php } ?>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
                 <!-- <h6 class="text-center">Estimasi Laba Rugi Per Tahun</h6>
@@ -459,7 +461,7 @@
                     <div class="modal-body">
 
                         <form action="<?= base_url('admin/potensi_sr/export_pdf') ?>" method="post" target="_blank">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px;">
                                 <select name="bagian_upk" class="form-select" style="width: 150px; margin-right: 10px;" aria-label="Default select example">
                                     <option value="bondowoso">Bondowoso</option>
                                     <option value="sukosari1">Sukosari 1</option>

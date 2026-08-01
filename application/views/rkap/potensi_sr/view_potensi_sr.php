@@ -228,6 +228,7 @@
                     <h6 class="text-center mt-4">Simulasi Potensi SR Jika NRW Dikurangi</h6>
                     <div class="row justify-content-center p-3">
                         <div class="col-lg-10">
+                            <div class="table-responsive">
                             <table class="table table-bordered table-sm text-center">
                                 <thead class="table-light">
                                     <tr>
@@ -258,6 +259,7 @@
                                     <?php } ?>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 <?php endif; ?>

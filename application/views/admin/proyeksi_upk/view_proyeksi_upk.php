@@ -6,8 +6,8 @@
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <a class="fw-bold text-dark pe-2" style="text-decoration:none;">Pilih UPK & Tahun</a>
                         <form action="<?= base_url('admin/proyeksi_upk') ?>" method="get">
-                            <div style="display: flex; align-items: center;">
-                                <select name="id_upk" class="form-select select2">
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px;">
+                                <select name="id_upk" class="form-select select2" style="max-width: 100%;">
                                     <option value="">Semua UPK</option>
                                     <?php foreach ($upk as $u) : ?>
                                         <option value="<?= $u->id_upk ?>" <?= ($id_upk == $u->id_upk) ? 'selected' : ''; ?>>
@@ -15,7 +15,7 @@
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <select name="tahun_rkap" class="form-select" style="width:100px; margin-left:10px;">
+                                <select name="tahun_rkap" class="form-select" style="width:100px; max-width: 100%; margin-left:10px;">
                                     <?php
                                     $mulai = date('Y') - 2;
 
@@ -56,6 +56,7 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
+                            <div class="table-responsive">
                             <table class="table table-sm table-bordered" style="font-size: 1rem;">
                                 <thead>
                                     <tr class="text-center">
@@ -124,6 +125,7 @@
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>

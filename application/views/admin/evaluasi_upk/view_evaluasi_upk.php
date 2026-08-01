@@ -6,8 +6,8 @@
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <a class="fw-bold text-dark pe-2" style="text-decoration:none;">Pilih Wilayah & Tahun</a>
                         <form action="<?= base_url('admin/evaluasi_upk') ?>" method="post">
-                            <div style="display: flex; align-items: center;">
-                                <select name="bagian_upk" class="form-select" style="width: 150px; margin-right: 10px;" aria-label="Default select example">
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px;">
+                                <select name="bagian_upk" class="form-select" style="width: 150px; max-width: 100%; margin-right: 10px;" aria-label="Default select example">
                                     <option value="bondowoso">Bondowoso</option>
                                     <option value="sukosari1">Sukosari 1</option>
                                     <option value="maesan">Maesan</option>
@@ -55,6 +55,7 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
+                            <div class="table-responsive">
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr class="text-center">
@@ -157,6 +158,7 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -239,7 +241,7 @@
                     <div class="modal-body">
 
                         <form action="<?= base_url('admin/evaluasi_upk/export_pdf') ?>" method="post" target="_blank">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px;">
                                 <select name="bagian_upk" class="form-select" style="width: 150px; margin-right: 10px;" aria-label="Default select example">
                                     <option value="bondowoso">Bondowoso</option>
                                     <option value="sukosari1">Sukosari 1</option>

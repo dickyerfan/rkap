@@ -29,6 +29,7 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
+                            <div class="table-responsive">
                             <table class="table table-sm table-bordered" id="example">
                                 <thead>
                                     <tr>
@@ -59,6 +60,7 @@
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                     <div class="row justify-content-center">
@@ -69,6 +71,7 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
+                            <div class="table-responsive">
                             <table class="table table-sm table-bordered" id="example2">
                                 <thead>
                                     <tr>
@@ -99,6 +102,7 @@
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>

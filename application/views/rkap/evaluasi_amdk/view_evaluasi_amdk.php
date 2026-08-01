@@ -48,6 +48,7 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
+                            <div class="table-responsive">
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr class="text-center">
@@ -142,6 +143,7 @@
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>

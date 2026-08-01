@@ -5,7 +5,7 @@
                 <div class="card-header shadow">
                     <!-- <a class="fw-bold text-dark" style="text-decoration:none ;"><?= strtoupper($title) . ' ' .  date('Y') ?></a> -->
 
-                    <nav class="navbar navbar-light bg-light">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <div class="navbar-nav">
                             <a href="<?= base_url('rkap/permasalahan/export_pdf') ?>" target="_blank" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button></a>
                         </div>
@@ -27,6 +27,7 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
+                            <div class="table-responsive">
                             <table class="table table-sm table-bordered" style="font-size: 0.7rem;">
                                 <thead>
                                     <tr class="text-center">
@@ -57,8 +58,9 @@
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
-
+                                </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>
