@@ -113,6 +113,11 @@ class Usulan_barang extends CI_Controller
 
     public function update()
     {
+
+        $bagian_upk = $this->input->post('bagian_upk');
+        $tahun_rkap = date('Y');
+        $redirect_url = 'admin/usulan_pemeliharaan?bagian_upk=' . urlencode($bagian_upk) . '&tahun_rkap=' . $tahun_rkap;
+
         $this->form_validation->set_rules('id_usulanBarang', 'Usulan Barang', 'required|trim|numeric');
         $this->form_validation->set_rules('kategori_id', 'Kategori', 'required|trim|numeric');
         $this->form_validation->set_rules('master_barang_id', 'Nama Perkiraan', 'required|trim|numeric');
@@ -131,7 +136,7 @@ class Usulan_barang extends CI_Controller
         $usulan = $this->Model_usulan_barang->getUsulanBarangAdmin($this->input->post('id_usulanBarang', true));
         if (!$usulan) {
             $this->_set_flash('danger', 'Maaf,', 'Data usulan barang tidak ditemukan');
-            redirect('admin/usulan_barang');
+            redirect($redirect_url);
         }
 
         $barang = $this->Model_rkap_barang->getMasterBarangTerpilih(
@@ -167,7 +172,7 @@ class Usulan_barang extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('admin/usulan_barang');
+            redirect($redirect_url);
         } else {
             $this->session->set_flashdata(
                 'info',
@@ -177,7 +182,7 @@ class Usulan_barang extends CI_Controller
                 </button>
             </div>'
             );
-            redirect('admin/usulan_barang');
+            redirect($redirect_url);
         }
     }
 
