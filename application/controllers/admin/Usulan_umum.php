@@ -162,9 +162,9 @@ class Usulan_umum extends CI_Controller
 
     // Akhir Usulan barang
 
-    public function hapus_usulan_barang($id_usulanBarang)
+    public function hapus_usulan_umum($id_usulanUmum)
     {
-        $statusUpdate = $this->Model_usulan_barang->getStatusUpdate('usulan_barang');
+        $statusUpdate = $this->Model_usulan_umum->getStatusUpdate('usulan_umum');
         if ($statusUpdate !== null && $statusUpdate->status_update == 0) {
             $this->session->set_flashdata(
                 'info',
@@ -174,7 +174,7 @@ class Usulan_umum extends CI_Controller
                     </button>
                 </div>'
             );
-            redirect('admin/usulan_Umum');
+            redirect('admin/usulan_umum');
         } else {
             // Ambil informasi file yang ingin dihapus (misalnya nama file) dari database
             $this->db->select('foto_ket');
@@ -191,10 +191,10 @@ class Usulan_umum extends CI_Controller
             }
 
             // Hapus data dari database
-            $this->db->where('id_usulanBarang', $id_usulanBarang);
-            $this->db->delete('usulan_barang');
+            $this->db->where('id_usulanUmum', $id_usulanUmum);
+            $this->db->delete('usulan_umum');
 
-            redirect('admin/usulan_barang');
+            redirect('admin/usulan_umum');
         }
     }
 
@@ -299,7 +299,7 @@ class Usulan_umum extends CI_Controller
                     Mapping UPK tidak ditemukan.
                 </div>'
                 );
-                redirect('admin/usulan_umum');
+                redirect('admin/usulan_umum?bagian_upk=' . urlencode($usulan->bagian_upk) . '&tahun_rkap=' . $usulan->tahun_rkap);
             }
 
             //  Siapkan data
@@ -362,7 +362,7 @@ class Usulan_umum extends CI_Controller
         </div>'
                 );
             }
-            redirect('admin/usulan_umum');
+            redirect('admin/usulan_umum?bagian_upk=' . urlencode($usulan->bagian_upk) . '&tahun_rkap=' . $usulan->tahun_rkap);
         }
 
         $data['usulan_umum'] = $usulan;

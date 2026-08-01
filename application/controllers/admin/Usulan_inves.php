@@ -199,7 +199,7 @@ class Usulan_inves extends CI_Controller
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>'
             );
-            redirect('admin/usulan_investasi');
+            redirect('admin/usulan_inves');
         }
 
         $this->load->view('templates/header', $data);
@@ -287,7 +287,7 @@ class Usulan_inves extends CI_Controller
                     Mapping UPK tidak ditemukan.
                 </div>'
                 );
-                redirect('admin/usulan_inves');
+                redirect('admin/usulan_inves?bagian_upk=' . urlencode($usulan->bagian_upk) . '&tahun_rkap=' . $usulan->tahun_rkap);
             }
 
             //  Siapkan data
@@ -358,7 +358,7 @@ class Usulan_inves extends CI_Controller
         </div>'
                 );
             }
-            redirect('admin/usulan_inves');
+            redirect('admin/usulan_inves?bagian_upk=' . urlencode($usulan->bagian_upk) . '&tahun_rkap=' . $usulan->tahun_rkap);
         }
 
         $data['usulan_investasi'] = $usulan;

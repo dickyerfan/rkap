@@ -412,7 +412,7 @@ class Usulan_pemeliharaan extends CI_Controller
                     Mapping UPK tidak ditemukan.
                 </div>'
                 );
-                redirect('admin/usulan_pemeliharaan');
+                redirect('admin/usulan_pemeliharaan?bagian_upk=' . urlencode($usulan->bagian_upk) . '&tahun_rkap=' . $usulan->tahun_rkap);
             }
 
             //  Siapkan data
@@ -475,7 +475,7 @@ class Usulan_pemeliharaan extends CI_Controller
         </div>'
                 );
             }
-            redirect('admin/usulan_pemeliharaan');
+            redirect('admin/usulan_pemeliharaan?bagian_upk=' . urlencode($usulan->bagian_upk) . '&tahun_rkap=' . $usulan->tahun_rkap);
         }
 
         $data['usulan_pemeliharaan'] = $usulan;
