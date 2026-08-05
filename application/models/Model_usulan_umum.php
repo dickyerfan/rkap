@@ -169,6 +169,7 @@ class Model_usulan_umum extends CI_Model
             $this->db->where('cabang_id', $row['cabang_id']);
             $this->db->where('no_per_id', $row['no_per_id']);
             $this->db->where('bulan', $row['bulan']);
+            $this->db->where('uraian', $row['uraian']);
             $cek = $this->db->get('rkap_biaya')->row();
 
             if ($cek) {
