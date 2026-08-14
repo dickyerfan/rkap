@@ -367,8 +367,11 @@ class Beban_pengolahan extends MY_Controller
         $tahun = $this->session->userdata('tahun_rkap');
         $upk   = $this->session->userdata('upk');
 
-        // Ambil data dari rkap_biaya
-        $this->db->select('cabang_id, no_per_id, bulan, pagu, status');
+        // Ambil data biaya pengolahan dari rkap_biaya.
+        // Dikumpulkan (GROUP BY) per (cabang_id, no_per_id, bulan) karena satu no_per_id
+        // bisa punya banyak uraian yang berbeda (mis. 92.02.90.00 punya banyak item),
+        // sehingga nilainya dijumlahkan dahulu sebelum masuk ke laba rugi.
+        $this->db->select('cabang_id, no_per_id, bulan, SUM(pagu) AS pagu, MAX(status) AS status');
         $this->db->from('rkap_biaya');
         $this->db->where('YEAR(bulan)', (int)$tahun);
 
@@ -376,9 +379,11 @@ class Beban_pengolahan extends MY_Controller
             $this->db->where('cabang_id', $upk);
         }
 
-        // 🔹 Hanya ambil akun yang diawali 92 (biaya pengolahan)
+        // Hanya akun yang diawali 92 (biaya pengolahan)
         $this->db->like('no_per_id', '92', 'after');
 
+        $this->db->group_by('cabang_id, no_per_id, bulan');
+        $this->db->order_by('bulan', 'ASC');
         $biaya_data = $this->db->get()->result_array();
 
         if (empty($biaya_data)) {
@@ -396,29 +401,24 @@ class Beban_pengolahan extends MY_Controller
         // Mulai transaksi
         $this->db->trans_start();
 
+        // Hapus dahulu seluruh data rekap biaya pengolahan (kode 92) pada tahun & UPK tsb,
+        // lalu masukkan ulang. Cara ini mencegah data dobel/tertimpa ketika ada no_per_id yang sama.
+        $this->db->where('YEAR(bulan)', (int)$tahun);
+        if ($upk != 'all' && !empty($upk)) {
+            $this->db->where('cabang_id', $upk);
+        }
+        $this->db->like('no_per_id', '92', 'after');
+        $this->db->delete('rkap_rekap');
+
+        // Insert data agregat per (cabang_id, no_per_id, bulan)
         foreach ($biaya_data as $row) {
-            $data = [
+            $this->db->insert('rkap_rekap', [
                 'cabang_id' => $row['cabang_id'],
                 'no_per_id' => $row['no_per_id'],
                 'bulan'     => $row['bulan'],
-                'pagu'      => $row['pagu'],
-                'status'    => $row['status'],
-            ];
-
-            // 🔹 Cek apakah data sudah ada (berdasarkan 3 kunci utama)
-            $this->db->where('cabang_id', $row['cabang_id']);
-            $this->db->where('no_per_id', $row['no_per_id']);
-            $this->db->where('bulan', $row['bulan']);
-            $cek = $this->db->get('rkap_rekap')->row_array();
-
-            if ($cek) {
-                // 🔹 Jika sudah ada, hapus dulu
-                $this->db->where('id', $cek['id']);
-                $this->db->delete('rkap_rekap');
-            }
-
-            // 🔹 Insert data baru
-            $this->db->insert('rkap_rekap', $data);
+                'pagu'      => (float)$row['pagu'],
+                'status'    => (int)$row['status'],
+            ]);
         }
 
         $this->db->trans_complete();

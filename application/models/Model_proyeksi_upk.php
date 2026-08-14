@@ -79,16 +79,28 @@ class Model_proyeksi_upk extends CI_Model
         }
 
         $this->db->group_by('p.bulan')->order_by('p.bulan', 'ASC');
-        return $this->db->get()->result();
+        $rows = $this->db->get()->result();
+
+        // Sesuaikan pemakaian dengan jumlah hari per bulan (konsep arrears:
+        // bulan M memakai jumlah hari bulan M-1), konsisten dengan pendapatan_air.
+        $faktor = $this->getFaktorHariPerBulan($tahun);
+        foreach ($rows as $r) {
+            $bulan = (int)$r->bulan;
+            if (isset($faktor[$bulan])) {
+                $r->pemakaian = (float)$r->pemakaian * $faktor[$bulan];
+            }
+        }
+
+        return $rows;
     }
 
     public function getPendapatan($tahun, $id_upk = null)
     {
         $this->db->select("
                 p.bulan,
-                SUM(p.jumlah * pk.konsumsi_rata * tr.tarif_rata) +
+                SUM(p.jumlah * pk.konsumsi_rata * tr.tarif_rata) as penjualan,
                 SUM(p.jumlah * COALESCE(jt.jasa_pemeliharaan, 0)) +
-                SUM(p.jumlah * COALESCE(jt.jasa_admin, 0)) as pendapatan
+                SUM(p.jumlah * COALESCE(jt.jasa_admin, 0)) as jasa
             ")
             ->from('rkap_pelanggan p')
             ->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left')
@@ -102,7 +114,49 @@ class Model_proyeksi_upk extends CI_Model
         }
 
         $this->db->group_by('p.bulan')->order_by('p.bulan', 'ASC');
-        return $this->db->get()->result();
+        $rows = $this->db->get()->result();
+
+        // Penjualan air disesuaikan jumlah hari per bulan (konsep arrears),
+        // sedangkan jasa pemeliharaan & administrasi tetap (biaya tetap per SR/bulan).
+        $faktor = $this->getFaktorHariPerBulan($tahun);
+        foreach ($rows as $r) {
+            $bulan = (int)$r->bulan;
+            $f = isset($faktor[$bulan]) ? $faktor[$bulan] : 1;
+            $r->pendapatan = ((float)$r->penjualan * $f) + (float)$r->jasa;
+            unset($r->penjualan, $r->jasa); // hasil bersih: hanya 'bulan' & 'pendapatan'
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Faktor penyesuaian jumlah hari utk tagihan tiap bulan (konsep arrears/belakang):
+     * pendapatan bulan M berasal dari pembacaan bulan M-1, jadi jumlah hari yang dipakai
+     * adalah jumlah hari BULAN SEBELUMNYA (Januari memakai Desember tahun lalu = 31 hari).
+     * Basis memakai rata-rata hari setahun (365/12 atau 366/12) supaya total tahunan tetap.
+     *
+     * @param int $tahun Tahun anggaran
+     * @return array Index 1..12 = faktor pengali pemakaian/penjualan per bulan
+     */
+    private function getFaktorHariPerBulan($tahun)
+    {
+        $hari = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $hari[$m] = cal_days_in_month(CAL_GREGORIAN, $m, $tahun);
+        }
+
+        $tagihan = [1 => 31]; // Januari selalu memakai Desember tahun sebelumnya (31 hari)
+        for ($m = 2; $m <= 12; $m++) {
+            $tagihan[$m] = $hari[$m - 1];
+        }
+
+        $base = array_sum($tagihan) / 12;
+
+        $faktor = [];
+        foreach ($tagihan as $m => $h) {
+            $faktor[$m] = $h / $base;
+        }
+        return $faktor;
     }
 
     public function getInfoUpk($id_upk)

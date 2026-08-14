@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Biaya extends CI_Controller
+class Biaya extends MY_Controller
 {
 
     public function __construct()
@@ -201,6 +201,119 @@ class Biaya extends CI_Controller
             $this->load->view('templates/navbar');
             $this->load->view('templates/sidebar');
             $this->load->view('lembar_kerja/rkap_amdk/biaya/upload_biaya', $data);
+            $this->load->view('templates/footer');
+        }
+    }
+
+    public function edit($encoded_key = null)
+    {
+        $tahun_wajib = date('Y') + 1;
+        $tahun_rkap  = $this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: $tahun_wajib;
+        $this->session->set_userdata('tahun_rkap', $tahun_rkap);
+
+        if ($tahun_rkap != $tahun_wajib) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Edit data hanya untuk tahun RKAP ' . $tahun_wajib . '</div>');
+            redirect('lembar_kerja/rkap_amdk/biaya?tahun_rkap=' . $tahun_wajib);
+            return;
+        }
+
+        $unique_key = base64_decode(urldecode($encoded_key));
+
+        if ($this->input->post()) {
+            // --- LOGIKA UPDATE DATA ---
+            $post             = $this->input->post();
+            $new_no_per_id    = $post['no_per_id'];
+            $new_uraian       = $post['uraian'];
+            $new_cabang_id    = '13'; // AMDK selalu cabang 13
+
+            // Parse kombinasi asli dari unique_key
+            list($cabang_id_lama, $no_per_id_lama, $uraian_raw_lama) = explode('-', $unique_key, 3);
+            $uraian_lama = str_replace('_', ' ', $uraian_raw_lama);
+
+            $nama_petugas = $this->session->userdata('nama_lengkap');
+
+            // Ambil data lama utk mempertahankan ptgs_upload
+            $old_rows      = $this->Model_amdk_biaya->get_data_to_edit($cabang_id_lama, $no_per_id_lama, $uraian_lama, $tahun_rkap);
+            $ptgs_upload_map = [];
+            foreach ($old_rows as $r) {
+                $key_month                = (int) date('n', strtotime($r['bulan']));
+                $ptgs_upload_map[$key_month] = $r['ptgs_upload'] ?? null;
+            }
+
+            // Hapus semua data lama tahun ini utk kombinasi ini
+            $this->db->where('cabang_id', $cabang_id_lama);
+            $this->db->where('no_per_id', $no_per_id_lama);
+            $this->db->where('uraian', $uraian_lama);
+            $this->db->where('YEAR(bulan)', (int) $tahun_rkap);
+            $this->db->delete('rkap_amdk_biaya');
+
+            // Looping data bulanan dari form
+            $bulan_sel = isset($post['bulan']) ? $post['bulan'] : [];
+            $pagu_arr  = isset($post['pagu_bulanan']) ? $post['pagu_bulanan'] : [];
+
+            $data_baru = [];
+            foreach ($bulan_sel as $i => $bulan_num) {
+                $bulan_num = (int) $bulan_num;
+                if ($bulan_num < 1 || $bulan_num > 12) continue;
+
+                $pagu_raw   = isset($pagu_arr[$i]) ? $pagu_arr[$i] : 0;
+                $pagu_clean = preg_replace('/[^0-9]/', '', $pagu_raw);
+                $pagu_val   = $pagu_clean === '' ? 0 : (int) $pagu_clean;
+
+                if ($pagu_val <= 0) continue;
+
+                // Status otomatis: jika no_per_id = 98.02.10/11/12 → status 1
+                $status = (preg_match('/^98\.02\.(10|11|12)(\.|$)/', $new_no_per_id)) ? 1 : 0;
+
+                $data_baru[$bulan_num] = [
+                    'cabang_id'    => $new_cabang_id,
+                    'no_per_id'    => $new_no_per_id,
+                    'uraian'       => $new_uraian,
+                    'bulan'        => sprintf('%04d-%02d-01', $tahun_rkap, $bulan_num),
+                    'pagu'         => $pagu_val,
+                    'status'       => $status,
+                    'ptgs_upload'  => $ptgs_upload_map[$bulan_num] ?? $nama_petugas,
+                    'ptgs_update'  => $nama_petugas,
+                    'tgl_update'   => date('Y-m-d H:i:s'),
+                ];
+            }
+
+            if (!empty($data_baru)) {
+                $this->db->insert_batch('rkap_amdk_biaya', array_values($data_baru));
+            }
+
+            $this->session->set_flashdata('info', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Sukses!</strong> Data biaya AMDK berhasil diperbarui.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>');
+
+            redirect('lembar_kerja/rkap_amdk/biaya?tahun_rkap=' . $tahun_rkap);
+        } else {
+            // --- LOGIKA TAMPILKAN FORM EDIT (GET) ---
+            list($cabang_id, $no_per_id, $uraian_raw) = explode('-', $unique_key, 3);
+            $uraian = str_replace('_', ' ', $uraian_raw);
+
+            $data_edit = $this->Model_amdk_biaya->get_data_to_edit($cabang_id, $no_per_id, $uraian, $tahun_rkap);
+
+            if (empty($data_edit)) {
+                show_404();
+            }
+
+            $first = $data_edit[0];
+
+            $data['title']     = 'Edit Biaya Unit AMDK';
+            $data['data_edit'] = $data_edit;
+            $data['no_per_id'] = $this->db->like('kode', '98.02', 'after')->order_by('kode', 'ASC')->get('no_per')->result();
+            $data['nama_bulan'] = [
+                1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+            ];
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/rkap_amdk/biaya/edit_biaya', $data);
             $this->load->view('templates/footer');
         }
     }

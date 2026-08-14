@@ -192,7 +192,7 @@
                                     </tbody>
                                     <tfoot class="fw-bold" style="background-color: #e9ecef; border-top: 2px solid #6c757d;">
                                         <tr>
-                                            <td colspan="2">JUMLAH BIAYA PENGOLAHAN</td>
+                                            <td colspan="2">JUMLAH BIAYA DI LUAR USAHA</td>
                                             <td class="text-end"><?= number_format($grand_total['jan'], 0, ',', '.'); ?></td>
                                             <td class="text-end"><?= number_format($grand_total['feb'], 0, ',', '.'); ?></td>
                                             <td class="text-end"><?= number_format($grand_total['mar'], 0, ',', '.'); ?></td>

@@ -9,7 +9,10 @@ class Model_amdk_biaya extends CI_Model
         $this->db->select("
         n.kode,
         n.name,
+        r.cabang_id,
+        r.no_per_id,
         r.uraian,
+        CONCAT(r.cabang_id, '-', r.no_per_id, '-', REPLACE(r.uraian, ' ', '_')) AS unique_key,
         SUM(CASE WHEN MONTH(r.bulan) = 1 THEN r.pagu ELSE 0 END) AS jan,
         SUM(CASE WHEN MONTH(r.bulan) = 2 THEN r.pagu ELSE 0 END) AS feb,
         SUM(CASE WHEN MONTH(r.bulan) = 3 THEN r.pagu ELSE 0 END) AS mar,
@@ -23,7 +26,7 @@ class Model_amdk_biaya extends CI_Model
         SUM(CASE WHEN MONTH(r.bulan) = 11 THEN r.pagu ELSE 0 END) AS nov,
         SUM(CASE WHEN MONTH(r.bulan) = 12 THEN r.pagu ELSE 0 END) AS des,
         SUM(r.pagu) AS total_tahun
-    ");
+    ", false);
         $this->db->from('rkap_amdk_biaya r');
         $this->db->join('no_per n', 'n.kode = r.no_per_id', 'left');
         $this->db->where('YEAR(r.bulan)', $tahun);
@@ -31,8 +34,28 @@ class Model_amdk_biaya extends CI_Model
         $this->db->like('n.kode', '98.02', 'after');
         $this->db->group_by('r.no_per_id');
         $this->db->group_by('r.uraian');
+        $this->db->group_by('r.cabang_id');
         $this->db->order_by('n.kode', 'ASC');
         return $this->db->get()->result_array();
+    }
+
+    /**
+     * Ambil data detail per bulan untuk form edit.
+     * Identitas: cabang_id + no_per_id + uraian + tahun.
+     */
+    public function get_data_to_edit($cabang_id, $no_per_id, $uraian, $tahun = null)
+    {
+        $this->db->where('cabang_id', $cabang_id);
+        $this->db->where('no_per_id', $no_per_id);
+        $this->db->where('uraian', $uraian);
+
+        if ($tahun !== null && $tahun !== '' && $tahun !== 0) {
+            $this->db->where('YEAR(bulan)', (int) $tahun);
+        }
+
+        $this->db->order_by('bulan', 'ASC');
+
+        return $this->db->get('rkap_amdk_biaya')->result_array();
     }
 
     // public function insert_or_update($data)

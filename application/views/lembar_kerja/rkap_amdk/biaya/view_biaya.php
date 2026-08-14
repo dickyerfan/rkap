@@ -100,6 +100,7 @@
                                             <th rowspan="2">U R A I A N</th>
                                             <th colspan="12">B U L A N</th>
                                             <th rowspan="2">JUMLAH</th>
+                                            <th rowspan="2">ACTION</th>
                                         </tr>
                                         <tr>
                                             <th>KODE</th>
@@ -134,7 +135,7 @@
                                             <!-- Header parent -->
                                             <tr class="fw-bold table-secondary">
                                                 <td><?= $parent ?></td>
-                                                <td colspan="15"><?= strtoupper($parent_name) ?></td>
+                                                <td colspan="16"><?= strtoupper($parent_name) ?></td>
                                             </tr>
 
                                             <!-- Children -->
@@ -147,6 +148,16 @@
                                                         <td class="text-end"><?= number_format($child[$nama_bulan], 0, ',', '.') ?></td>
                                                     <?php endforeach; ?>
                                                     <td class="text-end fw-bold"><?= number_format($child['total_tahun'], 0, ',', '.') ?></td>
+                                                    <td class="text-center">
+                                                        <?php if ($this->session->userdata('tipe') == 'admin') : ?>
+                                                            <?php
+                                                            $nama_pengguna = $this->session->userdata('nama_pengguna');
+                                                            $level        = $this->session->userdata('level');
+                                                            if (can_input($nama_pengguna, $level, $status_periode, $tahun)) : ?>
+                                                                <a href="<?= base_url('lembar_kerja/rkap_amdk/biaya/edit/' . urlencode(base64_encode($child['unique_key'])) . '?tahun_rkap=' . $tahun) ?>"><i class="fas fa-edit"></i></a>
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
+                                                    </td>
                                                 </tr>
                                             <?php endforeach; ?>
 
@@ -161,6 +172,7 @@
                                                 <td class="text-end">
                                                     <?= number_format($data_parent['subtotal']['total_tahun'], 0, ',', '.') ?>
                                                 </td>
+                                                <td></td>
                                             </tr>
                                         <?php
                                             // akumulasi total seluruh AMDK
@@ -178,6 +190,7 @@
                                                 <td class="text-end"><?= number_format($total_bulan[$b], 0, ',', '.') ?></td>
                                             <?php endforeach; ?>
                                             <td class="text-end"><?= number_format($total_semua, 0, ',', '.') ?></td>
+                                            <td></td>
                                         </tr>
                                     </tbody>
                                 </table>

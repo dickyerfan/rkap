@@ -117,7 +117,8 @@ class pengeluaran_non_ops extends MY_Controller
 
             $this->db->where('kode', '50.05.04')
                 ->or_where('kode', '50.01')
-                ->or_where('kode', '62.03.03');
+                ->or_where('kode', '62.03.03')
+                ->or_where('kode', '62.03.06');
 
             $data['no_per_id'] = $this->db->get('no_per')->result();
 
