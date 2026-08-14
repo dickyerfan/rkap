@@ -7,6 +7,7 @@ class Auth extends CI_Controller
     {
         parent::__construct();
         $this->load->model('model_auth');
+        $this->load->model('Model_user_log');
         $this->load->library('form_validation');
     }
 
@@ -45,6 +46,15 @@ class Auth extends CI_Controller
                             'tipe' => $cek_upk_bagian->tipe
                         ];
                         $this->session->set_userdata($data_session);
+
+                        // Catat log login
+                        $this->Model_user_log->log_login(
+                            $cek_upk_bagian->nama_pengguna,
+                            $cek_upk_bagian->nama_lengkap,
+                            $cek_upk_bagian->level,
+                            $cek_upk_bagian->tipe
+                        );
+
                         $this->session->set_flashdata('info',         '<div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong>Selamat,</strong> Anda Berhasil Login
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -61,6 +71,15 @@ class Auth extends CI_Controller
                             'tipe' => $cek_upk_bagian->tipe
                         ];
                         $this->session->set_userdata($data_session);
+
+                        // Catat log login
+                        $this->Model_user_log->log_login(
+                            $cek_upk_bagian->nama_pengguna,
+                            $cek_upk_bagian->nama_lengkap,
+                            $cek_upk_bagian->level,
+                            $cek_upk_bagian->tipe
+                        );
+
                         $this->session->set_flashdata('info', '<div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong>Selamat,</strong> Anda Berhasil Login
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -106,6 +125,9 @@ class Auth extends CI_Controller
 
     public function logout()
     {
+
+        // Catat log logout sebelum session dihapus
+        $this->Model_user_log->log_logout($this->session->userdata('nama_pengguna'));
 
         $this->session->unset_userdata('nama_pengguna');
         $this->session->unset_userdata('nama_lengkap');

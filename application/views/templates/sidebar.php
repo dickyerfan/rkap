@@ -150,6 +150,12 @@
                         </a>
 
                     <?php endif; ?>
+                    <?php if ($this->session->userdata('level') == 'Admin' && $this->session->userdata('tipe') == 'admin') : ?>
+                        <a class="nav-link" href="<?= base_url('admin/user_log') ?>">
+                            <div class="sb-nav-link-icon"><i class="fa-fw fas fa-users-cog"></i></div>
+                            <div style="font-size: 0.8rem;"> Monitoring User</div>
+                        </a>
+                    <?php endif; ?>
                     <a class="nav-link" href="<?= base_url('backup') ?>">
                         <div class="sb-nav-link-icon"><i class="fa-fw fas fa-database"></i></div>
                         <div style="font-size: 0.8rem;"> Back up</div>
