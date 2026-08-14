@@ -67,11 +67,19 @@ class Beban_trandis extends MY_Controller
         $data['upk'] = $upk;
         $data['tahun'] = $tahun;
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/lr/beban_trandis/view_biaya_trandis', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/lr/beban_trandis/view_biaya_trandis', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/lr/beban_trandis/view_biaya_trandis', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pdf()
@@ -495,88 +503,6 @@ class Beban_trandis extends MY_Controller
         $this->load->view('lembar_kerja/lr/beban_trandis/edit_hpp', $data);
         $this->load->view('templates/footer');
     }
-
-    // public function generate2()
-    // {
-    //     $tahun = $this->session->userdata('tahun_rkap');
-    //     $upk   = $this->session->userdata('upk');
-
-    //     // Ambil data dari rkap_biaya
-    //     $this->db->select('cabang_id, no_per_id, bulan, pagu, status');
-    //     $this->db->from('rkap_biaya');
-    //     $this->db->where('YEAR(bulan)', (int)$tahun);
-
-    //     if ($upk != 'all' && !empty($upk)) {
-    //         $this->db->where('cabang_id', $upk);
-    //     }
-
-    //     // 🔹 Hanya ambil akun yang diawali 93 (biaya transmisi & distribusi)
-    //     $this->db->like('no_per_id', '93', 'after');
-
-    //     $biaya_data = $this->db->get()->result_array();
-
-    //     if (empty($biaya_data)) {
-    //         $this->session->set_flashdata(
-    //             'info',
-    //             '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    //             <strong>Error!</strong> Tidak ada data biaya transmisi & distribusi ditemukan untuk tahun ini.
-    //             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    //         </div>'
-    //         );
-    //         redirect('lembar_kerja/lr/beban_trandis');
-    //         return;
-    //     }
-
-    //     // Mulai transaksi
-    //     $this->db->trans_start();
-
-    //     foreach ($biaya_data as $row) {
-    //         $data = [
-    //             'cabang_id' => $row['cabang_id'],
-    //             'no_per_id' => $row['no_per_id'],
-    //             'bulan'     => $row['bulan'],
-    //             'pagu'      => $row['pagu'],
-    //             'status'    => $row['status'],
-    //         ];
-
-    //         // 🔹 Cek apakah data sudah ada (berdasarkan 3 kunci utama)
-    //         $this->db->where('cabang_id', $row['cabang_id']);
-    //         $this->db->where('no_per_id', $row['no_per_id']);
-    //         $this->db->where('bulan', $row['bulan']);
-    //         $cek = $this->db->get('rkap_rekap')->row_array();
-
-    //         if ($cek) {
-    //             // 🔹 Jika sudah ada, hapus dulu
-    //             $this->db->where('id', $cek['id']);
-    //             $this->db->delete('rkap_rekap');
-    //         }
-
-    //         // 🔹 Insert data baru
-    //         $this->db->insert('rkap_rekap', $data);
-    //     }
-
-    //     $this->db->trans_complete();
-
-    //     if ($this->db->trans_status() === FALSE) {
-    //         $this->session->set_flashdata(
-    //             'info',
-    //             '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    //             <strong>Error!</strong> Gagal menyimpan data ke Laba Rugi.
-    //             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    //         </div>'
-    //         );
-    //     } else {
-    //         $this->session->set_flashdata(
-    //             'info',
-    //             '<div class="alert alert-success alert-dismissible fade show" role="alert">
-    //             <strong>Sukses!</strong> Semua data biaya transmisi & distribusi berhasil digenerate ke Laba Rugi.
-    //             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    //         </div>'
-    //         );
-    //     }
-
-    //     redirect('lembar_kerja/lr/beban_trandis');
-    // }
 
     public function generate()
     {

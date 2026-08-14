@@ -28,11 +28,19 @@ class Pendapatan_usaha_lain extends MY_Controller
         $data['penagihan'] = $this->Model_pendapatan_usaha_lain->getRekapPendapatanUsahaLainnya($tahun, '81.03.01');
         $data['title'] = 'RENCANA PENDAPATAN USAHA LAINNYA';
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/lr/pendapatan_usaha_lain/view_pendapatan_usaha_lain', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/lr/pendapatan_usaha_lain/view_pendapatan_usaha_lain', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/lr/pendapatan_usaha_lain/view_pendapatan_usaha_lain', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pdf()

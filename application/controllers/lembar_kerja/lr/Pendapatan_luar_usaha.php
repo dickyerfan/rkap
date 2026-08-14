@@ -159,113 +159,21 @@ class Pendapatan_luar_usaha extends MY_Controller
 
         $data['title'] = "RENCANA PENDAPATAN DILUAR USAHA";
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/lr/pendapatan_luar_usaha/view_pendapatan_luar_usaha', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/lr/pendapatan_luar_usaha/view_pendapatan_luar_usaha', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/lr/pendapatan_luar_usaha/view_pendapatan_luar_usaha', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
-    // public function index()
-    // {
-    //     $tahun = $this->input->get('tahun_rkap') ?: date('Y') + 1;
-    //     $data = [];
-    //     $data['tahun'] = $tahun;
 
-    //     // ambil data grouped
-    //     $rekap = $this->Model_pendapatan_luar_usaha->getPendapatanRekapGrouped($tahun);
-
-    //     $data['groups'] = $rekap['groups'];
-    //     $data['group_order'] = $rekap['group_order'];
-    //     $data['parent_subtotals'] = $rekap['parent_subtotals'];
-    //     $data['grand_totals'] = $rekap['grand_totals'];
-    //     $data['grand_sum'] = $rekap['grand_sum'];
-    //     $data['name_map'] = $rekap['name_map'];
-
-    //     $data['title'] = "RENCANA PENDAPATAN DILUAR USAHA";
-
-    //     $this->load->view('templates/header', $data);
-    //     $this->load->view('templates/navbar');
-    //     $this->load->view('templates/sidebar');
-    //     $this->load->view('lembar_kerja/lr/pendapatan_luar_usaha/view_pendapatan_luar_usaha', $data);
-    //     $this->load->view('templates/footer');
-    // }
-
-    // public function index()
-    // {
-    //     $tahun = $this->input->get('tahun_rkap') ?: date('Y') + 1;
-    //     $data['tahun'] = $tahun;
-
-    //     // simpan ke session utk keperluan export PDF
-    //     $this->session->set_userdata('tahun_rkap', $tahun);
-
-    //     $rows = $this->Model_pendapatan_luar_usaha->getPendapatanLuarUsaha($tahun);
-
-    //     // siapkan struktur data per kode
-    //     $data_rows = [];
-    //     foreach ($rows as $row) {
-    //         $kode = $row['kode'];
-    //         $name = $row['name'];
-
-    //         if (!isset($data_rows[$kode])) {
-    //             $data_rows[$kode] = [
-    //                 'kode' => $kode,
-    //                 'name' => $name,
-    //                 'bulan' => [],
-    //                 'total' => 0
-    //             ];
-    //         }
-
-    //         if (!empty($row['bulan'])) {
-    //             $month = (int)date('n', strtotime($row['bulan']));
-    //             $pagu  = (float)$row['pagu'];
-    //             $data_rows[$kode]['bulan'][$month] = $pagu;
-    //             $data_rows[$kode]['total'] += $pagu;
-    //         }
-    //     }
-
-    //     // daftar kelompok utama
-    //     $kelompok = [
-    //         '88.01' => 'Jumlah Pendapatan Lain-lain',
-    //         '88.02' => 'Jumlah Pendapatan AMDK',
-    //     ];
-
-    //     // kelompokkan
-    //     $groups = [];
-    //     foreach ($kelompok as $prefix => $label) {
-    //         $groups[$prefix] = [
-    //             'label' => $label,
-    //             'items' => [],
-    //             'totals' => array_fill(1, 12, 0)
-    //         ];
-
-    //         foreach ($data_rows as $kode => $row) {
-    //             if (strpos($kode, $prefix) === 0) {
-    //                 // skip detail untuk AMDK (contoh 88.02.01.01 dll)
-    //                 if ($prefix == '88.02') {
-    //                     $parts = explode('.', $kode);
-    //                     if (count($parts) > 3) continue;
-    //                 }
-
-    //                 $groups[$prefix]['items'][] = $row;
-
-    //                 // hitung subtotal group
-    //                 foreach (range(1, 12) as $m) {
-    //                     $groups[$prefix]['totals'][$m] += $row['bulan'][$m] ?? 0;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     $data['tahun'] = $tahun;
-    //     $data['groups'] = $groups;
-    //     $data['title'] = "RENCANA PENDAPATAN DILUAR USAHA";
-
-    //     $this->load->view('templates/header', $data);
-    //     $this->load->view('templates/navbar');
-    //     $this->load->view('templates/sidebar');
-    //     $this->load->view('lembar_kerja/lr/pendapatan_luar_usaha/view_pendapatan_luar_usaha', $data);
-    //     $this->load->view('templates/footer');
-    // }
 
     public function export_pdf()
     {

@@ -44,12 +44,14 @@
                         <div class="navbar-nav ms-auto">
                             <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/lr/pendapatan_air/export_pdf') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button> </a>
                         </div>
-                        <div class="navbar-nav">
-                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/data_pendukung/') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Jasa Pemel & Admin</button> </a>
-                        </div>
-                        <div class="navbar-nav">
-                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/data_pendukung/pola_konsumsi_tarif') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Pola Kons & Tarif</button> </a>
-                        </div>
+                        <?php if ($this->session->userdata('tipe') == 'admin') : ?>
+                            <div class="navbar-nav">
+                                <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/data_pendukung/') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Jasa Pemel & Admin</button> </a>
+                            </div>
+                            <div class="navbar-nav">
+                                <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/data_pendukung/pola_konsumsi_tarif') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Pola Kons & Tarif</button> </a>
+                            </div>
+                        <?php endif; ?>
                         <?php if ($this->session->userdata('tipe') == 'admin') : ?>
                             <?php
                             $nama_pengguna  = $this->session->userdata('nama_pengguna');

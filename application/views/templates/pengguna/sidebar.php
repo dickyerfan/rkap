@@ -41,23 +41,151 @@
                     <div class="collapse" id="rkap" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
                             <?php if ($perencanaan) : ?>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/isian_inves') ?>" style="font-size: 0.8rem;">Isian Investasi</a>
-                                <a class="nav-link" href="<?= base_url('rkap/isian_pemeliharaan') ?>" style="font-size: 0.8rem;">Isian Pemeliharaan</a>
+                                <a class="nav-link" href="<?= base_url('admin/pengaturan/kumpul_data') ?>" style="font-size: 0.8rem;">Cek Pengumpulan Data</a>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#upk_amdk" aria-expanded="false" aria-controls="upk_amdk">
+                                    <div style="font-size: 0.8rem;"> UPK & AMDK</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="upk_amdk" aria-labelledby="headingOne" data-bs-parent="#upk_amdk">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link" href="<?= base_url('admin/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
+                                        <a class="nav-link" href="<?= base_url('admin/rekap_sr') ?>" style="font-size: 0.8rem;">Rekap SR</a>
+                                        <a class="nav-link" href="<?= base_url('admin/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
+                                        <a class="nav-link" href="<?= base_url('admin/proyeksi_upk') ?>" style="font-size: 0.8rem;">Proyeksi UPK</a>
+                                        <a class="nav-link" href="<?= base_url('admin/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#usulan" aria-expanded="false" aria-controls="usulan">
+                                    <div style="font-size: 0.8rem;"> Usulan & Evaluasi</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="usulan" aria-labelledby="headingOne" data-bs-parent="#usulan">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/isian_inves') ?>" style="font-size: 0.8rem;">Isian Investasi</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/isian_pemeliharaan') ?>" style="font-size: 0.8rem;">Isian Pemeliharaan</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkUang" aria-expanded="false" aria-controls="lkUang">
+                                    <div style="font-size: 0.8rem;"> Lembar Kerja</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="lkUang" aria-labelledby="headingOne" data-bs-parent="#rkap">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkPerumdam" aria-expanded="false" aria-controls="lkPerumdam">
+                                            <div style="font-size: 0.8rem;"> PERUMDAM</div>
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="lkPerumdam" aria-labelledby="headingOne" data-bs-parent="#lkPerumdam">
+                                            <nav class="nav" style="flex-direction: column;">
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/target_upk') ?>" style="font-size: 0.8rem;">Target</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem;">Produksi Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_non_air') ?>" style="font-size: 0.8rem;">Pendapatan Non Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_usaha_lain') ?>" style="font-size: 0.8rem;">Pendapatan Usaha Lain</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_luar_usaha') ?>" style="font-size: 0.8rem;">Pendapatan Diluar Usaha</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_sumber') ?>" style="font-size: 0.8rem;">Beban Sumber</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_pengolahan') ?>" style="font-size: 0.8rem;">Beban Pengolahan</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_trandis') ?>" style="font-size: 0.8rem;">Beban Trandis</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_umum') ?>" style="font-size: 0.8rem;">Beban Umum</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_luar_usaha') ?>" style="font-size: 0.8rem;">Beban Diluar Usaha</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/arus_kas') ?>" style="font-size: 0.8rem;">Proyeksi Arus Kas</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/investasi') ?>" style="font-size: 0.8rem;">Investasi</a>
+                                            </nav>
+                                        </div>
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkAmdk" aria-expanded="false" aria-controls="lkAmdk">
+                                            <div style="font-size: 0.8rem;"> AMDK</div>
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="lkAmdk" aria-labelledby="headingOne" data-bs-parent="#lkAmdk">
+                                            <nav class="nav" style="flex-direction: column;">
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/laba_rugi_amdk') ?>" style="font-size: 0.8rem;">Laba Rugi AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/arus_kas_amdk') ?>" style="font-size: 0.8rem;">Arus Kas AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/biaya') ?>" style="font-size: 0.8rem;">Biaya AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/pendapatan_ops') ?>" style="font-size: 0.8rem;">Pendapatan AMDK</a>
+                                            </nav>
+                                        </div>
+                                    </nav>
+                                </div>
                             <?php elseif ($umum) : ?>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan ATK & alat cetak</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_umum') ?>" style="font-size: 0.8rem;">Usulan Umum</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
-                                <a class="nav-link" href="<?= base_url('admin/usulan_barang/master_barang') ?>" style="font-size: 0.8rem;">Harga Barang</a>
-                                <a class="nav-link" href="<?= base_url('rkap/isian_barang') ?>" style="font-size: 0.8rem;">Isian Barang</a>
-                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/tenaga_kerja') ?>" style="font-size: 0.8rem;">Biaya Tenaga Kerja</a>
+                                <a class="nav-link" href="<?= base_url('admin/pengaturan/kumpul_data') ?>" style="font-size: 0.8rem;">Cek Pengumpulan Data</a>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#upk_amdk" aria-expanded="false" aria-controls="upk_amdk">
+                                    <div style="font-size: 0.8rem;"> UPK & AMDK</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="upk_amdk" aria-labelledby="headingOne" data-bs-parent="#upk_amdk">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link" href="<?= base_url('admin/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
+                                        <a class="nav-link" href="<?= base_url('admin/rekap_sr') ?>" style="font-size: 0.8rem;">Rekap SR</a>
+                                        <a class="nav-link" href="<?= base_url('admin/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
+                                        <a class="nav-link" href="<?= base_url('admin/proyeksi_upk') ?>" style="font-size: 0.8rem;">Proyeksi UPK</a>
+                                        <a class="nav-link" href="<?= base_url('admin/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#usulan" aria-expanded="false" aria-controls="usulan">
+                                    <div style="font-size: 0.8rem;"> Usulan & Evaluasi</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="usulan" aria-labelledby="headingOne" data-bs-parent="#usulan">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan ATK & alat cetak</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_umum') ?>" style="font-size: 0.8rem;">Usulan Umum</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
+                                        <a class="nav-link" href="<?= base_url('admin/usulan_barang/master_barang') ?>" style="font-size: 0.8rem;">Harga Barang</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/isian_barang') ?>" style="font-size: 0.8rem;">Isian Barang</a>
+                                        <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/tenaga_kerja') ?>" style="font-size: 0.8rem;">Biaya Tenaga Kerja</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkUang" aria-expanded="false" aria-controls="lkUang">
+                                    <div style="font-size: 0.8rem;"> Lembar Kerja</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="lkUang" aria-labelledby="headingOne" data-bs-parent="#rkap">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkPerumdam" aria-expanded="false" aria-controls="lkPerumdam">
+                                            <div style="font-size: 0.8rem;"> PERUMDAM</div>
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="lkPerumdam" aria-labelledby="headingOne" data-bs-parent="#lkPerumdam">
+                                            <nav class="nav" style="flex-direction: column;">
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/target_upk') ?>" style="font-size: 0.8rem;">Target</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem;">Produksi Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_non_air') ?>" style="font-size: 0.8rem;">Pendapatan Non Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_usaha_lain') ?>" style="font-size: 0.8rem;">Pendapatan Usaha Lain</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_luar_usaha') ?>" style="font-size: 0.8rem;">Pendapatan Diluar Usaha</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_sumber') ?>" style="font-size: 0.8rem;">Beban Sumber</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_pengolahan') ?>" style="font-size: 0.8rem;">Beban Pengolahan</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_trandis') ?>" style="font-size: 0.8rem;">Beban Trandis</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_umum') ?>" style="font-size: 0.8rem;">Beban Umum</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_luar_usaha') ?>" style="font-size: 0.8rem;">Beban Diluar Usaha</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/arus_kas') ?>" style="font-size: 0.8rem;">Proyeksi Arus Kas</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/investasi') ?>" style="font-size: 0.8rem;">Investasi</a>
+                                            </nav>
+                                        </div>
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkAmdk" aria-expanded="false" aria-controls="lkAmdk">
+                                            <div style="font-size: 0.8rem;"> AMDK</div>
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="lkAmdk" aria-labelledby="headingOne" data-bs-parent="#lkAmdk">
+                                            <nav class="nav" style="flex-direction: column;">
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/laba_rugi_amdk') ?>" style="font-size: 0.8rem;">Laba Rugi AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/arus_kas_amdk') ?>" style="font-size: 0.8rem;">Arus Kas AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/biaya') ?>" style="font-size: 0.8rem;">Biaya AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/pendapatan_ops') ?>" style="font-size: 0.8rem;">Pendapatan AMDK</a>
+                                            </nav>
+                                        </div>
+                                    </nav>
+                                </div>
                             <?php elseif ($isAmdk) : ?>
                                 <!-- <a class="nav-link" href="<?= base_url('rkap/potensi_amdk') ?>" style="font-size: 0.8rem;">Potensi AMDK</a> -->
                                 <a class="nav-link" href="<?= base_url('rkap/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
@@ -86,28 +214,33 @@
                                     </nav>
                                 </div>
                             <?php elseif ($pemeliharaan) : ?>
-                                <a class="nav-link" href="<?= base_url('admin/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
-                                <a class="nav-link" href="<?= base_url('admin/rekap_sr') ?>" style="font-size: 0.8rem;">Rekap SR</a>
-                                <a class="nav-link" href="<?= base_url('admin/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
-                                <a class="nav-link" href="<?= base_url('admin/proyeksi_upk') ?>" style="font-size: 0.8rem;">Proyeksi UPK</a>
-                                <a class="nav-link" href="<?= base_url('admin/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
                                 <a class="nav-link" href="<?= base_url('admin/pengaturan/kumpul_data') ?>" style="font-size: 0.8rem;">Cek Pengumpulan Data</a>
-                            <?php elseif ($uangLangSpi) : ?>
-                                <a class="nav-link" href="<?= base_url('admin/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
-                                <a class="nav-link" href="<?= base_url('admin/rekap_sr') ?>" style="font-size: 0.8rem;">Rekap SR</a>
-                                <a class="nav-link" href="<?= base_url('admin/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
-                                <a class="nav-link" href="<?= base_url('admin/proyeksi_upk') ?>" style="font-size: 0.8rem;">Proyeksi UPK</a>
-                                <a class="nav-link" href="<?= base_url('admin/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan ATK & alat cetak</a>
-                                <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
-                                <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
-                                <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
-                                <a class="nav-link" href="<?= base_url('admin/pengaturan/kumpul_data') ?>" style="font-size: 0.8rem;">Cek Pengumpulan Data</a>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#upk_amdk" aria-expanded="false" aria-controls="upk_amdk">
+                                    <div style="font-size: 0.8rem;"> UPK & AMDK</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="upk_amdk" aria-labelledby="headingOne" data-bs-parent="#upk_amdk">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link" href="<?= base_url('admin/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
+                                        <a class="nav-link" href="<?= base_url('admin/rekap_sr') ?>" style="font-size: 0.8rem;">Rekap SR</a>
+                                        <a class="nav-link" href="<?= base_url('admin/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
+                                        <a class="nav-link" href="<?= base_url('admin/proyeksi_upk') ?>" style="font-size: 0.8rem;">Proyeksi UPK</a>
+                                        <a class="nav-link" href="<?= base_url('admin/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#usulan" aria-expanded="false" aria-controls="usulan">
+                                    <div style="font-size: 0.8rem;"> Usulan & Evaluasi</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="usulan" aria-labelledby="headingOne" data-bs-parent="#usulan">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan Barang</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_pemeliharaan') ?>" style="font-size: 0.8rem;">Usulan Pemeliharaan</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
+                                    </nav>
+                                </div>
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkUang" aria-expanded="false" aria-controls="lkUang">
                                     <div style="font-size: 0.8rem;"> Lembar Kerja</div>
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -115,13 +248,92 @@
                                 <div class="collapse" id="lkUang" aria-labelledby="headingOne" data-bs-parent="#rkap">
                                     <nav class="nav" style="flex-direction: column;">
                                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkPerumdam" aria-expanded="false" aria-controls="lkPerumdam">
-                                            <div style="font-size: 0.8rem;"> Perumdam</div>
+                                            <div style="font-size: 0.8rem;"> PERUMDAM</div>
                                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                         </a>
                                         <div class="collapse" id="lkPerumdam" aria-labelledby="headingOne" data-bs-parent="#lkPerumdam">
                                             <nav class="nav" style="flex-direction: column;">
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/target_upk') ?>" style="font-size: 0.8rem;">Target</a>
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem;">Produksi Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_non_air') ?>" style="font-size: 0.8rem;">Pendapatan Non Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_usaha_lain') ?>" style="font-size: 0.8rem;">Pendapatan Usaha Lain</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_luar_usaha') ?>" style="font-size: 0.8rem;">Pendapatan Diluar Usaha</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_sumber') ?>" style="font-size: 0.8rem;">Beban Sumber</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_pengolahan') ?>" style="font-size: 0.8rem;">Beban Pengolahan</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_trandis') ?>" style="font-size: 0.8rem;">Beban Trandis</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_umum') ?>" style="font-size: 0.8rem;">Beban Umum</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_luar_usaha') ?>" style="font-size: 0.8rem;">Beban Diluar Usaha</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/arus_kas') ?>" style="font-size: 0.8rem;">Proyeksi Arus Kas</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/investasi') ?>" style="font-size: 0.8rem;">Investasi</a>
+                                            </nav>
+                                        </div>
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkAmdk" aria-expanded="false" aria-controls="lkAmdk">
+                                            <div style="font-size: 0.8rem;"> AMDK</div>
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="lkAmdk" aria-labelledby="headingOne" data-bs-parent="#lkAmdk">
+                                            <nav class="nav" style="flex-direction: column;">
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/laba_rugi_amdk') ?>" style="font-size: 0.8rem;">Laba Rugi AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/arus_kas_amdk') ?>" style="font-size: 0.8rem;">Arus Kas AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/biaya') ?>" style="font-size: 0.8rem;">Biaya AMDK</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/rkap_amdk/pendapatan_ops') ?>" style="font-size: 0.8rem;">Pendapatan AMDK</a>
+                                            </nav>
+                                        </div>
+                                    </nav>
+                                </div>
+                            <?php elseif ($uangLangSpi) : ?>
+                                <a class="nav-link" href="<?= base_url('admin/pengaturan/kumpul_data') ?>" style="font-size: 0.8rem;">Cek Pengumpulan Data</a>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#upk_amdk" aria-expanded="false" aria-controls="upk_amdk">
+                                    <div style="font-size: 0.8rem;"> UPK & AMDK</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="upk_amdk" aria-labelledby="headingOne" data-bs-parent="#upk_amdk">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link" href="<?= base_url('admin/potensi_sr') ?>" style="font-size: 0.8rem;">Potensi SR & Air Baku</a>
+                                        <a class="nav-link" href="<?= base_url('admin/rekap_sr') ?>" style="font-size: 0.8rem;">Rekap SR</a>
+                                        <a class="nav-link" href="<?= base_url('admin/evaluasi_upk') ?>" style="font-size: 0.8rem;">Evaluasi UPK</a>
+                                        <a class="nav-link" href="<?= base_url('admin/proyeksi_upk') ?>" style="font-size: 0.8rem;">Proyeksi UPK</a>
+                                        <a class="nav-link" href="<?= base_url('admin/evaluasi_amdk') ?>" style="font-size: 0.8rem;">Evaluasi AMDK</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#usulan" aria-expanded="false" aria-controls="usulan">
+                                    <div style="font-size: 0.8rem;"> Usulan & Evaluasi</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="usulan" aria-labelledby="headingOne" data-bs-parent="#usulan">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_barang') ?>" style="font-size: 0.8rem;">Usulan ATK & alat cetak</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/usulan_inves') ?>" style="font-size: 0.8rem;">Usulan Investasi</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/evaluasi_program') ?>" style="font-size: 0.8rem;">Evaluasi & Usulan</a>
+                                        <a class="nav-link" href="<?= base_url('rkap/permasalahan') ?>" style="font-size: 0.8rem;">Permasalahan</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkUang" aria-expanded="false" aria-controls="lkUang">
+                                    <div style="font-size: 0.8rem;"> Lembar Kerja</div>
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="lkUang" aria-labelledby="headingOne" data-bs-parent="#rkap">
+                                    <nav class="nav" style="flex-direction: column;">
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#lkPerumdam" aria-expanded="false" aria-controls="lkPerumdam">
+                                            <div style="font-size: 0.8rem;"> PERUMDAM</div>
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="lkPerumdam" aria-labelledby="headingOne" data-bs-parent="#lkPerumdam">
+                                            <nav class="nav" style="flex-direction: column;">
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/target_upk') ?>" style="font-size: 0.8rem;">Target</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem;">Produksi Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_non_air') ?>" style="font-size: 0.8rem;">Pendapatan Non Air</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_usaha_lain') ?>" style="font-size: 0.8rem;">Pendapatan Usaha Lain</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_luar_usaha') ?>" style="font-size: 0.8rem;">Pendapatan Diluar Usaha</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_sumber') ?>" style="font-size: 0.8rem;">Beban Sumber</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_pengolahan') ?>" style="font-size: 0.8rem;">Beban Pengolahan</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_trandis') ?>" style="font-size: 0.8rem;">Beban Trandis</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_umum') ?>" style="font-size: 0.8rem;">Beban Umum</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/beban_luar_usaha') ?>" style="font-size: 0.8rem;">Beban Diluar Usaha</a>
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/arus_kas') ?>" style="font-size: 0.8rem;">Proyeksi Arus Kas</a>
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/investasi') ?>" style="font-size: 0.8rem;">Investasi</a>
                                             </nav>
