@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-header shadow">
                     <a class="fw-bold text-dark" style="text-decoration:none ;"><?= strtoupper($title) ?></a>
-                    <a href="<?= base_url('lembar_kerja/rkap_amdk/penerimaan_air/tampil_tahun_lalu') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
+                    <a href="<?= base_url('lembar_kerja/arus_kas/penerimaan_air/tampil_tahun_lalu') ?>"><button class="float-end neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button></a>
                 </div>
                 <div class="p-2">
                     <?= $this->session->flashdata('info'); ?>
@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-md-8">
-                            <form action="<?= base_url('lembar_kerja/rkap_amdk/penerimaan_amdk/update_tahun_lalu_aksi') ?>" method="post">
+                            <form action="<?= base_url('lembar_kerja/arus_kas/penerimaan_air/update_tahun_lalu_aksi') ?>" method="post">
                                 <input type="hidden" name="id" value="<?= $data->id ?>">
                                 <label>UPK</label>
                                 <select name="id_upk" class="form-control" required>
