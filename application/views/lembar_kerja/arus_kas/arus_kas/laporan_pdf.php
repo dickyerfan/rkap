@@ -366,6 +366,19 @@
                                     <td class="text-end fw-bold"><?= number_format($total, 0, ',', '.') ?></td>
                                 </tr>
                                 <tr>
+                                    <td>- Bagian Laba Pemda yang belum dibayar</td>
+                                    <?php
+                                    $total = 0;
+                                    $arr = isset($bagian_laba_pemda) ? $bagian_laba_pemda : array_fill(1, 12, 0);
+                                    for ($m = 1; $m <= 12; $m++) :
+                                        $v = isset($arr[$m]) ? $arr[$m] : 0;
+                                        $total += $v;
+                                    ?>
+                                        <td class="text-end"><?= number_format($v, 0, ',', '.') ?></td>
+                                    <?php endfor; ?>
+                                    <td class="text-end fw-bold"><?= number_format($total, 0, ',', '.') ?></td>
+                                </tr>
+                                <tr>
                                     <td class="fw-bold">ARUS KAS BERSIH UNTUK AKTIVITAS PENDANAAN</td>
                                     <?php
                                     $totalInvestasi = array_fill(1, 12, 0);
@@ -375,8 +388,9 @@
                                         $v1 = isset($penambahan_aset_tetap[$m]) ? $penambahan_aset_tetap[$m] : 0;
                                         $v2 = isset($investasi[$m]) ? $investasi[$m] : 0;
                                         $v3 = isset($jasa_produksi[$m]) ? $jasa_produksi[$m] : 0;
+                                        $v4 = isset($bagian_laba_pemda[$m]) ? $bagian_laba_pemda[$m] : 0;
 
-                                        $sublrsp = $v1 + $v2 + $v3;
+                                        $sublrsp = $v1 + $v2 + $v3 + $v4;
                                         $totalInvestasi[$m] = $sublrsp; // simpan ke array
                                         $grand_total += $sublrsp;
 

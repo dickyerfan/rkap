@@ -331,6 +331,7 @@ class Model_pengeluaran extends CI_Model
             ->or_like('n.kode', '50.05.04', 'after')
             ->or_like('n.kode', '50.01', 'after')
             ->or_like('n.kode', '62.03.03', 'after')
+            ->or_like('n.kode', '62.03.06', 'after')
             ->group_end();
 
         $this->db->group_by('r.no_per_id');

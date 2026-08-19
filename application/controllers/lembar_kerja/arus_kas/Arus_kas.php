@@ -101,7 +101,8 @@ class Arus_kas extends MY_Controller
             ['header' => 'ARUS KAS DARI AKTIVITAS PENDANAAN'],
             ['kode' => '', 'uraian' => 'Penambahan PMP'],
             ['kode' => '', 'uraian' => 'Pembayaran Deviden Kepada KMP'],
-            ['kode' => '62', 'uraian' => 'Pembayaran Jasa Produksi dan Tantiem'],
+            ['kode' => '62.03.03', 'uraian' => 'Pembayaran Jasa Produksi dan Tantiem'],
+            ['kode' => '62.03.06', 'uraian' => 'Bagian Laba Pemda yang belum dibayar'],
             ['kode' => '', 'uraian' => 'Penambahan cadangan /Koneksi Tahun lalu'],
             ['header' => 'ARUS KAS BERSIH UNTUK AKTIVITAS  PENDANAAN'],
             ['header' => 'KENAIKAN /BERKURANG BERSIH KAS DAN SETARA KAS'],
@@ -135,7 +136,8 @@ class Arus_kas extends MY_Controller
             'pembayaran_aktiva_lainnya' => '15.03',
             'pembayaran_liabilitas_lainnya' => '50.01',
             'investasi' => '31',
-            'jasa_produksi' => '62',
+            'jasa_produksi' => '62.03.03',
+            'bagian_laba_pemda' => '62.03.06',
         ];
 
         foreach ($mapVar as $varName => $code) {
@@ -236,7 +238,8 @@ class Arus_kas extends MY_Controller
             ['header' => 'ARUS KAS DARI AKTIVITAS PENDANAAN'],
             ['kode' => '', 'uraian' => 'Penambahan PMP'],
             ['kode' => '', 'uraian' => 'Pembayaran Deviden Kepada KMP'],
-            ['kode' => '62', 'uraian' => 'Pembayaran Jasa Produksi dan Tantiem'],
+            ['kode' => '62.03.03', 'uraian' => 'Pembayaran Jasa Produksi dan Tantiem'],
+            ['kode' => '62.03.06', 'uraian' => 'Bagian Laba Pemda yang belum dibayar'],
             ['kode' => '', 'uraian' => 'Penambahan cadangan /Koneksi Tahun lalu'],
             ['header' => 'ARUS KAS BERSIH UNTUK AKTIVITAS  PENDANAAN'],
             ['header' => 'KENAIKAN /BERKURANG BERSIH KAS DAN SETARA KAS'],
@@ -270,7 +273,8 @@ class Arus_kas extends MY_Controller
             'pembayaran_aktiva_lainnya' => '15.03',
             'pembayaran_liabilitas_lainnya' => '50.01',
             'investasi' => '31',
-            'jasa_produksi' => '62',
+            'jasa_produksi' => '62.03.03',
+            'bagian_laba_pemda' => '62.03.06',
         ];
 
         foreach ($mapVar as $varName => $code) {
