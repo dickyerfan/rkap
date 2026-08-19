@@ -4,6 +4,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Penerimaan_air extends MY_Controller
 {
 
+    // Batas tahun mulaiki efisiensi penagihan / pengaturan distribusi.
+    // Tahun < konstanta ini selalu memakai KODE LAMA (tidak terpengaruh
+    // pengaturan apapun), sehingga hanya boleh dihitung untuk kebersihan.
+    private $TAHUN_AWAL_EFISIENSI = 2027;
+
     public function __construct()
     {
         parent::__construct();
@@ -25,11 +30,52 @@ class Penerimaan_air extends MY_Controller
         $this->session->set_userdata('tahun_rkap', $tahun);
         $this->session->set_userdata('upk', $upk);
 
-        $res = $this->Model_penerimaan_air->getDataPenerimaanAirDistribusi($tahun, $upk);
+        // =============================================================
+        // PEMILIHAN KODE (LAMA / BARU)
+        // -------------------------------------------------------------
+        // Efisiensi penagihan (Target UPK) HANYA berlaku mulai tahun
+        // $TAHUN_MULAI_EFISIENSI dan seterusnya.
+        // Tahun 2026 ke bawah TIDAK ada data efisiensi penagihan,
+        // sehingga tetap memakai KODE LAMA (getDataPenerimaanAirDistribusi)
+        // agar nilainya tidak berubah.
+        // Ubah nilai $TAHUN_MULAI_EFISIENSI bila kebijakannya berubah.
+        // =============================================================
+        $TAHUN_MULAI_EFISIENSI = 2027;
+
+        // =============================================================
+        // POLA DISTRIBUSI PENERIMAAN PER TAHUN (>= 2027)
+        // Tiap tahun punya pengaturannya SENDIRI di fungsi
+        // get_distribusi_tahun() -> $per_tahun. Mengubah persentase satu
+        // tahun TIDAK akan mengubah tahun-tahun sebelumnya.
+        // Tahun 2026 ke bawah selalu memakai KODE LAMA (tidak terpengaruh).
+        // =============================================================
+        $dist  = $this->get_distribusi_tahun($tahun);
+        $dist_tagihan = $dist['dist_tagihan'];
+        $dist_thl     = $dist['dist_thl'];
+
+        if ($tahun >= $TAHUN_MULAI_EFISIENSI) {
+            // KODE BARU: penerimaan disesuaikan % efisiensi penagihan.
+            $res = $this->Model_penerimaan_air->getDataPenerimaanAirDistribusiEfisiensi($tahun, $upk, $dist_tagihan, $dist_thl);
+
+            // nilai efisiensi utk dipakai di View (baris bulanan & Th Lalu)
+            $data['efi_efektif']     = $res['efi_efektif'];
+            $data['efi_thl_efektif'] = $res['efi_thl_efektif'];
+        } else {
+            // KODE LAMA (tahun 2026 ke bawah): tanpa efisiensi.
+            // View otomatis memakai default 100% bila efi_* tidak dikirim.
+            $res = $this->Model_penerimaan_air->getDataPenerimaanAirDistribusi($tahun, $upk);
+        }
 
         $data['per_jenis'] = $res['per_jenis'];
         $data['overall_totals'] = $res['overall_totals'];
         $data['overall_grand'] = $res['overall_grand'];
+
+        // penanda utk View: true = pakai metode baru (efisiensi), false = kode lama
+        $data['pakai_efisiensi'] = ($tahun >= $TAHUN_MULAI_EFISIENSI);
+
+        // pengaturan distribusi persentase utk View (baris bulanan & Th Lalu)
+        $data['dist_tagihan'] = $dist_tagihan;
+        $data['dist_thl']     = $dist_thl;
 
         $data['tahun'] = $tahun;
         $data['upk'] = $upk;
@@ -75,12 +121,44 @@ class Penerimaan_air extends MY_Controller
         $tahun = $this->session->userdata('tahun_rkap');
         $upk = $this->session->userdata('upk');
 
+        // =============================================================
+        // PEMILIHAN KODE (LAMA / BARU) - sama seperti pada index()
+        // Efisiensi penagihan HANYA berlaku mulai $TAHUN_MULAI_EFISIENSI.
+        // Tahun 2026 ke bawah memakai KODE LAMA agar nilainya tidak berubah.
+        // =============================================================
+        $TAHUN_MULAI_EFISIENSI = 2027;
 
-        $res = $this->Model_penerimaan_air->getDataPenerimaanAirDistribusi($tahun, $upk);
+        // =============================================================
+        // POLA DISTRIBUSI PENERIMAAN PER TAHUN (>= 2027)
+        // Lihat get_distribusi_tahun() -> $per_tahun. Sama seperti index().
+        // Mengubah persentase satu tahun TIDAK mempengaruhi tahun lain.
+        // =============================================================
+        $dist  = $this->get_distribusi_tahun($tahun);
+        $dist_tagihan = $dist['dist_tagihan'];
+        $dist_thl     = $dist['dist_thl'];
+
+        if ($tahun >= $TAHUN_MULAI_EFISIENSI) {
+            // KODE BARU: penerimaan disesuaikan % efisiensi penagihan.
+            $res = $this->Model_penerimaan_air->getDataPenerimaanAirDistribusiEfisiensi($tahun, $upk, $dist_tagihan, $dist_thl);
+
+            // nilai efisiensi utk dipakai di View PDF (baris bulanan & Th Lalu)
+            $data['efi_efektif']     = $res['efi_efektif'];
+            $data['efi_thl_efektif'] = $res['efi_thl_efektif'];
+        } else {
+            // KODE LAMA (tahun 2026 ke bawah): tanpa efisiensi.
+            $res = $this->Model_penerimaan_air->getDataPenerimaanAirDistribusi($tahun, $upk);
+        }
 
         $data['per_jenis'] = $res['per_jenis'];
         $data['overall_totals'] = $res['overall_totals'];
         $data['overall_grand'] = $res['overall_grand'];
+
+        // penanda utk View: true = pakai metode baru (efisiensi), false = kode lama
+        $data['pakai_efisiensi'] = ($tahun >= $TAHUN_MULAI_EFISIENSI);
+
+        // pengaturan distribusi persentase utk View PDF (baris bulanan & Th Lalu)
+        $data['dist_tagihan'] = $dist_tagihan;
+        $data['dist_thl']     = $dist_thl;
 
         $data['tahun'] = $tahun;
         $data['upk'] = $upk;
@@ -119,6 +197,294 @@ class Penerimaan_air extends MY_Controller
 
         // Generate dari view khusus PDF
         $this->pdf->generate('lembar_kerja/arus_kas/penerimaan_air/laporan_pdf', $data);
+    }
+
+    /**
+     * PENGATURAN POLA DISTRIBUSI PENERIMAAN (TAHUN >= 2027) - PER TAHUN.
+     *
+     * Nilai dibaca dari tabel `rkap_setting_distribusi` sehingga bisa diubah
+     * langsung lewat form di halaman (tanpa mengubah kode). Setiap tahun
+     * punya baris pengaturannya SENDIRI -> mengubah satu tahun TIDAK mengubah
+     * tahun sebelumnya. Tahun 2026 ke bawah selalu memakai KODE LAMA, jadi
+     * tidak pernah terpengaruh oleh pengaturan ini.
+     *
+     * Arti nilai (pecahan, total p1+p2 = 1.00):
+     *   - dist_tagihan: tagihan bulan B -> p1 diterima bulan B+1,
+     *                   p2 diterima bulan B+2.
+     *   - dist_thl    : sisa piutang Th Lalu -> p1 di JANUARI,
+     *                   p2 di FEBRUARI.
+     *
+     * @param int $tahun Tahun anggaran
+     * @return array ['dist_tagihan' => [...], 'dist_thl' => [...]]
+     */
+    private function get_distribusi_tahun($tahun)
+    {
+        // 1) Prioritas: pengaturan tersimpan di database (bisa diubah lewat form).
+        $dari_db = $this->Model_penerimaan_air->get_setting_distribusi($tahun);
+        if ($dari_db) {
+            return $dari_db;
+        }
+
+        // 2) Default bila tahun tsb belum punya pengaturan tersimpan.
+        return [
+            'dist_tagihan' => ['p1' => 1.00, 'p2' => 0.00],
+            'dist_thl'     => ['p1' => 0.90, 'p2' => 0.10],
+        ];
+    }
+
+    /**
+     * Tahun anggaran yang sedang aktif/dikerjakan (default: tahun depan).
+     * Tahun yang LEBIH LAMA dari tahun aktif otomatis terkunci.
+     */
+    private function tahun_aktif()
+    {
+        return (int)($this->input->get('tahun_rkap') ?: $this->session->userdata('tahun_rkap') ?: (date('Y') + 1));
+    }
+
+    /**
+     * Halaman MENU KHUSUS pengaturan persentase distribusi penerimaan per tahun.
+     */
+    public function setting_distribusi()
+    {
+        $data['title'] = 'Pengaturan Persentase Distribusi Penerimaan Air';
+        $data['list_upk'] = $this->db->where('status', 1)->get('rkap_nama_upk')->result();
+
+        $data['tahun_aktif'] = $this->tahun_aktif();
+
+        // HANYA tampilkan tahun yang sudah tersimpan (diinput lewat form
+        // "Tambah Tahun"). Tahun berikutnya ditambahkan sendiri di halaman ini.
+        $data['tahun_list'] = [];
+        $data['terkunci'] = [];
+        if ($this->db->table_exists('rkap_setting_distribusi')) {
+            $rows = $this->db->select('tahun, terkunci')->order_by('tahun', 'ASC')->get('rkap_setting_distribusi')->result_array();
+            foreach ($rows as $r) {
+                $thn = (int)$r['tahun'];
+                $data['tahun_list'][] = $thn;
+                $data['terkunci'][$thn] = (int)$r['terkunci'] === 1;
+            }
+        }
+        // Batas tahun mulaiki efisiensi, utk menandai tahun 'kode lama' di View.
+        $data['tahun_awal_efisiensi'] = $this->TAHUN_AWAL_EFISIENSI;
+
+        // Muat nilai tiap tahun (dari DB; default bila belum tersimpan).
+        $data['data_tahun'] = [];
+        foreach ($data['tahun_list'] as $thn) {
+            $d = $this->Model_penerimaan_air->get_setting_distribusi($thn);
+            if (!$d) {
+                $d = [
+                    'dist_tagihan' => ['p1' => 1.00, 'p2' => 0.00],
+                    'dist_thl'     => ['p1' => 0.90, 'p2' => 0.10],
+                ];
+            }
+            $data['data_tahun'][$thn] = $d;
+        }
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/navbar');
+        $this->load->view('templates/sidebar');
+        $this->load->view('lembar_kerja/arus_kas/penerimaan_air/view_setting_distribusi', $data);
+        $this->load->view('templates/footer');
+    }
+
+    /**
+     * Tambahkan tahun baru ke daftar pengaturan (menggunakan nilai default),
+     * dipanggil dari halaman setting_distribusi.
+     */
+    public function tambah_tahun_distribusi()
+    {
+        $tahun = (int)$this->input->post('tahun');
+
+        if (!$this->db->table_exists('rkap_setting_distribusi')) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Tabel belum ada. Silakan impor file <b>rkap_setting_distribusi.sql</b> terlebih dahulu.</div>');
+            redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
+            return;
+        }
+
+        if ($tahun < $this->TAHUN_AWAL_EFISIENSI) {
+            $this->session->set_flashdata('info', '<div class="alert alert-warning">Tahun minimal ' . $this->TAHUN_AWAL_EFISIENSI . ' (tahun ' . ($this->TAHUN_AWAL_EFISIENSI - 1) . ' ke bawah selalu memakai kode lama).</div>');
+            redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
+            return;
+        }
+
+        $ada = $this->db->where('tahun', $tahun)->get('rkap_setting_distribusi')->num_rows();
+        if ($ada > 0) {
+            $this->session->set_flashdata('info', '<div class="alert alert-warning">Tahun <b>' . $tahun . '</b> sudah ada di daftar.</div>');
+        } else {
+            $this->db->insert('rkap_setting_distribusi', [
+                'tahun'           => $tahun,
+                'dist_tagihan_p1' => 0.90,
+                'dist_tagihan_p2' => 0.10,
+                'dist_thl_p1'     => 0.90,
+                'dist_thl_p2'     => 0.10,
+                'ptgs_upload'     => $this->session->userdata('nama_lengkap') ?? 'Admin',
+            ]);
+            $this->session->set_flashdata('info', '<div class="alert alert-success">Tahun <b>' . $tahun . '</b> berhasil ditambahkan (memakai nilai default, silakan ubah).</div>');
+        }
+
+        redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
+    }
+
+    /**
+     * Hapus satu tahun dari daftar pengaturan (tahun tsb kembali ke nilai default).
+     * Tahun yang TERKUNCI tidak dapat dihapus.
+     */
+    public function hapus_tahun_distribusi($tahun)
+    {
+        $tahun = (int)$tahun;
+
+        if ($this->db->table_exists('rkap_setting_distribusi')) {
+            $row = $this->db->where('tahun', $tahun)->get('rkap_setting_distribusi')->row();
+            $auto_locked = ($tahun >= $this->TAHUN_AWAL_EFISIENSI && $tahun < $this->tahun_aktif());
+            if (!$row) {
+                $this->session->set_flashdata('info', '<div class="alert alert-danger">Tahun <b>' . $tahun . '</b> tidak ditemukan di daftar pengaturan.</div>');
+            } elseif ($auto_locked) {
+                $this->session->set_flashdata('info', '<div class="alert alert-warning">Tahun <b>' . $tahun . '</b> terkunci OTOMATIS (lebih lama dari tahun anggaran aktif ' . $this->tahun_aktif() . ') sehingga tidak bisa dihapus.</div>');
+            } elseif ((int)$row->terkunci === 1) {
+                $this->session->set_flashdata('info', '<div class="alert alert-warning">Tahun <b>' . $tahun . '</b> TERKUNCI sehingga tidak bisa dihapus. Buka kuncinya terlebih dahulu.</div>');
+            } else {
+                $this->db->where('tahun', $tahun)->delete('rkap_setting_distribusi');
+                $this->session->set_flashdata('info', '<div class="alert alert-success">Tahun <b>' . $tahun . '</b> dihapus; tahun tersebut kembali memakai nilai default.</div>');
+            }
+        } else {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Tahun tidak valid atau tabel belum dibuat.</div>');
+        }
+
+        redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
+    }
+
+    /**
+     * Kunci tahun: nilai TIDAK bisa diedit maupun dihapus (dipanggil manual).
+     */
+    public function kunci_tahun_distribusi($tahun)
+    {
+        $tahun = (int)$tahun;
+        if ($tahun >= $this->TAHUN_AWAL_EFISIENSI && $tahun < $this->tahun_aktif()) {
+            $this->session->set_flashdata('info', '<div class="alert alert-warning">Tahun <b>' . $tahun . '</b> sudah terunci OTOMATIS (lebih lama dari tahun anggaran aktif ' . $this->tahun_aktif() . ').</div>');
+        } elseif ($tahun >= $this->TAHUN_AWAL_EFISIENSI && $this->db->table_exists('rkap_setting_distribusi')) {
+            $this->db->where('tahun', $tahun)->update('rkap_setting_distribusi', ['terkunci' => 1]);
+            $this->session->set_flashdata('info', '<div class="alert alert-success">Tahun <b>' . $tahun . '</b> terkunci (tidak bisa diedit/dihapus).</div>');
+        } else {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Tahun tidak valid atau tabel belum dibuat.</div>');
+        }
+        redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
+    }
+
+    /**
+     * Buka kunci tahun: nilai dapat diedit/dihapus kembali.
+     */
+    public function buka_tahun_distribusi($tahun)
+    {
+        $tahun = (int)$tahun;
+        if ($tahun >= $this->TAHUN_AWAL_EFISIENSI && $tahun < $this->tahun_aktif()) {
+            $this->session->set_flashdata('info', '<div class="alert alert-warning">Tahun <b>' . $tahun . '</b> terunci OTOMATIS (lebih lama dari tahun anggaran aktif ' . $this->tahun_aktif() . ') sehingga tidak bisa dibuka kuncinya.</div>');
+        } elseif ($tahun >= $this->TAHUN_AWAL_EFISIENSI && $this->db->table_exists('rkap_setting_distribusi')) {
+            $this->db->where('tahun', $tahun)->update('rkap_setting_distribusi', ['terkunci' => 0]);
+            $this->session->set_flashdata('info', '<div class="alert alert-success">Tahun <b>' . $tahun . '</b> dibuka kuncinya (bisa diedit/dihapus lagi).</div>');
+        } else {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Tahun tidak valid atau tabel belum dibuat.</div>');
+        }
+        redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
+    }
+
+    /**
+     * Simpan pengaturan persentase distribusi untuk SEMUA tahun sekaligus
+     * (dipanggil dari halaman setting_distribusi).
+     */
+    public function simpan_distribusi_all()
+    {
+        $rows = $this->input->post('rows');
+
+        if (!$this->db->table_exists('rkap_setting_distribusi')) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Tabel belum ada. Silakan impor file <b>rkap_setting_distribusi.sql</b> terlebih dahulu.</div>');
+            redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
+            return;
+        }
+
+        if (!$rows || !is_array($rows)) {
+            $this->session->set_flashdata('info', '<div class="alert alert-danger">Tidak ada data untuk disimpan.</div>');
+            redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
+            return;
+        }
+
+        // Daftar tahun yang TERKUNCI -> dilewati (tidak boleh diubah).
+        // Gabungan: kunci manual (terkunci=1) + kunci OTOMATIS (tahun lebih lama
+        // dari tahun anggaran aktif, mis. saat aktif 2028 maka 2027 ikut terkunci).
+        $tahun_aktif = $this->tahun_aktif();
+        $locked_years = [];
+        $locked_rows = $this->db->where('terkunci', 1)->get('rkap_setting_distribusi')->result_array();
+        foreach ($locked_rows as $lr) {
+            $locked_years[(int)$lr['tahun']] = true;
+        }
+
+        $jml_ok = 0;
+        $jml_error = 0;
+        $jml_locked = 0;
+        $msg = '';
+        foreach ($rows as $tahun => $vals) {
+            $tahun = (int)$tahun;
+            if ($tahun < 2000) {
+                $jml_error++;
+                continue;
+            }
+
+            // Tahun terkunci: dilewati tanpa disimpan.
+            $auto_locked = ($tahun >= $this->TAHUN_AWAL_EFISIENSI && $tahun < $tahun_aktif);
+            if (!empty($locked_years[$tahun]) || $auto_locked) {
+                $jml_locked++;
+                continue;
+            }
+
+            $p1 = (float)($vals['dist_tagihan_p1'] ?? 0);
+            $p2 = (float)($vals['dist_tagihan_p2'] ?? 0);
+            $t1 = (float)($vals['dist_thl_p1'] ?? 0);
+            $t2 = (float)($vals['dist_thl_p2'] ?? 0);
+
+            // Validasi nilai 0-100
+            foreach ([['Tagihan P1', $p1], ['Tagihan P2', $p2], ['Th Lalu P1', $t1], ['Th Lalu P2', $t2]] as $item) {
+                if ($item[1] < 0 || $item[1] > 100) {
+                    $jml_error++;
+                    $msg = "Tahun $tahun: nilai {$item[0]} harus 0 - 100.";
+                    break 2;
+                }
+            }
+            // Validasi total tiap pasangan = 100%
+            if (abs(($p1 + $p2) - 100) > 0.01) {
+                $jml_error++;
+                $msg = "Tahun $tahun: total Tagihan P1 + P2 harus 100%.";
+                break;
+            }
+            if (abs(($t1 + $t2) - 100) > 0.01) {
+                $jml_error++;
+                $msg = "Tahun $tahun: total Th Lalu P1 + P2 harus 100%.";
+                break;
+            }
+
+            $data = [
+                'dist_tagihan_p1' => round($p1 / 100, 4),
+                'dist_tagihan_p2' => round($p2 / 100, 4),
+                'dist_thl_p1'     => round($t1 / 100, 4),
+                'dist_thl_p2'     => round($t2 / 100, 4),
+            ];
+
+            if ($this->Model_penerimaan_air->simpan_setting_distribusi($tahun, $data)) {
+                $jml_ok++;
+            } else {
+                $jml_error++;
+            }
+        }
+
+        if ($jml_error > 0) {
+            $info = ($jml_ok > 0 ? "$jml_ok tahun berhasil disimpan; " : '') . "$jml_error tahun gagal." . ($msg ? ' ' . $msg : '');
+            $this->session->set_flashdata('info', '<div class="alert alert-warning">' . $info . '</div>');
+        } elseif ($jml_locked > 0 && $jml_ok == 0) {
+            $this->session->set_flashdata('info', '<div class="alert alert-info"><b>' . $jml_locked . '</b> tahun TERKUNCI dilewati (tidak diubah). Buka kuncinya terlebih dahulu bila ingin mengedit.</div>');
+        } else {
+            $ket = $jml_ok . ' tahun.';
+            if ($jml_locked > 0) $ket .= ' ' . $jml_locked . ' tahun terkunci dilewati.';
+            $this->session->set_flashdata('info', '<div class="alert alert-success">Pengaturan distribusi tersimpan untuk <b>' . $ket . '</b></div>');
+        }
+
+        redirect('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi');
     }
 
     public function generate()

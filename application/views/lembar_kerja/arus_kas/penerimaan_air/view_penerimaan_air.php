@@ -34,6 +34,19 @@
                     $tahun = isset($tahun) ? $tahun : date('Y');
                     $upk = isset($upk) ? $upk : null;
 
+                    // KODE BARU: efisiensi penagihan dari Target UPK (dikirim controller).
+                    // Default 100% ==> bila tidak ada data/tahun lama, hasil = seperti kode lama.
+                    $efi_efektif = isset($efi_efektif) ? $efi_efektif : array_fill(1, 12, 100.0);
+                    $efi_thl_efektif = isset($efi_thl_efektif) ? $efi_thl_efektif : 100.0;
+
+                    // pengaturan distribusi persentase (dikirim controller utk tahun >= 2027)
+                    // default tagihan 100/0 (penuh bulan berikutnya), Th Lalu 90/10.
+                    $dist_tagihan = isset($dist_tagihan) ? $dist_tagihan : ['p1' => 1.00, 'p2' => 0.00];
+                    $dist_thl     = isset($dist_thl) ? $dist_thl : ['p1' => 0.90, 'p2' => 0.10];
+
+                    // penanda metode: true = kode baru (efisiensi), false = kode lama
+                    $pakai_efisiensi = isset($pakai_efisiensi) ? (bool)$pakai_efisiensi : false;
+
                     // judul dinamis
                     $judul_upk = 'KONSOLIDASI';
                     if ($upk) {
@@ -203,6 +216,9 @@
                         <div class="navbar-nav">
                             <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/arus_kas/penerimaan_air/tampil_tahun_lalu') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"> Sisa Piutang Tahun Lalu</button> </a>
                         </div>
+                        <div class="navbar-nav">
+                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/arus_kas/penerimaan_air/setting_distribusi') ?>" style="font-size: 0.8rem; color:black;"><button class="neumorphic-button"><i class="fas fa-sliders-h"></i> Atur % Penerimaan</button> </a>
+                        </div>
                         <?php if ($this->session->userdata('tipe') == 'admin') : ?>
                             <?php
                             $nama_pengguna  = $this->session->userdata('nama_pengguna');
@@ -285,17 +301,49 @@
                                                     $rupiah_lalu = (float)$ag['thl_rupiah'];
                                                     $penerimaan_th_lalu = array_fill(1, 12, 0.0);
 
-                                                    if ($rupiah_lalu > 0) {
-                                                        $penerimaan_th_lalu[1] = round($rupiah_lalu * 0.70, 2); // Januari
-                                                        $sisa = $rupiah_lalu * 0.30;
-                                                        $per_bulan = round($sisa / 10, 2);
-                                                        for ($m = 2; $m <= 11; $m++) {
-                                                            $penerimaan_th_lalu[$m] = $per_bulan;
+                                                    // ============ KODE LAMA (tanpa efisiensi penagihan) ============
+                                                    // $rupiah_lalu = (float)$ag['thl_rupiah'];
+                                                    // $penerimaan_th_lalu = array_fill(1, 12, 0.0);
+                                                    //
+                                                    // if ($rupiah_lalu > 0) {
+                                                    //     $penerimaan_th_lalu[1] = round($rupiah_lalu * 0.70, 2); // Januari
+                                                    //     $sisa = $rupiah_lalu * 0.30;
+                                                    //     $per_bulan = round($sisa / 10, 2);
+                                                    //     for ($m = 2; $m <= 11; $m++) {
+                                                    //         $penerimaan_th_lalu[$m] = $per_bulan;
+                                                    //     }
+                                                    //     // Desember = 0
+                                                    // }
+                                                    //
+                                                    // $total_th_lalu = array_sum($penerimaan_th_lalu);
+                                                    // ============ END KODE LAMA ============
+
+                                                    // ============ KODE BARU (tahun >= 2027) ============
+                                                    // Sisa piutang Th Lalu dibagi sesuai $dist_thl (default
+                                                    // 90% di JANUARI dan 10% di FEBRUARI), masing-masing
+                                                    // dikurangi RATA-RATA efi_tagih Jan-Des (efi_thl_efektif).
+                                                    if ($pakai_efisiensi) {
+                                                        $penerimaan_th_lalu[1] = round($rupiah_lalu * $dist_thl['p1'] * ($efi_thl_efektif / 100.0), 2); // Januari
+                                                        $penerimaan_th_lalu[2] = round($rupiah_lalu * $dist_thl['p2'] * ($efi_thl_efektif / 100.0), 2); // Februari
+                                                        // bulan lain = 0
+                                                    } else {
+                                                        // ===== KODE LAMA (tahun 2026 ke bawah) =====
+                                                        // 70% di Januari, sisanya (30%) dibagi rata Feb-Nov.
+                                                        // Hasilnya sudah pernah dicetak, tidak boleh berubah.
+                                                        if ($rupiah_lalu > 0) {
+                                                            $penerimaan_th_lalu[1] = round($rupiah_lalu * 0.70, 2); // Januari
+                                                            $sisa = $rupiah_lalu * 0.30;
+                                                            $per_bulan = round($sisa / 10, 2);
+                                                            for ($m = 2; $m <= 11; $m++) {
+                                                                $penerimaan_th_lalu[$m] = $per_bulan;
+                                                            }
+                                                            // Desember = 0
                                                         }
-                                                        // Desember = 0
+                                                        // ===== END KODE LAMA =====
                                                     }
 
                                                     $total_th_lalu = array_sum($penerimaan_th_lalu);
+                                                    // ============ END KODE BARU ============
                                                     ?>
 
                                                     <?php for ($m = 1; $m <= 12; $m++) : ?>
@@ -313,9 +361,36 @@
                                                     $lembar = $ag['lembar_per_month'][$m] ?? 0;
                                                     $tagihan = $ag['tagihan_per_month'][$m] ?? 0.0;
                                                     $penerimaan_row = array_fill(1, 12, 0.0);
-                                                    if ($tagihan > 0 && $m < 12) {
+
+                                                    // ============ KODE LAMA (tanpa efisiensi penagihan) ============
+                                                    // if ($tagihan > 0 && $m < 12) {
+                                                    //     $p1 = round($tagihan * 0.90, 2);
+                                                    //     $p2 = round($tagihan * 0.10, 2);
+                                                    //     $penerimaan_row[$m + 1] += $p1;
+                                                    //     if ($m + 2 <= 12) $penerimaan_row[$m + 2] += $p2;
+                                                    //     $row_total = $p1 + ($m + 2 <= 12 ? $p2 : 0.0);
+                                                    // } else {
+                                                    //     // m == 12 or tagihan == 0
+                                                    //     $row_total = 0.0;
+                                                    // }
+                                                    // ============ END KODE LAMA ============
+
+                                                    // ============ KODE BARU ============
+                                                    // Tahun >= 2027 : tagihan dikurangi efisiensi penagihan
+                                                    // bulan tsb (efi_efektif[$m]) lalu dibagi sesuai
+                                                    // $dist_tagihan (default 90% bulan B+1 / 10% bulan B+2).
+                                                    // Kolom Rp tetap menampilkan tagihan penuh (yang ditagih).
+                                                    if ($pakai_efisiensi) {
+                                                        $tagihan_ef = $tagihan * ($efi_efektif[$m] / 100.0);
+                                                        $p1 = round($tagihan_ef * $dist_tagihan['p1'], 2);
+                                                        $p2 = round($tagihan_ef * $dist_tagihan['p2'], 2);
+                                                    } else {
+                                                        // KODE LAMA (tahun 2026 ke bawah) : 90/10 tanpa efisiensi.
+                                                        // Nilainya TETAP seperti kode lama (tidak berubah).
                                                         $p1 = round($tagihan * 0.90, 2);
                                                         $p2 = round($tagihan * 0.10, 2);
+                                                    }
+                                                    if ($tagihan > 0 && $m < 12) {
                                                         $penerimaan_row[$m + 1] += $p1;
                                                         if ($m + 2 <= 12) $penerimaan_row[$m + 2] += $p2;
                                                         $row_total = $p1 + ($m + 2 <= 12 ? $p2 : 0.0);
@@ -323,6 +398,7 @@
                                                         // m == 12 or tagihan == 0
                                                         $row_total = 0.0;
                                                     }
+                                                    // ============ END KODE BARU ============
                                                 ?>
                                                     <tr>
                                                         <td>&nbsp;&nbsp;- <?= $label ?></td>

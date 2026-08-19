@@ -235,7 +235,7 @@ class Model_penerimaan_air extends CI_Model
     //     return $mapping[$id_upk] ?? null;
     // }
 
-    public function getDataPenerimaanAirDistribusi($tahun, $upk = null)
+    public function getDataPenerimaanAirDistribusi($tahun, $upk = null, $pakai_faktor_hari = false, $dist_tagihan = null)
     {
         // 1) ambil data Th Lalu dari tabel rkap_penerimaan_th_lalu
         $this->db->select("id_upk, id_jp, tahun, lembar_lalu, rupiah_lalu");
@@ -257,11 +257,15 @@ class Model_penerimaan_air extends CI_Model
         // we will instead re-query tagihan per id_upk,id_jp,bulan OR adapt by matching nama_jp.
         // For safety, let's compute tagihan per id_upk,id_jp,bulan via query similar to getDataPendapatanAir's raw rows.
 
+        // KODE BARU (opsional, $pakai_faktor_hari = true):
+        // bagian PENJUALAN dihitung terpisah dari JASA, supaya bisa disesuaikan
+        // dengan jumlah hari per bulan (tagihan bulan M memakai hari bulan M).
+        // Dengan default false, hasilnya SAMA PERSIS dengan kode lama.
         $this->db->select("
         p.id_upk, p.id_jp, p.bulan,
-        SUM(p.jumlah * COALESCE(pk.konsumsi_rata,0) * COALESCE(tr.tarif_rata,0)) 
-            + SUM(COALESCE(jt.jasa_pemeliharaan,0) * p.jumlah)
-            + SUM(COALESCE(jt.jasa_admin,0) * p.jumlah) AS tagihan
+        SUM(p.jumlah * COALESCE(pk.konsumsi_rata,0) * COALESCE(tr.tarif_rata,0)) AS penjualan,
+        SUM(COALESCE(jt.jasa_pemeliharaan,0) * p.jumlah)
+            + SUM(COALESCE(jt.jasa_admin,0) * p.jumlah) AS jasa
     ");
         $this->db->from("rkap_pelanggan p");
         $this->db->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left');
@@ -273,12 +277,24 @@ class Model_penerimaan_air extends CI_Model
         $this->db->group_by(["p.id_upk", "p.id_jp", "p.bulan"]);
         $raw_tagihan_rows = $this->db->get()->result_array();
 
+        // faktor jumlah hari per bulan (hanya dihitung bila diminta)
+        $faktor_hari = $pakai_faktor_hari ? $this->getFaktorHariPerBulan($tahun) : null;
+
         // build tagihan_map[id_upk||id_jp][bulan] = tagihan
+        // (tagihan = penjualan (+ penyesuaian jumlah hari) + jasa)
         $tagihan_map = [];
         foreach ($raw_tagihan_rows as $r) {
             $key = $r['id_upk'] . '||' . $r['id_jp'];
             $bulan = (int)$r['bulan'];
-            $tagihan = (float)$r['tagihan'];
+            $penjualan = (float)$r['penjualan'];
+            $jasa = (float)$r['jasa'];
+            if ($pakai_faktor_hari) {
+                // tagihan bulan M memakai jumlah hari bulan M itu sendiri,
+                // supaya penerimaan bulan M+1 mencerminkan hari bulan M.
+                $tagihan = $penjualan * ($faktor_hari[$bulan] ?? 1) + $jasa;
+            } else {
+                $tagihan = $penjualan + $jasa; // kode lama
+            }
             if (!isset($tagihan_map[$key])) {
                 $tagihan_map[$key] = array_fill(1, 12, 0.0);
             }
@@ -361,8 +377,15 @@ class Model_penerimaan_air extends CI_Model
 
                 if ($tag > 0 && $m < 12) {
                     // distribusi untuk bulan m (1..11)
-                    $p1m = round($tag * 0.90, 2); // bulan m+1
-                    $p2m = round($tag * 0.10, 2); // bulan m+2 (jika ada)
+                    // KODE LAMA (default): 90% bulan m+1 dan 10% bulan m+2
+                    // (hasil SAMA PERSIS seperti sebelum perubahan).
+                    // Bila $dist_tagihan diberikan (tahun anggaran baru), maka
+                    // persentasenya mengikuti pengaturan di CONTROLLER sehingga
+                    // tahun 2026 ke bawah tidak ikut berubah.
+                    $persen1 = isset($dist_tagihan['p1']) ? $dist_tagihan['p1'] : 0.90;
+                    $persen2 = isset($dist_tagihan['p2']) ? $dist_tagihan['p2'] : 0.10;
+                    $p1m = round($tag * $persen1, 2); // bulan m+1
+                    $p2m = round($tag * $persen2, 2); // bulan m+2 (jika ada)
                     $row['penerimaan'][$m + 1] += $p1m;
                     if ($m + 2 <= 12) {
                         $row['penerimaan'][$m + 2] += $p2m;
@@ -401,6 +424,218 @@ class Model_penerimaan_air extends CI_Model
             'overall_totals' => $overall_totals,
             'overall_grand' => $overall_grand
         ];
+    }
+
+    /**
+     * Faktor penyesuaian jumlah hari utk tagihan tiap bulan.
+     * PERUBAHAN (sesuai permintaan pengguna): tagihan bulan M memakai jumlah
+     * hari bulan M ITU SENDIRI (BUKAN arrears M-1 seperti pendapatan_air),
+     * supaya penerimaan yang masuk di bulan M+1 mencerminkan jumlah hari
+     * bulan M:
+     *   - penerimaan Februari = tagihan Januari  (31 hari)
+     *   - penerimaan Maret    = tagihan Februari (28/29 hari)
+     *   - dst sampai akhir tahun.
+     * Basis = rata-rata hari setahun (365/12 atau 366/12), total tahunan tetap.
+     *
+     * @param int $tahun Tahun anggaran
+     * @return array Index 1..12 = faktor pengali bagian penjualan per bulan
+     */
+    private function getFaktorHariPerBulan($tahun)
+    {
+        $hari = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $hari[$m] = cal_days_in_month(CAL_GREGORIAN, $m, $tahun);
+        }
+
+        // Tagihan bulan M memakai jumlah hari bulan M itu sendiri
+        // (bukan bulan M-1). Lihat keterangan di docblock.
+        $tagihan = $hari;
+
+        $base = array_sum($tagihan) / 12;
+
+        $faktor = [];
+        foreach ($tagihan as $m => $h) {
+            $faktor[$m] = $h / $base;
+        }
+        return $faktor;
+    }
+
+    // =====================================================================
+    // FUNGSI BARU : getDataPenerimaanAirDistribusiEfisiensi
+    // ---------------------------------------------------------------------
+    // TUJUAN :
+    //   Penerimaan uang air tidak selalu 100% tertagih. Oleh karena itu
+    //   nilai penerimaan disesuaikan dengan persentase EFISIENSI PENAGIHAN
+    //   (efi_tagih) yang diinput per UPK per bulan pada menu Target UPK
+    //   (tabel rkap_evaluasi_pelanggan), agar angkanya lebih realistis.
+    //
+    // CARA KERJA :
+    //   1. Memanggil fungsi LAMA (getDataPenerimaanAirDistribusi) sebagai
+    //      dasar perhitungan, DENGAN faktor jumlah hari diaktifkan (tagihan
+    //      bulan M memakai jumlah hari bulan M, sesuai permintaan pengguna).
+    //      Fungsi lama TIDAK DIHAPUS, tetap utuh dan default-nya tidak
+    //      memakai faktor ini.
+    //   2. Membaca efi_tagih per UPK per bulan.
+    //   3. Setiap nilai PENERIMAAN dikali (efisiensi / 100).
+    //        - Baris tagihan bulan B : memakai efi_tagih UPK di bulan B.
+    //        - Baris Th Lalu (piutang): dibagi 90% di JANUARI dan 10% di
+    //          FEBRUARI, masing-masing dikurangi rata-rata efi_tagih Jan-Des.
+    //      Kolom TAGIHAN / Rp dibiarkan tetap penuh (nilai yang ditagih),
+    //      hanya nilai penerimaannya yang dikecilkan.
+    //   4. Jika tidak ada data efi_tagih (misal pada tahun-tahun lampau),
+    //      otomatis dianggap 100% sehingga HASILNYA SAMA PERSIS dengan
+    //      kode lama. Dengan demikian catatan tahun lalu tidak berubah.
+    //   5. Menghitung efi_efektif per bulan (rata-rata tertimbang menurut
+    //      besarnya tagihan) yang dipakai oleh View & PDF agar angka baris
+    //      per bulan tampil konsisten dengan angka total.
+    //
+    // NILAI KEMBALI : sama seperti fungsi lama ditambah:
+    //      'efi_efektif'     => array bulan(1..12) => persen efisiensi
+    //      'efi_thl_efektif' => persen efisiensi utk sisa piutang Th Lalu
+    // =====================================================================
+    public function getDataPenerimaanAirDistribusiEfisiensi($tahun, $upk = null, $dist_tagihan = null, $dist_thl = null)
+    {
+        // --- 1) Hasil dasar dari fungsi lama, dengan faktor jumlah hari diaktifkan.
+        //    (tagihan penjualan disesuaikan jumlah hari per bulan, tagihan bulan M
+        //     memakai jumlah hari bulan M itu sendiri). Fungsi lama tetap utuh;
+        //    untuk tahun 2026 ke bawah dipanggil tanpa faktor ini sehingga hasilnya
+        //    tidak berubah.
+        //    $dist_tagihan (dari controller) dipakai utk tahun >= 2027; bila null
+        //    maka fungsi lama memakai default 90/10 seperti kode lama.
+        $res = $this->getDataPenerimaanAirDistribusi($tahun, $upk, true, $dist_tagihan);
+
+        // --- 2) Baca efisiensi penagihan (efi_tagih) per UPK per bulan ---
+        $efi_rows = [];
+        $this->db->select('id_upk, bulan, efi_tagih');
+        $this->db->from('rkap_evaluasi_pelanggan');
+        $this->db->where('tahun_rkap', $tahun);
+        if ($upk) $this->db->where('id_upk', $upk);
+        $efi_rows = $this->db->get()->result_array();
+
+        // $efi_map[id_upk][bulan] = persen efisiensi (contoh: 80)
+        // default 100 bila tidak tersedia (berlaku seperti kode lama)
+        $efi_map = [];
+        foreach ($efi_rows as $r) {
+            $efi_map[(int)$r['id_upk']][(int)$r['bulan']] = (float)$r['efi_tagih'];
+        }
+
+        // rata-rata efi per UPK (dipakai untuk baris Th Lalu)
+        $efi_thl_upk = [];
+        foreach ($efi_map as $id => $arr) {
+            $sum = 0;
+            $cnt = 0;
+            foreach ($arr as $v) {
+                $sum += $v;
+                $cnt++;
+            }
+            $efi_thl_upk[$id] = ($cnt > 0) ? $sum / $cnt : 100.0;
+        }
+
+        // --- 3) Sesuaikan nilai penerimaan tiap baris ---
+        $w_tagihan = []; // $w_tagihan[id_upk][bulan] = total tagihan (penimbang konsolidasi)
+        $w_thl     = []; // $w_thl[id_upk] = total rupiah Th Lalu (penimbang)
+        $grand_totals = array_fill(1, 12, 0.0);
+        $grand_grand  = 0.0;
+
+        foreach ($res['per_jenis'] as $i => $block) {
+            $id_upk        = (int)$block['id_upk'];
+            $bulan_row     = 0; // penanda urutan bulan (1..12)
+            $subtotal      = array_fill(1, 12, 0.0);
+            $subtotal_total = 0.0;
+
+            foreach ($block['rows'] as $j => $row) {
+                $label = strtolower(trim($row['label']));
+
+                if ($label == 'jumlah') {
+                    continue; // baris Jumlah diisi ulang di bagian akhir
+                }
+
+                if ($label == 'th lalu') {
+                    // Baris Th Lalu : dibagi berdasarkan $dist_thl (default 90% di
+                    // JANUARI dan 10% di FEBRUARI) dari pengaturan controller.
+                    // Keduanya dikurangi RATA-RATA efi_tagih Jan-Des.
+                    $f_thl = ($efi_thl_upk[$id_upk] ?? 100.0) / 100.0;
+                    $w_thl[$id_upk] = ($w_thl[$id_upk] ?? 0) + (float)$row['tagihan'];
+
+                    // 'tagihan' (= rupiah_lalu) sengaja TIDAK diubah
+                    // agar kolom Rp tetap menampilkan nilai piutang penuh.
+                    $persen1 = isset($dist_thl['p1']) ? $dist_thl['p1'] : 0.90;
+                    $persen2 = isset($dist_thl['p2']) ? $dist_thl['p2'] : 0.10;
+                    $row['penerimaan'] = array_fill(1, 12, 0.0);
+                    $row['penerimaan'][1] = round((float)$row['tagihan'] * $persen1 * $f_thl, 2); // Januari
+                    $row['penerimaan'][2] = round((float)$row['tagihan'] * $persen2 * $f_thl, 2); // Februari
+                    $row['total'] = $row['penerimaan'][1] + $row['penerimaan'][2];
+                } else {
+                    // Baris bulan : pakai efi_tagih UPK di bulan tsb.
+                    // Posisi baris bulan selalu berurutan 1..12 setelah Th Lalu
+                    $bulan_row++;
+                    $m = $bulan_row;
+                    $f = (($efi_map[$id_upk][$m] ?? 100.0)) / 100.0;
+                    $w_tagihan[$id_upk][$m] = ($w_tagihan[$id_upk][$m] ?? 0) + (float)$row['tagihan'];
+
+                    // tagihan (kolom Rp) dibiarkan utuh (nilai yang ditagih),
+                    // yang dikecilkan hanya nilai PENERIMAAN-nya.
+                    $row['penerimaan'] = array_map(function ($v) use ($f) {
+                        return $v * $f;
+                    }, $row['penerimaan']);
+                    $row['total'] = $row['total'] * $f;
+                }
+
+                $res['per_jenis'][$i]['rows'][$j] = $row;
+
+                for ($mm = 1; $mm <= 12; $mm++) {
+                    $subtotal[$mm] += $row['penerimaan'][$mm];
+                }
+                $subtotal_total += $row['total'];
+            }
+
+            // isi ulang subtotal & baris Jumlah agar konsisten dengan nilai yang sudah disesuaikan
+            $res['per_jenis'][$i]['subtotal']        = $subtotal;
+            $res['per_jenis'][$i]['subtotal_total']  = $subtotal_total;
+            foreach ($res['per_jenis'][$i]['rows'] as $j => $row) {
+                if (strtolower(trim($row['label'])) == 'jumlah') {
+                    $res['per_jenis'][$i]['rows'][$j]['penerimaan'] = $subtotal;
+                    $res['per_jenis'][$i]['rows'][$j]['total'] = $subtotal_total;
+                    break;
+                }
+            }
+
+            for ($mm = 1; $mm <= 12; $mm++) $grand_totals[$mm] += $subtotal[$mm];
+            $grand_grand += $subtotal_total;
+        }
+
+        $res['overall_totals'] = $grand_totals;
+        $res['overall_grand']  = $grand_grand;
+
+        // --- 4) Hitung efi_efektif per bulan (rata-rata tertimbang) utk View/PDF ---
+        $efi_efektif = array_fill(1, 12, 100.0);
+        for ($m = 1; $m <= 12; $m++) {
+            $num = 0;
+            $den = 0;
+            foreach ($w_tagihan as $id => $arr) {
+                $w = $arr[$m] ?? 0;
+                if ($w <= 0) continue;
+                $den += $w;
+                $num += $w * ($efi_map[$id][$m] ?? 100.0);
+            }
+            if ($den > 0) $efi_efektif[$m] = $num / $den;
+        }
+
+        $efi_thl_efektif = 100.0; {
+            $num = 0;
+            $den = 0;
+            foreach ($w_thl as $id => $w) {
+                if ($w <= 0) continue;
+                $den += $w;
+                $num += $w * ($efi_thl_upk[$id] ?? 100.0);
+            }
+            if ($den > 0) $efi_thl_efektif = $num / $den;
+        }
+
+        $res['efi_efektif']     = $efi_efektif;     // array bulan => persen
+        $res['efi_thl_efektif'] = $efi_thl_efektif; // persen utk sisa piutang Th Lalu
+
+        return $res;
     }
 
     // data penerimaan tahun lalu
@@ -451,5 +686,55 @@ class Model_penerimaan_air extends CI_Model
     {
         $this->db->where('id', $id);
         return $this->db->update('rkap_penerimaan_th_lalu', $data);
+    }
+
+    // =====================================================================
+    // PENGATURAN PERSENTASE DISTRIBUSI PENERIMAAN (per tahun)
+    // ---------------------------------------------------------------------
+    // Disimpan di tabel rkap_setting_distribusi supaya bisa diubah lewat
+    // form di halaman (tanpa mengubah kode). Nilai berupa PECAHAN: 0.95 = 95%.
+    // =====================================================================
+
+    /**
+     * Ambil pengaturan distribusi penerimaan utk satu tahun.
+     * @param int $tahun Tahun anggaran
+     * @return array|null ['dist_tagihan'=>['p1','p2'], 'dist_thl'=>['p1','p2']] bila ada, null bila belum tersimpan.
+     */
+    public function get_setting_distribusi($tahun)
+    {
+        // Amankan bila tabel belum dibuat (belum menjalankan rkap_setting_distribusi.sql)
+        if (!$this->db->table_exists('rkap_setting_distribusi')) {
+            return null;
+        }
+
+        $row = $this->db->where('tahun', $tahun)->get('rkap_setting_distribusi')->row();
+        if (!$row) {
+            return null;
+        }
+
+        return [
+            'dist_tagihan' => ['p1' => (float)$row->dist_tagihan_p1, 'p2' => (float)$row->dist_tagihan_p2],
+            'dist_thl'     => ['p1' => (float)$row->dist_thl_p1,     'p2' => (float)$row->dist_thl_p2],
+        ];
+    }
+
+    /**
+     * Simpan/ubah pengaturan distribusi utk satu tahun (upsert by tahun).
+     * @param int   $tahun Tahun anggaran
+     * @param array $data  isi: dist_tagihan_p1, dist_tagihan_p2, dist_thl_p1, dist_thl_p2 (pecahan)
+     * @return bool
+     */
+    public function simpan_setting_distribusi($tahun, $data)
+    {
+        $data['ptgs_update'] = $this->session->userdata('nama_lengkap') ?? 'Admin';
+
+        if ($this->db->where('tahun', $tahun)->get('rkap_setting_distribusi')->num_rows() > 0) {
+            $this->db->where('tahun', $tahun);
+            return $this->db->update('rkap_setting_distribusi', $data);
+        } else {
+            $data['tahun'] = $tahun;
+            $data['ptgs_upload'] = $this->session->userdata('nama_lengkap') ?? 'Admin';
+            return $this->db->insert('rkap_setting_distribusi', $data);
+        }
     }
 }
