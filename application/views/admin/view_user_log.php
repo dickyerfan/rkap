@@ -55,6 +55,9 @@
                         return "{$s}d";
                     }
 
+                    // Tab yang sedang aktif (after filter tetap di Riwayat Login)
+                    $active_tab = isset($active_tab) ? $active_tab : 'online';
+
                     // Kelompokkan riwayat per tanggal (sudah urut DESC dari query)
                     $grouped_history = [];
                     foreach ($history as $h) {
@@ -114,12 +117,12 @@
                     <!-- Tab -->
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="online-tab" data-bs-toggle="tab" data-bs-target="#online" type="button" role="tab" aria-controls="online" aria-selected="true">
+                            <button class="nav-link <?= $active_tab != 'history' ? 'active' : '' ?>" id="online-tab" data-bs-toggle="tab" data-bs-target="#online" type="button" role="tab" aria-controls="online" aria-selected="<?= $active_tab != 'history' ? 'true' : 'false' ?>">
                                 <i class="fas fa-user-check"></i> User Online
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+                            <button class="nav-link <?= $active_tab == 'history' ? 'active' : '' ?>" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="<?= $active_tab == 'history' ? 'true' : 'false' ?>">
                                 <i class="fas fa-history"></i> Riwayat Login
                             </button>
                         </li>
@@ -127,7 +130,7 @@
 
                     <div class="tab-content" id="myTabContent">
                         <!-- ========== TAB ONLINE ========== -->
-                        <div class="tab-pane fade show active" id="online" role="tabpanel" aria-labelledby="online-tab">
+                        <div class="tab-pane fade <?= $active_tab != 'history' ? 'show active' : '' ?>" id="online" role="tabpanel" aria-labelledby="online-tab">
                             <div class="table-responsive mt-2">
                                 <table class="table table-sm table-bordered table-striped" style="font-size:0.8rem;" id="tabel_online">
                                     <thead class="table-light text-center">
@@ -167,9 +170,10 @@
                         </div>
 
                         <!-- ========== TAB RIWAYAT ========== -->
-                        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                        <div class="tab-pane fade <?= $active_tab == 'history' ? 'show active' : '' ?>" id="history" role="tabpanel" aria-labelledby="history-tab">
                             <!-- Filter tanggal -->
                             <form method="get" action="<?= base_url('admin/user_log') ?>" class="mt-2">
+                                <input type="hidden" name="tab" value="history">
                                 <div class="row g-2 align-items-end">
                                     <div class="col-auto">
                                         <label class="form-label mb-0" style="font-size:0.8rem;">Dari</label>
@@ -181,7 +185,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                                        <a href="<?= base_url('admin/user_log') ?>" class="btn btn-sm btn-secondary">Reset</a>
+                                        <a href="<?= base_url('admin/user_log?tab=history') ?>" class="btn btn-sm btn-secondary">Reset</a>
                                     </div>
                                 </div>
                             </form>
@@ -202,53 +206,61 @@
                                             $jml_online++;
                                         }
                                     }
+                                    // Default terbuka untuk Hari Ini & Kemarin; tanggal lain dikecilkan
+                                    $today = date('Y-m-d');
+                                    $yesterday = date('Y-m-d', strtotime('-1 day'));
+                                    $is_recent = ($tgl === $today || $tgl === $yesterday);
+                                    $collapse_id = 'hist_' . str_replace('-', '', $tgl);
                                     ?>
                                     <div class="mt-3">
                                         <div class="d-flex justify-content-between align-items-center bg-light border rounded px-2 py-1">
-                                            <strong style="font-size:0.85rem;">
+                                            <button type="button" class="btn btn-link text-decoration-none p-0 fw-bold text-dark" style="font-size:0.85rem;" data-bs-toggle="collapse" data-bs-target="#<?= $collapse_id ?>" aria-expanded="<?= $is_recent ? 'true' : 'false' ?>">
+                                                <i class="fas fa-chevron-<?= $is_recent ? 'down' : 'right' ?> me-1"></i>
                                                 <?= label_hari($tgl, $bulan_ind) ?><?= $tgl == date('Y-m-d') ? ', ' . tanggal_ind($tgl, $bulan_ind) : '' ?>
-                                            </strong>
+                                            </button>
                                             <span class="text-muted" style="font-size:0.8rem;">
                                                 <?= count($rows) ?> login | <?= $jml_logout ?> logout
                                             </span>
                                         </div>
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-bordered table-striped" style="font-size:0.8rem;">
-                                                <thead class="table-light text-center">
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Username</th>
-                                                        <th>Nama Lengkap</th>
-                                                        <th>Level</th>
-                                                        <th>Tipe</th>
-                                                        <th>IP Address</th>
-                                                        <th>Login Time</th>
-                                                        <th>Logout Time</th>
-                                                        <th>Durasi</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ($rows as $i => $h) : ?>
+                                        <div class="collapse hist-collapse <?= $is_recent ? 'show' : '' ?>" id="<?= $collapse_id ?>">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-bordered table-striped" style="font-size:0.8rem;">
+                                                    <thead class="table-light text-center">
                                                         <tr>
-                                                            <td class="text-center"><?= $i + 1 ?></td>
-                                                            <td><?= htmlspecialchars($h['username']) ?></td>
-                                                            <td><?= htmlspecialchars($h['nama_lengkap']) ?></td>
-                                                            <td><?= htmlspecialchars($h['level']) ?></td>
-                                                            <td><?= htmlspecialchars($h['tipe']) ?></td>
-                                                            <td><?= htmlspecialchars($h['ip_address']) ?></td>
-                                                            <td><?= date('d-m-Y H:i:s', strtotime($h['login_time'])) ?></td>
-                                                            <td class="text-center">
-                                                                <?php if ($h['logout_time']) : ?>
-                                                                    <?= date('d-m-Y H:i:s', strtotime($h['logout_time'])) ?>
-                                                                <?php else : ?>
-                                                                    <span class="badge bg-success">Online</span>
-                                                                <?php endif; ?>
-                                                            </td>
-                                                            <td><?= durasi_sesi($h['login_time'], $h['logout_time']) ?></td>
+                                                            <th>No</th>
+                                                            <th>Username</th>
+                                                            <th>Nama Lengkap</th>
+                                                            <th>Level</th>
+                                                            <th>Tipe</th>
+                                                            <th>IP Address</th>
+                                                            <th>Login Time</th>
+                                                            <th>Logout Time</th>
+                                                            <th>Durasi</th>
                                                         </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($rows as $i => $h) : ?>
+                                                            <tr>
+                                                                <td class="text-center"><?= $i + 1 ?></td>
+                                                                <td><?= htmlspecialchars($h['username']) ?></td>
+                                                                <td><?= htmlspecialchars($h['nama_lengkap']) ?></td>
+                                                                <td><?= htmlspecialchars($h['level']) ?></td>
+                                                                <td><?= htmlspecialchars($h['tipe']) ?></td>
+                                                                <td><?= htmlspecialchars($h['ip_address']) ?></td>
+                                                                <td><?= date('d-m-Y H:i:s', strtotime($h['login_time'])) ?></td>
+                                                                <td class="text-center">
+                                                                    <?php if ($h['logout_time']) : ?>
+                                                                        <?= date('d-m-Y H:i:s', strtotime($h['logout_time'])) ?>
+                                                                    <?php else : ?>
+                                                                        <span class="badge bg-success">Online</span>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                                <td><?= durasi_sesi($h['login_time'], $h['logout_time']) ?></td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -325,4 +337,16 @@
             if (h < 24) return mm > 0 ? `${h} jam ${mm} mnt lalu` : `${h} jam lalu`;
             return formatDateTime(str);
         }
+
+        // Ganti ikon chevron saat grup tanggal dibuka/ditutup
+        document.querySelectorAll('.hist-collapse').forEach(el => {
+            el.addEventListener('show.bs.collapse', function() {
+                let chev = this.parentElement.querySelector('.fa-chevron-right, .fa-chevron-down');
+                if (chev) chev.className = 'fas fa-chevron-down me-1';
+            });
+            el.addEventListener('hide.bs.collapse', function() {
+                let chev = this.parentElement.querySelector('.fa-chevron-right, .fa-chevron-down');
+                if (chev) chev.className = 'fas fa-chevron-right me-1';
+            });
+        });
     </script>

@@ -209,11 +209,26 @@
 
 <?php if ($this->session->userdata('nama_pengguna')) : ?>
 <script>
-    // Heartbeat: beri tahu server bahwa user masih aktif tiap 60 detik.
+    // Heartbeat: beri tahu server bahwa user masih aktif.
     // Dipakai untuk deteksi online realtime di modul Monitoring User Login.
-    setInterval(function() {
-        fetch("<?= base_url('admin/user_log/ping') ?>", { cache: 'no-store' }).catch(function() {});
-    }, 60000);
+    var rkapPing = function(keepalive) {
+        fetch("<?= base_url('admin/user_log/ping') ?>", {
+            cache: 'no-store',
+            keepalive: !!keepalive
+        }).catch(function() {});
+    };
+
+    // Ping berkala tiap 60 detik
+    setInterval(function() { rkapPing(false); }, 60000);
+
+    // Ping ulang begitu tab kembali aktif (timer di tab background
+    // bisa di-suspend oleh browser sehingga heartbeat terhenti)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) rkapPing(false);
+    });
+
+    // Ping terakhir saat halaman ditutup / pindah ke halaman lain
+    window.addEventListener('beforeunload', function() { rkapPing(true); });
 </script>
 <?php endif; ?>
 

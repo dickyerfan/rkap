@@ -8,7 +8,7 @@ class Model_user_log extends CI_Model
      * terakhir (last_activity). Setelahnya record dianggap offline walaupun
      * logout_time masih NULL (mengakomodasi user yang menutup tab tanpa logout).
      */
-    private $OFFLINE_AFTER_MINUTES = 10;
+    private $OFFLINE_AFTER_MINUTES = 60;
 
     /**
      * Catat event login.
@@ -128,7 +128,7 @@ class Model_user_log extends CI_Model
 
         $batas = date('Y-m-d H:i:s', strtotime('-' . $this->OFFLINE_AFTER_MINUTES . ' minutes'));
 
-        // Total user sedang online (masih aktif dalam 10 menit terakhir)
+        // Total user sedang online (masih aktif dalam OFFLINE_AFTER_MINUTES menit)
         $total_online = $this->db
             ->where('logout_time IS NULL')
             ->where('last_activity >=', $batas)

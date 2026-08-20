@@ -36,6 +36,9 @@ class User_log extends MY_Controller
         $data['history'] = $this->Model_user_log->get_history(500, $data['dari'], $data['sampai']);
         $data['stats'] = $this->Model_user_log->get_stats();
 
+        // Menentukan tab yang aktif (agar setelah filter tetap di tab Riwayat)
+        $data['active_tab'] = ($this->input->get('tab') === 'history') ? 'history' : 'online';
+
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar');
         $this->load->view('templates/sidebar');
