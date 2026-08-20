@@ -233,13 +233,13 @@
                                     }
                                     ?>
 
-                                    <form action="<?= base_url('lembar_kerja/arus_kas/penerimaan_air/generate') ?>" method="post">
+                                    <form id="formGenerate" action="<?= base_url('lembar_kerja/arus_kas/penerimaan_air/generate') ?>" method="post">
                                         <input type="hidden" name="cabang_id" value="<?= $upk ?>">
                                         <input type="hidden" name="tahun" value="<?= $tahun ?>">
                                         <?php for ($m = 1; $m <= 12; $m++) : ?>
                                             <input type="hidden" name="pagu[<?= $m ?>]" value="<?= $grand_per_month_num[$m] ?>">
                                         <?php endfor; ?>
-                                        <button type="submit" class="neumorphic-button" onclick="return confirm('Yakin ingin generate ulang data penerimaan air tahun ini? Data lama akan terhapus!')">
+                                        <button type="submit" class="neumorphic-button">
                                             <i class="fas fa-sync-alt"></i> Generate Ke Arus Kas
                                         </button>
                                     </form>
@@ -528,6 +528,37 @@
     </main>
 
     <script>
+        document.getElementById('formGenerate').addEventListener('submit', function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            Swal.fire({
+                title: 'Yakin ingin Generate Ulang?',
+                html: `
+            <p style="font-size:18px; margin-top:10px;">
+                Data penerimaan air tahun ini akan <b>digenerate ulang</b> ke <br> <b>LAPORAN ARUS KAS</b>.
+                <br><br>
+                <b>Data lama akan terhapus!</b>
+            </p>
+        `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Ya, Generate Sekarang',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-3 shadow-lg'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("global-loader").style.display = "flex";
+                    e.target.submit();
+                }
+            });
+        });
+
         document.getElementById('btnGenerate').addEventListener('click', function(e) {
             e.preventDefault();
 
