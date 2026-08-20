@@ -13,8 +13,12 @@ CREATE TABLE IF NOT EXISTS `user_login_log` (
   `user_agent` varchar(255) DEFAULT NULL,
   `login_time` datetime NOT NULL,
   `logout_time` datetime DEFAULT NULL,
+  `session_id` varchar(64) DEFAULT NULL,
+  `last_activity` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_username` (`username`),
   KEY `idx_login_time` (`login_time`),
-  KEY `idx_logout_time` (`logout_time`)
+  KEY `idx_logout_time` (`logout_time`),
+  KEY `idx_session_id` (`session_id`),
+  KEY `idx_last_activity` (`last_activity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

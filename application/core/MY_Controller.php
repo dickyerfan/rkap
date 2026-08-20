@@ -8,6 +8,13 @@ class MY_Controller extends CI_Controller
         parent::__construct();
         $this->load->model('Model_status');
 
+        // Heartbeat: tandai user yang masih login sebagai aktif pada tiap halaman.
+        // Dipakai untuk deteksi online realtime di modul Monitoring User Login.
+        if ($this->session->userdata('nama_pengguna')) {
+            $this->load->model('Model_user_log');
+            $this->Model_user_log->touch_activity(session_id());
+        }
+
         // gunakan tahun yang sesuai; bisa pakai session tahun_rkap jika ada
         $tahun = $this->session->userdata('tahun_rkap') ?: date('Y');
         $this->status_periode = $this->Model_status->get_status_periode($tahun);

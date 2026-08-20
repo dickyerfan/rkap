@@ -207,6 +207,16 @@
     });
 </script>
 
+<?php if ($this->session->userdata('nama_pengguna')) : ?>
+<script>
+    // Heartbeat: beri tahu server bahwa user masih aktif tiap 60 detik.
+    // Dipakai untuk deteksi online realtime di modul Monitoring User Login.
+    setInterval(function() {
+        fetch("<?= base_url('admin/user_log/ping') ?>", { cache: 'no-store' }).catch(function() {});
+    }, 60000);
+</script>
+<?php endif; ?>
+
 
 </body>
 

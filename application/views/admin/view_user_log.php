@@ -6,6 +6,62 @@
                     <a class="fw-bold text-dark" style="text-decoration:none;"><?= strtoupper($title) ?></a>
                 </div>
                 <div class="card-body">
+                    <?php
+                    // Helper nama bulan Indonesia
+                    $bulan_ind = [
+                        1 => 'Januari', 2 => 'Pebruari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                        7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'Nopember', 12 => 'Desember'
+                    ];
+
+                    function tanggal_ind($dt, $bulan_ind)
+                    {
+                        $t = strtotime($dt);
+                        return date('d', $t) . ' ' . $bulan_ind[(int)date('n', $t)] . ' ' . date('Y', $t);
+                    }
+
+                    function label_hari($tgl, $bulan_ind)
+                    {
+                        $today = date('Y-m-d');
+                        $yesterday = date('Y-m-d', strtotime('-1 day'));
+                        if ($tgl === $today) return 'Hari Ini';
+                        if ($tgl === $yesterday) return 'Kemarin';
+                        return tanggal_ind($tgl . ' 00:00:00', $bulan_ind);
+                    }
+
+                    function waktu_lalu($dt)
+                    {
+                        if (!$dt) return '-';
+                        $diff = time() - strtotime($dt);
+                        if ($diff < 0) $diff = 0;
+                        if ($diff < 60) return 'Baru saja';
+                        $m = floor($diff / 60);
+                        if ($m < 60) return "$m menit lalu";
+                        $h = floor($m / 60);
+                        $mm = $m % 60;
+                        if ($h < 24) return $mm > 0 ? "$h jam $mm mnt lalu" : "$h jam lalu";
+                        return date('d-m-Y H:i', strtotime($dt));
+                    }
+
+                    function durasi_sesi($login, $logout)
+                    {
+                        if (!$logout) return '-';
+                        $diff = strtotime($logout) - strtotime($login);
+                        if ($diff < 0) $diff = 0;
+                        $h = floor($diff / 3600);
+                        $m = floor(($diff % 3600) / 60);
+                        $s = $diff % 60;
+                        if ($h > 0) return "{$h}j {$m}m";
+                        if ($m > 0) return "{$m}m {$s}d";
+                        return "{$s}d";
+                    }
+
+                    // Kelompokkan riwayat per tanggal (sudah urut DESC dari query)
+                    $grouped_history = [];
+                    foreach ($history as $h) {
+                        $tgl = date('Y-m-d', strtotime($h['login_time']));
+                        $grouped_history[$tgl][] = $h;
+                    }
+                    ?>
                     <!-- Ringkasan statistik -->
                     <div class="row mb-3">
                         <div class="col-md-4">
@@ -82,13 +138,14 @@
                                             <th>Level</th>
                                             <th>Tipe</th>
                                             <th>IP Address</th>
+                                            <th>Aktif Terakhir</th>
                                             <th>Login Time</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (empty($online_users)) : ?>
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted">Tidak ada user yang sedang online</td>
+                                                <td colspan="8" class="text-center text-muted">Tidak ada user yang sedang online</td>
                                             </tr>
                                         <?php else : ?>
                                             <?php foreach ($online_users as $i => $u) : ?>
@@ -99,6 +156,7 @@
                                                     <td><?= htmlspecialchars($u['level']) ?></td>
                                                     <td><?= htmlspecialchars($u['tipe']) ?></td>
                                                     <td><?= htmlspecialchars($u['ip_address']) ?></td>
+                                                    <td><span class="badge bg-success"><?= waktu_lalu($u['last_activity']) ?></span></td>
                                                     <td><?= date('d-m-Y H:i:s', strtotime($u['login_time'])) ?></td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -110,48 +168,91 @@
 
                         <!-- ========== TAB RIWAYAT ========== -->
                         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-                            <div class="table-responsive mt-2">
-                                <table class="table table-sm table-bordered table-striped" style="font-size:0.8rem;" id="tabel_history">
-                                    <thead class="table-light text-center">
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Username</th>
-                                            <th>Nama Lengkap</th>
-                                            <th>Level</th>
-                                            <th>Tipe</th>
-                                            <th>IP Address</th>
-                                            <th>Login Time</th>
-                                            <th>Logout Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php if (empty($history)) : ?>
-                                            <tr>
-                                                <td colspan="8" class="text-center text-muted">Belum ada riwayat login</td>
-                                            </tr>
-                                        <?php else : ?>
-                                            <?php foreach ($history as $i => $h) : ?>
-                                                <tr>
-                                                    <td class="text-center"><?= $i + 1 ?></td>
-                                                    <td><?= htmlspecialchars($h['username']) ?></td>
-                                                    <td><?= htmlspecialchars($h['nama_lengkap']) ?></td>
-                                                    <td><?= htmlspecialchars($h['level']) ?></td>
-                                                    <td><?= htmlspecialchars($h['tipe']) ?></td>
-                                                    <td><?= htmlspecialchars($h['ip_address']) ?></td>
-                                                    <td><?= date('d-m-Y H:i:s', strtotime($h['login_time'])) ?></td>
-                                                    <td class="text-center">
-                                                        <?php if ($h['logout_time']) : ?>
-                                                            <?= date('d-m-Y H:i:s', strtotime($h['logout_time'])) ?>
-                                                        <?php else : ?>
-                                                            <span class="badge bg-success">Online</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <!-- Filter tanggal -->
+                            <form method="get" action="<?= base_url('admin/user_log') ?>" class="mt-2">
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-auto">
+                                        <label class="form-label mb-0" style="font-size:0.8rem;">Dari</label>
+                                        <input type="date" name="dari" class="form-control form-control-sm" value="<?= htmlspecialchars($dari ?? '') ?>">
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label mb-0" style="font-size:0.8rem;">Sampai</label>
+                                        <input type="date" name="sampai" class="form-control form-control-sm" value="<?= htmlspecialchars($sampai ?? '') ?>">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                                        <a href="<?= base_url('admin/user_log') ?>" class="btn btn-sm btn-secondary">Reset</a>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <?php if (empty($grouped_history)) : ?>
+                                <div class="alert alert-secondary mt-2 mb-0" style="font-size:0.8rem;">
+                                    Belum ada riwayat login<?= ($dari || $sampai) ? ' pada rentang tanggal tersebut' : '' ?>.
+                                </div>
+                            <?php else : ?>
+                                <?php foreach ($grouped_history as $tgl => $rows) : ?>
+                                    <?php
+                                    $jml_online = 0;
+                                    $jml_logout = 0;
+                                    foreach ($rows as $h) {
+                                        if ($h['logout_time']) {
+                                            $jml_logout++;
+                                        } else {
+                                            $jml_online++;
+                                        }
+                                    }
+                                    ?>
+                                    <div class="mt-3">
+                                        <div class="d-flex justify-content-between align-items-center bg-light border rounded px-2 py-1">
+                                            <strong style="font-size:0.85rem;">
+                                                <?= label_hari($tgl, $bulan_ind) ?><?= $tgl == date('Y-m-d') ? ', ' . tanggal_ind($tgl, $bulan_ind) : '' ?>
+                                            </strong>
+                                            <span class="text-muted" style="font-size:0.8rem;">
+                                                <?= count($rows) ?> login | <?= $jml_logout ?> logout
+                                            </span>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered table-striped" style="font-size:0.8rem;">
+                                                <thead class="table-light text-center">
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Username</th>
+                                                        <th>Nama Lengkap</th>
+                                                        <th>Level</th>
+                                                        <th>Tipe</th>
+                                                        <th>IP Address</th>
+                                                        <th>Login Time</th>
+                                                        <th>Logout Time</th>
+                                                        <th>Durasi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($rows as $i => $h) : ?>
+                                                        <tr>
+                                                            <td class="text-center"><?= $i + 1 ?></td>
+                                                            <td><?= htmlspecialchars($h['username']) ?></td>
+                                                            <td><?= htmlspecialchars($h['nama_lengkap']) ?></td>
+                                                            <td><?= htmlspecialchars($h['level']) ?></td>
+                                                            <td><?= htmlspecialchars($h['tipe']) ?></td>
+                                                            <td><?= htmlspecialchars($h['ip_address']) ?></td>
+                                                            <td><?= date('d-m-Y H:i:s', strtotime($h['login_time'])) ?></td>
+                                                            <td class="text-center">
+                                                                <?php if ($h['logout_time']) : ?>
+                                                                    <?= date('d-m-Y H:i:s', strtotime($h['logout_time'])) ?>
+                                                                <?php else : ?>
+                                                                    <span class="badge bg-success">Online</span>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td><?= durasi_sesi($h['login_time'], $h['logout_time']) ?></td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -160,7 +261,7 @@
     </main>
 
     <script>
-        // ===== Auto-refresh data online setiap 30 detik via AJAX =====
+        // ===== Auto-refresh data online setiap 20 detik via AJAX =====
         setInterval(function() {
             fetch("<?= base_url('admin/user_log/get_online') ?>")
                 .then(res => res.json())
@@ -174,7 +275,7 @@
                     // Update tabel online
                     let tbody = document.querySelector('#tabel_online tbody');
                     if (data.online.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Tidak ada user yang sedang online</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Tidak ada user yang sedang online</td></tr>';
                     } else {
                         let html = '';
                         data.online.forEach((u, i) => {
@@ -185,6 +286,7 @@
                                 <td>${escapeHtml(u.level)}</td>
                                 <td>${escapeHtml(u.tipe)}</td>
                                 <td>${escapeHtml(u.ip_address)}</td>
+                                <td><span class="badge bg-success">${waktuLalu(u.last_activity)}</span></td>
                                 <td>${formatDateTime(u.login_time)}</td>
                             </tr>`;
                         });
@@ -192,7 +294,7 @@
                     }
                 })
                 .catch(err => console.error('Gagal refresh data online:', err));
-        }, 30000);
+        }, 20000);
 
         // Helper escape HTML
         function escapeHtml(str) {
@@ -205,8 +307,22 @@
         // Helper format tanggal
         function formatDateTime(str) {
             if (!str) return '-';
-            const d = new Date(str);
+            const d = new Date(String(str).replace(' ', 'T'));
             const pad = n => String(n).padStart(2, '0');
             return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        }
+
+        // Helper waktu relatif (mis. "3 menit lalu")
+        function waktuLalu(str) {
+            if (!str) return '-';
+            const t = new Date(String(str).replace(' ', 'T')).getTime();
+            const diff = Math.floor((Date.now() - t) / 1000);
+            if (diff < 60) return 'Baru saja';
+            const m = Math.floor(diff / 60);
+            if (m < 60) return m + ' menit lalu';
+            const h = Math.floor(m / 60);
+            const mm = m % 60;
+            if (h < 24) return mm > 0 ? `${h} jam ${mm} mnt lalu` : `${h} jam lalu`;
+            return formatDateTime(str);
         }
     </script>

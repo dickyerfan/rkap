@@ -8,6 +8,13 @@ class User_log extends MY_Controller
         parent::__construct();
         $this->load->model('Model_user_log');
 
+        // Endpoint `ping` dipakai sebagai heartbeat AJAX oleh SEMUA user yang
+        // login (bukan hanya admin), sehingga tidak ikut dibatasi akses.
+        $method = $this->router->fetch_method();
+        if ($method === 'ping') {
+            return;
+        }
+
         // Hanya Admin dengan tipe admin yang boleh mengakses menu ini
         if ($this->session->userdata('level') != 'Admin' || $this->session->userdata('tipe') != 'admin') {
             $this->session->set_flashdata('info', '<div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -22,7 +29,11 @@ class User_log extends MY_Controller
     {
         $data['title'] = 'Monitoring User Login';
         $data['online_users'] = $this->Model_user_log->get_online_users();
-        $data['history'] = $this->Model_user_log->get_history(100);
+
+        // Filter rentang tanggal untuk riwayat
+        $data['dari']   = $this->input->get('dari');
+        $data['sampai'] = $this->input->get('sampai');
+        $data['history'] = $this->Model_user_log->get_history(500, $data['dari'], $data['sampai']);
         $data['stats'] = $this->Model_user_log->get_stats();
 
         $this->load->view('templates/header', $data);
@@ -48,6 +59,20 @@ class User_log extends MY_Controller
             'success' => true,
             'stats'   => $stats,
             'online'  => $online,
+        ]);
+    }
+
+    /**
+     * Endpoint heartbeat AJAX (dipanggil by footer tiap ~60 detik).
+     * Hanya memperbarui last_activity session berjalan.
+     */
+    public function ping()
+    {
+        $this->Model_user_log->touch_activity(session_id());
+
+        echo json_encode([
+            'success' => true,
+            'time'    => date('H:i:s'),
         ]);
     }
 }

@@ -126,8 +126,8 @@ class Auth extends CI_Controller
     public function logout()
     {
 
-        // Catat log logout sebelum session dihapus
-        $this->Model_user_log->log_logout($this->session->userdata('nama_pengguna'));
+        // Catat log logout sebelum session dihapus (berdasarkan session_id)
+        $this->Model_user_log->log_logout();
 
         $this->session->unset_userdata('nama_pengguna');
         $this->session->unset_userdata('nama_lengkap');
