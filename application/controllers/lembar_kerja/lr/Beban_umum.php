@@ -440,4 +440,43 @@ class Beban_umum extends MY_Controller
 
         redirect('lembar_kerja/lr/beban_umum');
     }
+
+    public function detail($kode_akun)
+    {
+        $tahun = $this->input->get('tahun_rkap') ?: date('Y') + 1;
+        $this->session->set_userdata('tahun_rkap', $tahun);
+
+        $mapping_upk = [
+            '01' => 'Bondowoso', '02' => 'Sukosari 1', '03' => 'Maesan', '04' => 'Tegalampel',
+            '05' => 'Tapen', '06' => 'Prajekan', '07' => 'Tlogosari', '08' => 'Wringin',
+            '09' => 'Curahdami', '11' => 'Tamanan', '12' => 'Tenggarang', '13' => 'AMDK',
+            '14' => 'Tamankrocok', '15' => 'Wonosari', '16' => 'Klabang', '22' => 'Sukosari 2',
+            '23' => 'Umum', '24' => 'Keuangan', '25' => 'Langganan', '26' => 'Pemeliharaan',
+            '27' => 'Perencanaan', '28' => 'SPI'
+        ];
+
+        $akun = $this->db->where('kode', $kode_akun)->get('no_per')->row();
+        $nama_akun = $akun ? $akun->name : $kode_akun;
+
+        $data['detail'] = $this->Model_beban->get_detail_sumber($kode_akun, $tahun);
+        $data['kode_akun'] = $kode_akun;
+        $data['nama_akun'] = $nama_akun;
+        $data['tahun'] = $tahun;
+        $data['title'] = "DETAIL BIAYA UMUM & ADMINISTRASI - " . strtoupper($nama_akun) . " <br> TAHUN ANGGARAN ";
+        $data['mapping_upk'] = $mapping_upk;
+
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/lr/beban_umum/detail_biaya_umum', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/lr/beban_umum/detail_biaya_umum', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
+    }
 }

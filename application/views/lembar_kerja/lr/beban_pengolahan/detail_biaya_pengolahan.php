@@ -6,7 +6,7 @@
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <!-- <a class="fw-bold text-dark pe-2" style="text-decoration:none;"><?= strtoupper($title) . ' ' . $tahun; ?></a> -->
                         <div class="navbar-nav ms-auto">
-                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/beban_sumber?tahun_rkap=' . $tahun) ?>" style="font-size: 0.8rem; color:black;">
+                            <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/beban_pengolahan?tahun_rkap=' . $tahun) ?>" style="font-size: 0.8rem; color:black;">
                                 <button class="neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button>
                             </a>
                         </div>
@@ -84,7 +84,7 @@
                                                             $nama_pengguna = $this->session->userdata('nama_pengguna');
                                                             $level = $this->session->userdata('level');
                                                             if (can_input($nama_pengguna, $level, $status_periode, $tahun)) : ?>
-                                                                <a href="<?= base_url('lembar_kerja/lr/beban_sumber/edit/' . urlencode(base64_encode($row['unique_key']))) ?>" title="Edit">
+                                                                <a href="<?= base_url('lembar_kerja/lr/beban_pengolahan/edit/' . urlencode(base64_encode($row['unique_key']))) ?>" title="Edit">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
                                                             <?php endif; ?>

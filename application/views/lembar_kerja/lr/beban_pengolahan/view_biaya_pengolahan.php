@@ -209,7 +209,13 @@
                                                 <td class="text-end"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
                                                 <td class="text-end"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
                                                 <td class="text-end"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
-                                                <td></td>
+                                                <td class="text-center">
+                                                    <?php if ($upk == 'all' || $upk == '') : ?>
+                                                        <a href="<?= base_url('lembar_kerja/lr/beban_pengolahan/detail/' . urlencode($parent['kode']) . '?tahun_rkap=' . $tahun) ?>" title="Lihat Detail">
+                                                            <i class="fas fa-search-plus"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                </td>
                                             </tr>
 
                                         <?php endforeach; ?>
