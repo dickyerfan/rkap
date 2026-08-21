@@ -193,25 +193,31 @@
                                             }
                                             ?>
 
-                                            <!-- SUBTOTAL (selalu tampil) -->
-                                            <tr class="fw-bold">
-                                                <td><?= $parent['kode']; ?></td>
-                                                <td><?= $parent['uraian']; ?></td>
-                                                <td class="text-end"><?= number_format($sub['jan'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['feb'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['mar'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['apr'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['mei'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['jun'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['jul'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['agu'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['sep'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['okt'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
-                                                <td></td>
-                                            </tr>
+                                    <!-- SUBTOTAL (selalu tampil) -->
+                                    <tr class="fw-bold">
+                                        <td><?= $parent['kode']; ?></td>
+                                        <td><?= $parent['uraian']; ?></td>
+                                        <td class="text-end"><?= number_format($sub['jan'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['feb'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['mar'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['apr'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['mei'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['jun'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['jul'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['agu'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['sep'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['okt'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
+                                        <td class="text-center">
+                                            <?php if ($upk == 'all' || $upk == '') : ?>
+                                                <a href="<?= base_url('lembar_kerja/lr/beban_sumber/detail/' . urlencode($parent['kode']) . '?tahun_rkap=' . $tahun) ?>" title="Lihat Detail">
+                                                    <i class="fas fa-search-plus"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
 
                                         <?php endforeach; ?>
 

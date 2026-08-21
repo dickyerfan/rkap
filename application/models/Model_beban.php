@@ -1226,6 +1226,74 @@ class Model_beban extends CI_Model
     //     $akun = $akun_query->result_array();
     // }
 
+    public function get_detail_sumber($kode_akun, $tahun)
+    {
+        $mapping_upk = [
+            '01' => 'Bondowoso', '02' => 'Sukosari 1', '03' => 'Maesan', '04' => 'Tegalampel',
+            '05' => 'Tapen', '06' => 'Prajekan', '07' => 'Tlogosari', '08' => 'Wringin',
+            '09' => 'Curahdami', '11' => 'Tamanan', '12' => 'Tenggarang', '13' => 'AMDK',
+            '14' => 'Tamankrocok', '15' => 'Wonosari', '16' => 'Klabang', '22' => 'Sukosari 2',
+            '23' => 'Umum', '24' => 'Keuangan', '25' => 'Langganan', '26' => 'Pemeliharaan',
+            '27' => 'Perencanaan', '28' => 'SPI'
+        ];
+
+        $this->db->select("
+            r.cabang_id,
+            r.no_per_id AS kode_rkap,
+            r.uraian AS uraian_rkap,
+            CONCAT(r.cabang_id, '-', r.no_per_id, '-', REPLACE(r.uraian, ' ', '_')) AS unique_key,
+            SUM(CASE WHEN MONTH(r.bulan)=1  THEN r.pagu ELSE 0 END) AS jan,
+            SUM(CASE WHEN MONTH(r.bulan)=2  THEN r.pagu ELSE 0 END) AS feb,
+            SUM(CASE WHEN MONTH(r.bulan)=3  THEN r.pagu ELSE 0 END) AS mar,
+            SUM(CASE WHEN MONTH(r.bulan)=4  THEN r.pagu ELSE 0 END) AS apr,
+            SUM(CASE WHEN MONTH(r.bulan)=5  THEN r.pagu ELSE 0 END) AS mei,
+            SUM(CASE WHEN MONTH(r.bulan)=6  THEN r.pagu ELSE 0 END) AS jun,
+            SUM(CASE WHEN MONTH(r.bulan)=7  THEN r.pagu ELSE 0 END) AS jul,
+            SUM(CASE WHEN MONTH(r.bulan)=8  THEN r.pagu ELSE 0 END) AS agu,
+            SUM(CASE WHEN MONTH(r.bulan)=9  THEN r.pagu ELSE 0 END) AS sep,
+            SUM(CASE WHEN MONTH(r.bulan)=10 THEN r.pagu ELSE 0 END) AS okt,
+            SUM(CASE WHEN MONTH(r.bulan)=11 THEN r.pagu ELSE 0 END) AS nov,
+            SUM(CASE WHEN MONTH(r.bulan)=12 THEN r.pagu ELSE 0 END) AS des,
+            SUM(r.pagu) AS jumlah
+        ", false);
+
+        $this->db->from('rkap_biaya r');
+        $this->db->like('r.no_per_id', $kode_akun, 'after');
+        $this->db->where('YEAR(r.bulan)', (int)$tahun);
+        $this->db->group_by('r.no_per_id, r.uraian, r.cabang_id');
+        $this->db->order_by('r.cabang_id ASC, r.no_per_id ASC');
+        $rows = $this->db->get()->result_array();
+
+        $data = [];
+        if ($rows) {
+            foreach ($rows as $r) {
+                $cabang_id = $r['cabang_id'] ?? '';
+                $nama_upk = isset($mapping_upk[$cabang_id]) ? $mapping_upk[$cabang_id] : ($cabang_id ?: 'Umum');
+                $data[] = [
+                    'kode'       => $r['kode_rkap'] ?? $kode_akun,
+                    'uraian'     => $r['uraian_rkap'] ?? '',
+                    'upk'        => $nama_upk,
+                    'cabang_id'  => $cabang_id,
+                    'unique_key' => $r['unique_key'] ?? '',
+                    'jan'        => (float)($r['jan'] ?? 0),
+                    'feb'        => (float)($r['feb'] ?? 0),
+                    'mar'        => (float)($r['mar'] ?? 0),
+                    'apr'        => (float)($r['apr'] ?? 0),
+                    'mei'        => (float)($r['mei'] ?? 0),
+                    'jun'        => (float)($r['jun'] ?? 0),
+                    'jul'        => (float)($r['jul'] ?? 0),
+                    'agu'        => (float)($r['agu'] ?? 0),
+                    'sep'        => (float)($r['sep'] ?? 0),
+                    'okt'        => (float)($r['okt'] ?? 0),
+                    'nov'        => (float)($r['nov'] ?? 0),
+                    'des'        => (float)($r['des'] ?? 0),
+                    'jumlah'     => (float)($r['jumlah'] ?? 0),
+                ];
+            }
+        }
+        return $data;
+    }
+
     public function get_hpp($tahun, $upk)
     {
         $kode_per_upk = [
