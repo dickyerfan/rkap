@@ -190,6 +190,28 @@
                                 </div>
                             </form>
 
+                            <?php if ($filtered) : ?>
+                                <div class="mt-2 mb-1 d-flex align-items-center" style="font-size:0.8rem;">
+                                    <span class="text-muted">
+                                        Menampilkan riwayat
+                                        <?php if ($dari && $sampai) : ?>
+                                            <?= tanggal_ind($dari, $bulan_ind) ?> — <?= tanggal_ind($sampai, $bulan_ind) ?>
+                                        <?php elseif ($dari) : ?>
+                                            dari <?= tanggal_ind($dari, $bulan_ind) ?>
+                                        <?php else : ?>
+                                            sampai <?= tanggal_ind($sampai, $bulan_ind) ?>
+                                        <?php endif; ?>
+                                    </span>
+                                    <a href="<?= base_url('admin/user_log?tab=history') ?>" class="ms-2 text-decoration-none">
+                                        <i class="fas fa-times-circle text-danger"></i> Tampilkan terbaru
+                                    </a>
+                                </div>
+                            <?php else : ?>
+                                <div class="mt-2 mb-1 text-muted" style="font-size:0.78rem;">
+                                    <i class="fas fa-info-circle"></i> Menampilkan hari ini dan kemarin. Gunakan filter untuk melihat tanggal lain.
+                                </div>
+                            <?php endif; ?>
+
                             <?php if (empty($grouped_history)) : ?>
                                 <div class="alert alert-secondary mt-2 mb-0" style="font-size:0.8rem;">
                                     Belum ada riwayat login<?= ($dari || $sampai) ? ' pada rentang tanggal tersebut' : '' ?>.

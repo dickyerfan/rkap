@@ -33,7 +33,18 @@ class User_log extends MY_Controller
         // Filter rentang tanggal untuk riwayat
         $data['dari']   = $this->input->get('dari');
         $data['sampai'] = $this->input->get('sampai');
-        $data['history'] = $this->Model_user_log->get_history(500, $data['dari'], $data['sampai']);
+
+        if ($data['dari'] || $data['sampai']) {
+            // Filter tanggal aktif: tampilkan sesuai rentang yang dipilih
+            $data['history'] = $this->Model_user_log->get_history(500, $data['dari'], $data['sampai']);
+            $data['filtered'] = true;
+        } else {
+            // Default: tampilkan hanya hari ini + kemarin saja
+            $yesterday = date('Y-m-d', strtotime('-1 day'));
+            $data['history'] = $this->Model_user_log->get_history(500, $yesterday);
+            $data['filtered'] = false;
+        }
+
         $data['stats'] = $this->Model_user_log->get_stats();
 
         // Menentukan tab yang aktif (agar setelah filter tetap di tab Riwayat)
