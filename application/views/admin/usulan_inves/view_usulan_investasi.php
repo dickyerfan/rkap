@@ -100,22 +100,22 @@
                                         <col style="width: 6%">
                                     </colgroup>
                                     <thead>
-                                        <tr class="text-center">
-                                            <th rowspan="2" class="align-middle">No</th>
-                                            <th rowspan="2" class="align-middle">Bagian/UPK</th>
-                                            <th colspan="2">Perkiraan</th>
-                                            <th colspan="4" class="align-middle">URAIAN TENTANG USULAN</th>
-                                            <th rowspan="2" class="align-middle">Keterangan</th>
-                                            <th rowspan="2" class="align-middle">Action</th>
+                                        <tr>
+                                            <th rowspan="2" class="align-middle text-center">No</th>
+                                            <th rowspan="2" class="align-middle text-center">Bagian/UPK</th>
+                                            <th colspan="2" class="align-middle text-center">Perkiraan</th>
+                                            <th colspan="4" class="align-middle text-center">URAIAN TENTANG USULAN</th>
+                                            <th rowspan="2" class="align-middle text-center">Keterangan</th>
+                                            <th rowspan="2" class="align-middle text-center">Action</th>
                                         </tr>
-                                        <tr class="text-center">
-                                            <th>No Per</th>
-                                            <th>Nama</th>
-                                            <th>Latar Belakang</th>
-                                            <th>Solusi/Usulan</th>
-                                            <th>Volume</th>
-                                            <!-- <th>Harga</th> -->
-                                            <th>Total Biaya</th>
+                                        <tr>
+                                            <th class="text-center">No Per</th>
+                                            <th class="text-center">Nama</th>
+                                            <th class="text-center">Latar Belakang</th>
+                                            <th class="text-center">Solusi/Usulan</th>
+                                            <th class="text-center">Volume</th>
+                                            <!-- <th  class="text-center">Harga</th> -->
+                                            <th class="text-center">Biaya</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -145,36 +145,36 @@
                                                 ?>
 
                                                 <td class="text-center">
-                                                    <a href="<?= base_url('admin/usulan_inves/detail_usulan_investasi/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                        <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
-                                                    </a>
+                                                <a href="<?= base_url('admin/usulan_inves/detail_usulan_investasi/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Melihat Detail Data">
+                                                    <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
+                                                </a>
 
                                                     <?php if ($username === 'administrator') : ?>
                                                         <!-- Administrator bisa edit & hapus selama tahun = tahun sekarang dan tidak dikunci -->
                                                         <?php if ($tahun_data == $tahun_sekarang) : ?>
-                                                            <a href="<?= base_url('admin/usulan_inves/edit_usulan_investasi/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                                <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
-                                                            </a>
-                                                            <a href="<?= base_url('admin/usulan_inves/hapus_usulan_investasi/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                                <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
-                                                            </a>
-                                                            <a href="<?= base_url('admin/usulan_inves/generate_usulan_inves/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                                <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
-                                                            </a>
+                                                        <a href="<?= base_url('admin/usulan_inves/edit_usulan_investasi/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data">
+                                                            <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_inves/hapus_usulan_investasi/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Hapus Data">
+                                                            <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_inves/generate_usulan_inves/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Generate Data ke Investasi (Arus Kas)">
+                                                            <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
+                                                        </a>
                                                         <?php endif; ?>
 
                                                     <?php else : ?>
                                                         <!-- User biasa hanya bisa edit & hapus jika tahun = tahun sekarang dan tidak dikunci -->
                                                         <?php if ($tahun_data == $tahun_sekarang && !$is_locked) : ?>
-                                                            <a href="<?= base_url('admin/usulan_inves/edit_usulan_investasi/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                                <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
-                                                            </a>
-                                                            <a href="<?= base_url('admin/usulan_inves/hapus_usulan_investasi/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                                <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
-                                                            </a>
-                                                            <a href="<?= base_url('admin/usulan_inves/generate_usulan_inves/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                                <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
-                                                            </a>
+                                                        <a href="<?= base_url('admin/usulan_inves/edit_usulan_investasi/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data">
+                                                            <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_inves/hapus_usulan_investasi/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Hapus Data">
+                                                            <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin/usulan_inves/generate_usulan_inves/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Generate Data ke Investasi (Arus Kas)">
+                                                            <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
+                                                        </a>
                                                         <?php endif; ?>
                                                     <?php endif; ?>
                                                 </td>
@@ -252,3 +252,20 @@
             </div>
         </div>
     </main>
+    <script>
+        function initTooltipView() {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+                var instance = bootstrap.Tooltip.getInstance(el);
+                if (instance) {
+                    instance.dispose();
+                }
+                new bootstrap.Tooltip(el);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            initTooltipView();
+            if (window.jQuery) {
+                $('#example').on('draw.dt', initTooltipView);
+            }
+        });
+    </script>

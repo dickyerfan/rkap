@@ -86,12 +86,12 @@
                                             <!-- <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td> -->
                                             <td><?= $row->ket ?></td>
                                             <td class="text-center">
-                                                <a href="<?= base_url('rkap/usulan_pemeliharaan/detail_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                <a href="<?= base_url('rkap/usulan_pemeliharaan/detail_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Melihat Detail Data">
                                                     <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
                                                 </a>
-                                                <a href="<?= base_url('rkap/usulan_pemeliharaan/edit_usulan_pemeliharaan/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
+                                                <a href="<?= base_url('rkap/usulan_pemeliharaan/edit_usulan_pemeliharaan/') ?><?= $id ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data"><i class="fas fa-edit text-success"></i></a>
                                                 <!-- <a href="<?= base_url('rkap/usulan_pemeliharaan/detail_usulan_pemeliharaan/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a> -->
-                                                <a href="<?= base_url('rkap/usulan_pemeliharaan/hapus_usulan_pemeliharaan/') ?><?= $id ?>" class="hapus-link"><i class="fas fa-trash text-danger"></i></a>
+                                                <a href="<?= base_url('rkap/usulan_pemeliharaan/hapus_usulan_pemeliharaan/') ?><?= $id ?>" class="hapus-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Hapus Data"><i class="fas fa-trash text-danger"></i></a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -114,3 +114,20 @@
             </div>
         </div>
     </main>
+    <script>
+        function initTooltipView() {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+                var instance = bootstrap.Tooltip.getInstance(el);
+                if (instance) {
+                    instance.dispose();
+                }
+                new bootstrap.Tooltip(el);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            initTooltipView();
+            if (window.jQuery) {
+                $('#example').on('draw.dt', initTooltipView);
+            }
+        });
+    </script>
