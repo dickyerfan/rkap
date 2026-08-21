@@ -78,11 +78,18 @@ class User_log extends MY_Controller
 
     /**
      * Endpoint heartbeat AJAX (dipanggil by footer tiap ~60 detik).
-     * Hanya memperbarui last_activity session berjalan.
+     * Hanya memperbarui last_activity di database user_login_log.
+     *
+     * Session ID diambil dari query string 'sid' (bukan dari session_id()
+     * atau $this->session) agar tidak ada akses ke session CodeIgniter.
      */
     public function ping()
     {
-        $this->Model_user_log->touch_activity(session_id());
+        $sid = $this->input->get('sid', true);
+
+        if ($sid) {
+            $this->Model_user_log->touch_activity($sid);
+        }
 
         echo json_encode([
             'success' => true,

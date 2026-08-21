@@ -211,8 +211,17 @@
 <script>
     // Heartbeat: beri tahu server bahwa user masih aktif.
     // Dipakai untuk deteksi online realtime di modul Monitoring User Login.
+    // Session ID dikirim via query string agar endpoint ping TIDAK perlu
+    // mengakses session CodeIgniter (yang akan mereset timer expire).
+    function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : '';
+    }
+    var rkapSid = getCookie('ci_session');
+    var rkapPingUrl = "<?= base_url('admin/user_log/ping') ?>?sid=" + encodeURIComponent(rkapSid);
+
     var rkapPing = function(keepalive) {
-        fetch("<?= base_url('admin/user_log/ping') ?>", {
+        fetch(rkapPingUrl, {
             cache: 'no-store',
             keepalive: !!keepalive
         }).catch(function() {});
