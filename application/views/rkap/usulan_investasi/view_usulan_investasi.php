@@ -1,4 +1,12 @@
 <div id="layoutSidenav_content" class="latar">
+    <style>
+        .table td,
+        .table th {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+    </style>
     <main>
         <div class="container-fluid px-2 mt-2">
             <div class="card mb-1">
@@ -26,7 +34,18 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
                             <div class="table-responsive">
-                                <table class="table table-sm table-bordered" style="font-size: 0.7rem;">
+                                <table class="table table-sm table-bordered" style="font-size: 0.7rem; table-layout: fixed;">
+                                <colgroup>
+                                    <col style="width: 4%">
+                                    <col style="width: 9%">
+                                    <col style="width: 13%">
+                                    <col style="width: 20%">
+                                    <col style="width: 20%">
+                                    <col style="width: 8%">
+                                    <col style="width: 11%">
+                                    <col style="width: 9%">
+                                    <col style="width: 6%">
+                                </colgroup>
                                 <thead>
                                     <tr class="text-center">
                                         <th rowspan="2" class="align-middle">No</th>

@@ -115,7 +115,7 @@
                                         $satuan = $row->volume;
                                         $jumlah = $harga * $satuan;
                                     ?>
-                                        <tr>
+                                        <tr class="<?= ($row->status_upload == 1) ? 'table-danger' : ''; ?>">
                                             <td class="text-center"><?= $no++ ?></td>
                                             <td><?= $row->no_perkiraan ?></td>
                                             <td><?= $row->nama_perkiraan ?></td>
@@ -128,9 +128,11 @@
                                             <td class="text-end"><?= number_format($jumlah, 0, ',', '.') ?></td>
                                             <td><?= $row->ket ?></td>
                                             <td class="text-center">
-                                                <a href="<?= base_url('rkap/usulan_umum/edit_usulan_umum/') ?><?= $id ?>"><i class="fas fa-edit text-success"></i></a>
-                                                <!-- <a href="<?= base_url('rkap/usulan_umum/detail_usulan_umum/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a> -->
-                                                <a href="<?= base_url('rkap/usulan_umum/hapus_usulan_umum/') ?><?= $id ?>" class="hapus-link"><i class="fas fa-trash text-danger"></i></a>
+                                                <?php if ($row->status_upload != 1) : ?>
+                                                    <a href="<?= base_url('rkap/usulan_umum/edit_usulan_umum/') ?><?= $id ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data"><i class="fas fa-edit text-success"></i></a>
+                                                    <!-- <a href="<?= base_url('rkap/usulan_umum/detail_usulan_umum/') ?><?= $id ?>"><i class="fa-solid fa-circle-info text-primary"></i></a> -->
+                                                    <a href="<?= base_url('rkap/usulan_umum/hapus_usulan_umum/') ?><?= $id ?>" class="hapus-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Hapus Data"><i class="fas fa-trash text-danger"></i></a>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -153,3 +155,20 @@
             </div>
         </div>
     </main>
+    <script>
+        function initTooltipUsulanUmum() {
+            document.querySelectorAll('#example [data-bs-toggle="tooltip"]').forEach(function(el) {
+                var instance = bootstrap.Tooltip.getInstance(el);
+                if (instance) {
+                    instance.dispose();
+                }
+                new bootstrap.Tooltip(el);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            initTooltipUsulanUmum();
+            if (window.jQuery) {
+                $('#example').on('draw.dt', initTooltipUsulanUmum);
+            }
+        });
+    </script>

@@ -1,4 +1,17 @@
 <div id="layoutSidenav_content" class="latar">
+    <style>
+        #example {
+            table-layout: fixed !important;
+            width: 100% !important;
+        }
+
+        #example td,
+        #example th {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+    </style>
     <main>
         <div class="container-fluid px-2 mt-2">
             <div class="card mb-1">
@@ -74,87 +87,99 @@
                         <div class="col-lg-12">
                             <div class="table-responsive">
                                 <table class="table table-sm table-bordered" style="font-size: 0.7rem;" id="example">
-                                <thead>
-                                    <tr class="text-center">
-                                        <th rowspan="2" class="align-middle">No</th>
-                                        <th rowspan="2" class="align-middle">Bagian/UPK</th>
-                                        <th colspan="2">Perkiraan</th>
-                                        <th colspan="4" class="align-middle">URAIAN TENTANG USULAN</th>
-                                        <th rowspan="2" class="align-middle">Keterangan</th>
-                                        <th rowspan="2" class="align-middle">Action</th>
-                                    </tr>
-                                    <tr class="text-center">
-                                        <th>No Per</th>
-                                        <th>Nama</th>
-                                        <th>Latar Belakang</th>
-                                        <th>Solusi/Usulan</th>
-                                        <th>Volume</th>
-                                        <!-- <th>Harga</th> -->
-                                        <th>Biaya</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $no = 1;
-                                    foreach ($tampil as $row) :
-                                        $id = $row->id_usulanPemeliharaan;
-                                        $harga = $row->biaya;
-                                        $satuan = $row->volume;
-                                        $jumlah = $harga * $satuan;
-                                    ?>
-                                        <tr class="<?= ($row->status_upload == 1) ? 'table-danger' : ''; ?>">
-                                            <td class="text-center"><?= $no++ ?></td>
-                                            <td><?= $row->bagian_upk ?></td>
-                                            <td><?= $row->no_perkiraan ?></td>
-                                            <td><?= $row->nama_perkiraan ?></td>
-                                            <td><?= $row->latar_belakang ?></td>
-                                            <td><?= $row->solusi ?></td>
-                                            <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
-                                            <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                            <!-- <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td> -->
-                                            <td><?= $row->ket ?></td>
-                                            <?php
-                                            $username = $this->session->userdata('nama_pengguna');
-                                            $tahun_sekarang = date('Y');
-                                            $tahun_data = $row->tahun_rkap;
-                                            ?>
+                                    <colgroup>
+                                        <col style="width: 3%">
+                                        <col style="width: 7%">
+                                        <col style="width: 6%">
+                                        <col style="width: 12%">
+                                        <col style="width: 18%">
+                                        <col style="width: 18%">
+                                        <col style="width: 6%">
+                                        <col style="width: 6%">
+                                        <col style="width: 18%">
+                                        <col style="width: 6%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th rowspan="2" class="align-middle">No</th>
+                                            <th rowspan="2" class="align-middle">Bagian/UPK</th>
+                                            <th colspan="2">Perkiraan</th>
+                                            <th colspan="4" class="align-middle">URAIAN TENTANG USULAN</th>
+                                            <th rowspan="2" class="align-middle">Keterangan</th>
+                                            <th rowspan="2" class="align-middle">Action</th>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <th>No Per</th>
+                                            <th>Nama</th>
+                                            <th>Latar Belakang</th>
+                                            <th>Solusi/Usulan</th>
+                                            <th>Volume</th>
+                                            <!-- <th>Harga</th> -->
+                                            <th>Biaya</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $no = 1;
+                                        foreach ($tampil as $row) :
+                                            $id = $row->id_usulanPemeliharaan;
+                                            $harga = $row->biaya;
+                                            $satuan = $row->volume;
+                                            $jumlah = $harga * $satuan;
+                                        ?>
+                                            <tr class="<?= ($row->status_upload == 1) ? 'table-danger' : ''; ?>">
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td><?= $row->bagian_upk ?></td>
+                                                <td><?= $row->no_perkiraan ?></td>
+                                                <td><?= $row->nama_perkiraan ?></td>
+                                                <td><?= $row->latar_belakang ?></td>
+                                                <td><?= $row->solusi ?></td>
+                                                <td class="text-center"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
+                                                <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
+                                                <!-- <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td> -->
+                                                <td><?= $row->ket ?></td>
+                                                <?php
+                                                $username = $this->session->userdata('nama_pengguna');
+                                                $tahun_sekarang = date('Y');
+                                                $tahun_data = $row->tahun_rkap;
+                                                ?>
 
-                                            <td class="text-center">
-                                                <a href="<?= base_url('admin/usulan_pemeliharaan/detail_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                    <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
-                                                </a>
+                                                <td class="text-center">
+                                                    <a href="<?= base_url('admin/usulan_pemeliharaan/detail_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                        <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
+                                                    </a>
 
-                                                <?php if ($username === 'administrator') : ?>
-                                                    <!-- Administrator bisa edit & hapus selama tahun = tahun sekarang dan tidak dikunci -->
-                                                    <?php if ($tahun_data == $tahun_sekarang) : ?>
-                                                        <a href="<?= base_url('admin/usulan_pemeliharaan/edit_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                            <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
-                                                        </a>
-                                                        <a href="<?= base_url('admin/usulan_pemeliharaan/hapus_usulan_pemeliharaan/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                            <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
-                                                        </a>
-                                                        <a href="<?= base_url('admin/usulan_pemeliharaan/generate_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                            <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
-                                                        </a>
+                                                    <?php if ($username === 'administrator') : ?>
+                                                        <!-- Administrator bisa edit & hapus selama tahun = tahun sekarang dan tidak dikunci -->
+                                                        <?php if ($tahun_data == $tahun_sekarang) : ?>
+                                                            <a href="<?= base_url('admin/usulan_pemeliharaan/edit_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                                <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
+                                                            </a>
+                                                            <a href="<?= base_url('admin/usulan_pemeliharaan/hapus_usulan_pemeliharaan/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                                <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                            </a>
+                                                            <a href="<?= base_url('admin/usulan_pemeliharaan/generate_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                                <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
+                                                            </a>
+                                                        <?php endif; ?>
+
+                                                    <?php else : ?>
+                                                        <!-- User biasa hanya bisa edit & hapus jika tahun = tahun sekarang dan tidak dikunci -->
+                                                        <?php if ($tahun_data == $tahun_sekarang && !$is_locked) : ?>
+                                                            <a href="<?= base_url('admin/usulan_pemeliharaan/edit_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                                <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
+                                                            </a>
+                                                            <a href="<?= base_url('admin/usulan_pemeliharaan/hapus_usulan_pemeliharaan/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                                <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
+                                                            </a>
+                                                            <a href="<?= base_url('admin/usulan_pemeliharaan/generate_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                                <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
+                                                            </a>
+                                                        <?php endif; ?>
                                                     <?php endif; ?>
+                                                </td>
 
-                                                <?php else : ?>
-                                                    <!-- User biasa hanya bisa edit & hapus jika tahun = tahun sekarang dan tidak dikunci -->
-                                                    <?php if ($tahun_data == $tahun_sekarang && !$is_locked) : ?>
-                                                        <a href="<?= base_url('admin/usulan_pemeliharaan/edit_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                            <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
-                                                        </a>
-                                                        <a href="<?= base_url('admin/usulan_pemeliharaan/hapus_usulan_pemeliharaan/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                            <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
-                                                        </a>
-                                                        <a href="<?= base_url('admin/usulan_pemeliharaan/generate_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
-                                                            <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
-                                            </td>
-
-                                            <!-- <td class="text-center">
+                                                <!-- <td class="text-center">
                                                 <a href="<?= base_url('admin/usulan_pemeliharaan/detail_usulan_pemeliharaan/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
                                                     <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
                                                 </a>
@@ -168,20 +193,20 @@
                                                     </a>
                                                 <?php endif; ?>
                                             </td> -->
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="7" class="text-end">Total</th>
+                                            <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
+                                            <!-- <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
+                                                                            return $item->biaya;
+                                                                        }, $tampil)), 0, ',', '.') ?></th> -->
+                                            <th colspan="2"></th>
                                         </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="7" class="text-end">Total</th>
-                                        <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
-                                        <!-- <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
-                                                                        return $item->biaya;
-                                                                    }, $tampil)), 0, ',', '.') ?></th> -->
-                                        <th colspan="2"></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
                     </div>

@@ -127,7 +127,7 @@
                                                 $tahun_data = $row->tahun_rkap;
                                                 ?>
                                                 <td class="text-center">
-                                                    <a href="<?= base_url('admin/usulan_barang/detail_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                    <a href="<?= base_url('admin/usulan_barang/detail_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Melihat Detail Data">
                                                         <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
                                                     </a>
 
@@ -135,18 +135,18 @@
                                                         <!-- Administrator bisa edit & hapus selama tahun = tahun sekarang dan tidak dikunci -->
                                                         <?php if ($tahun_data == $tahun_sekarang) : ?>
                                                             <?php if (empty($row->kategori)) : ?>
-                                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_lain/' . $row->id_usulanBarang) ?>">
+                                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_lain/' . $row->id_usulanBarang) ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data Lainnya">
                                                                     <i class="fas fa-edit text-dark"></i>
                                                                 </a>
                                                             <?php else : ?>
-                                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/' . $row->id_usulanBarang) ?>">
+                                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/' . $row->id_usulanBarang) ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data">
                                                                     <i class="fas fa-edit text-success"></i>
                                                                 </a>
                                                             <?php endif; ?>
-                                                            <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Hapus Data">
                                                                 <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
                                                             </a>
-                                                            <a href="<?= base_url('admin/usulan_barang/generate_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <a href="<?= base_url('admin/usulan_barang/generate_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Generate Data ke Biaya (Laba Rugi)">
                                                                 <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
                                                             </a>
                                                         <?php endif; ?>
@@ -155,18 +155,18 @@
                                                         <!-- User biasa hanya bisa edit & hapus jika tahun = tahun sekarang dan tidak dikunci -->
                                                         <?php if ($tahun_data == $tahun_sekarang && !$is_locked) : ?>
                                                             <?php if (empty($row->kategori)) : ?>
-                                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_lain/' . $row->id_usulanBarang) ?>">
+                                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_lain/' . $row->id_usulanBarang) ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data Lainnya">
                                                                     <i class="fas fa-edit text-dark"></i>
                                                                 </a>
                                                             <?php else : ?>
-                                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/' . $row->id_usulanBarang) ?>">
+                                                                <a href="<?= base_url('admin/usulan_barang/edit_usulan_barang/' . $row->id_usulanBarang) ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data">
                                                                     <i class="fas fa-edit text-success"></i>
                                                                 </a>
                                                             <?php endif; ?>
-                                                            <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <a href="<?= base_url('admin/usulan_barang/hapus_usulan_barang/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Hapus Data">
                                                                 <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
                                                             </a>
-                                                            <a href="<?= base_url('admin/usulan_barang/generate_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                            <a href="<?= base_url('admin/usulan_barang/generate_usulan_barang/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Generate Data ke Biaya (Laba Rugi)">
                                                                 <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
                                                             </a>
                                                         <?php endif; ?>
@@ -244,3 +244,20 @@
             </div>
         </div> -->
     </main>
+    <script>
+        function initTooltipView() {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+                var instance = bootstrap.Tooltip.getInstance(el);
+                if (instance) {
+                    instance.dispose();
+                }
+                new bootstrap.Tooltip(el);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            initTooltipView();
+            if (window.jQuery) {
+                $('#example').on('draw.dt', initTooltipView);
+            }
+        });
+    </script>

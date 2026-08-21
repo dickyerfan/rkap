@@ -235,6 +235,19 @@ class Usulan_Umum extends CI_Controller
             redirect('rkap/usulan_umum');
         } else {
             $data['usulan_umum'] = $this->Model_usulan_umum->getUsulanUmum($id_usulanUmum);
+
+            if ($data['usulan_umum'] && $data['usulan_umum']->status_upload == 1) {
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Maaf,</strong> data sudah tidak bisa di update karena sudah diupload.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>'
+                );
+                redirect('rkap/usulan_umum');
+            }
+
             $kode = ['91', '92', '93', '96'];
             if ($data['usulan_umum']->bagian_upk == 'amdk') {
                 $kode[] = '98';
@@ -332,10 +345,22 @@ class Usulan_Umum extends CI_Controller
             redirect('rkap/usulan_umum');
         } else {
             // Ambil informasi file yang ingin dihapus (misalnya nama file) dari database
-            $this->db->select('foto_ket');
+            $this->db->select('foto_ket, status_upload');
             $this->db->where('id_usulanUmum', $id_usulanUmum);
             $query = $this->db->get('usulan_umum');
             $row = $query->row();
+
+            if ($row && $row->status_upload == 1) {
+                $this->session->set_flashdata(
+                    'info',
+                    '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Maaf,</strong> data sudah tidak bisa di hapus karena sudah diupload.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>'
+                );
+                redirect('rkap/usulan_umum');
+            }
 
             // Hapus file jika ada
             if ($row && $row->foto_ket) {

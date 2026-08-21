@@ -129,20 +129,20 @@
                                             ?>
 
                                             <td class="text-center">
-                                                <a href="<?= base_url('admin/usulan_umum/detail_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                <a href="<?= base_url('admin/usulan_umum/detail_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Melihat Detail Data">
                                                     <i class="fa-solid fa-circle-info text-primary" style="vertical-align:middle;"></i>
                                                 </a>
 
                                                 <?php if ($username === 'administrator') : ?>
                                                     <!-- Administrator bisa edit & hapus selama tahun = tahun sekarang dan tidak dikunci -->
                                                     <?php if ($tahun_data == $tahun_sekarang) : ?>
-                                                        <a href="<?= base_url('admin/usulan_umum/edit_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                        <a href="<?= base_url('admin/usulan_umum/edit_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data">
                                                             <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
                                                         </a>
-                                                        <a href="<?= base_url('admin/usulan_umum/hapus_usulan_umum/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                        <a href="<?= base_url('admin/usulan_umum/hapus_usulan_umum/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Hapus Data">
                                                             <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
                                                         </a>
-                                                        <a href="<?= base_url('admin/usulan_umum/generate_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                        <a href="<?= base_url('admin/usulan_umum/generate_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Generate Data ke Biaya Umum">
                                                             <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
                                                         </a>
                                                     <?php endif; ?>
@@ -150,13 +150,13 @@
                                                 <?php else : ?>
                                                     <!-- User biasa hanya bisa edit & hapus jika tahun = tahun sekarang dan tidak dikunci -->
                                                     <?php if ($tahun_data == $tahun_sekarang && !$is_locked) : ?>
-                                                        <a href="<?= base_url('admin/usulan_umum/edit_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                        <a href="<?= base_url('admin/usulan_umum/edit_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Edit Data">
                                                             <i class="fas fa-edit text-success" style="vertical-align:middle;"></i>
                                                         </a>
-                                                        <a href="<?= base_url('admin/usulan_umum/hapus_usulan_umum/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                        <a href="<?= base_url('admin/usulan_umum/hapus_usulan_umum/') . $id ?>" class="hapus-link" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Hapus Data">
                                                             <i class="fas fa-trash text-danger" style="vertical-align:middle;"></i>
                                                         </a>
-                                                        <a href="<?= base_url('admin/usulan_umum/generate_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;">
+                                                        <a href="<?= base_url('admin/usulan_umum/generate_usulan_umum/') . $id ?>" style="margin:0 1px; text-decoration:none; display:inline-block;" data-bs-toggle="tooltip" data-bs-placement="top" title="Klik Untuk Generate Data ke Biaya Umum">
                                                             <i class="fas fa-file text-warning" style="vertical-align:middle;"></i>
                                                         </a>
                                                     <?php endif; ?>
@@ -239,3 +239,20 @@
             </div>
         </div>
     </main>
+    <script>
+        function initTooltipUsulanUmum() {
+            document.querySelectorAll('#example [data-bs-toggle="tooltip"]').forEach(function(el) {
+                var instance = bootstrap.Tooltip.getInstance(el);
+                if (instance) {
+                    instance.dispose();
+                }
+                new bootstrap.Tooltip(el);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            initTooltipUsulanUmum();
+            if (window.jQuery) {
+                $('#example').on('draw.dt', initTooltipUsulanUmum);
+            }
+        });
+    </script>
