@@ -74,12 +74,19 @@ class Pelanggan extends MY_Controller
                 'Instansi Pemerintah A', 'Instansi Pemerintah B', 'ABRI', 'Niaga A', 'Niaga B', 'Khusus 2'
             ];
         }
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/navbar');
-        $this->load->view('templates/sidebar');
-        $this->load->view('lembar_kerja/lr/perkembangan_pelanggan/view_pelanggan', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/lr/perkembangan_pelanggan/view_pelanggan', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/lr/perkembangan_pelanggan/view_pelanggan', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
     }
 
     public function export_pdf()

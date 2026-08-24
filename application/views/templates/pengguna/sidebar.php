@@ -324,6 +324,7 @@
                                             <nav class="nav" style="flex-direction: column;">
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/target_upk') ?>" style="font-size: 0.8rem;">Target</a>
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/laba_rugi') ?>" style="font-size: 0.8rem;">Proyeksi Laba Rugi</a>
+                                                <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pelanggan') ?>" style="font-size: 0.8rem;">Perkembangan Pelanggan</a>
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_air') ?>" style="font-size: 0.8rem;">Pendapatan Air</a>
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/produksi_air') ?>" style="font-size: 0.8rem;">Produksi Air</a>
                                                 <a class="nav-link" href="<?= base_url('lembar_kerja/lr/pendapatan_non_air') ?>" style="font-size: 0.8rem;">Pendapatan Non Air</a>
