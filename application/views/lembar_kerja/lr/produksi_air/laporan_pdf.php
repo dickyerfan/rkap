@@ -92,19 +92,21 @@
                                 <?php if (!empty($air_produksi)) : ?>
                                     <?php
                                     $grand_total = 0;
-                                    $total_per_bulan = array_fill(1, 12, 0); // inisialisasi total per bulan
-                                    foreach ($air_produksi as $row) :
-                                        $jan = $row['produksi_total'] / 12; // dibagi rata per bulan
-                                        $grand_total += $row['produksi_total'];
+                                    $total_per_bulan = array_fill(1, 12, 0);
+                                    $total_hari = array_sum($hari_tagihan);
 
+                                    foreach ($air_produksi as $row) :
+                                        $grand_total += $row['produksi_total'];
+                                        $produksi_per_bulan = [];
                                         for ($i = 1; $i <= 12; $i++) {
-                                            $total_per_bulan[$i] += $jan;
+                                            $produksi_per_bulan[$i] = $row['produksi_total'] * ($hari_tagihan[$i] / $total_hari);
+                                            $total_per_bulan[$i] += $produksi_per_bulan[$i];
                                         }
                                     ?>
                                         <tr>
                                             <td>- <?= $row['uraian'] ?></td>
                                             <?php for ($i = 1; $i <= 12; $i++) : ?>
-                                                <td class="text-end"><?= number_format($jan, 0, ',', '.') ?></td>
+                                                <td class="text-end"><?= number_format($produksi_per_bulan[$i], 0, ',', '.') ?></td>
                                             <?php endfor; ?>
                                             <td class="text-end"><strong><?= number_format($row['produksi_total'], 0, ',', '.') ?></strong></td>
                                         </tr>

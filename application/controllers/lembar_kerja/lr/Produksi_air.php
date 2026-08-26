@@ -34,6 +34,7 @@ class Produksi_air extends MY_Controller
 
         $data['air_terjual'] = $result['air_terjual'];
         $data['air_produksi'] = $result['air_produksi'];
+        $data['hari_tagihan'] = $result['hari_tagihan'];
         $nama_upk = $result['nama_upk'];
 
         if ($upk) {
@@ -77,6 +78,7 @@ class Produksi_air extends MY_Controller
 
         $data['air_terjual'] = $result['air_terjual'];
         $data['air_produksi'] = $result['air_produksi'];
+        $data['hari_tagihan'] = $result['hari_tagihan'];
         $nama_upk = $result['nama_upk'];
 
         if ($upk) {

@@ -203,9 +203,9 @@
                         <td class="text-center">3</td>
                         <td>Pemakaian (m&sup3;)</td>
                         <?php foreach ($bulan_list as $i => $b) : ?>
-                            <td class="text-end"><?= number_format($pemakaian_map[$i] ?? 0, 2, ',', '.') ?></td>
+                            <td class="text-end"><?= number_format($pemakaian_map[$i] ?? 0, 0, ',', '.') ?></td>
                         <?php endforeach; ?>
-                        <td class="text-end fw-bold"><?= number_format($total_pakai, 2, ',', '.') ?></td>
+                        <td class="text-end fw-bold"><?= number_format($total_pakai, 0, ',', '.') ?></td>
                     </tr>
                     <tr>
                         <td class="text-center">4</td>

@@ -112,9 +112,49 @@ class Model_produksi_air extends CI_Model
     // }
 
 
-    // kode ini hampir betul
+    /**
+     * Hitung jumlah hari per bulan untuk tahun tertentu.
+     * Februari otomatis 28/29 (kabisat).
+     *
+     * @param int $tahun
+     * @return array Index 1..12 => jumlah hari
+     */
+    private function getJumlahHariPerBulan($tahun)
+    {
+        $hari = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $hari[$m] = cal_days_in_month(CAL_GREGORIAN, $m, $tahun);
+        }
+        return $hari;
+    }
+
+    /**
+     * Jumlah hari untuk tagihan per bulan (konsep arrears/belakang).
+     * Bulan M memakai hari bulan M-1.
+     * Januari memakai Desember tahun sebelumnya (31 hari).
+     *
+     * @param int $tahun Tahun anggaran
+     * @return array Index 1..12 => jumlah hari utk tagihan
+     */
+    private function getHariTagihanPerBulan($tahun)
+    {
+        $hari = $this->getJumlahHariPerBulan($tahun);
+        $tagihan = [1 => 31]; // Januari memakai Desember tahun lalu (31)
+        for ($m = 2; $m <= 12; $m++) {
+            $tagihan[$m] = $hari[$m - 1];
+        }
+        return $tagihan;
+    }
+
     public function getDataProduksiAir($tahun, $upk = null)
     {
+        // Hitung jumlah hari per bulan (aktual) & rata-rata
+        $hari_bulan = $this->getJumlahHariPerBulan($tahun);
+        $base_hari  = array_sum($hari_bulan) / 12;
+
+        // Hari tagihan (arrears): bulan M pakai hari bulan M-1
+        $hari_tagihan = $this->getHariTagihanPerBulan($tahun);
+
         // ======================
         // 1️⃣ AIR TERJUAL
         // ======================
@@ -149,7 +189,10 @@ class Model_produksi_air extends CI_Model
 
             $pelanggan = (float)$r['pelanggan_akhir'];
             $pola = (float)$r['pola_konsumsi'];
-            $hasil = $pelanggan * $pola;
+
+            // Konsumsi efektif pakai konsep arrears (hari bulan sebelumnya)
+            $pola_efektif = $pola * ($hari_tagihan[$bulan] / $base_hari);
+            $hasil = $pelanggan * $pola_efektif;
 
             $air_terjual[$jp][$bulan] = $hasil;
             $total_air_terjual += $hasil;
@@ -173,12 +216,11 @@ class Model_produksi_air extends CI_Model
         $sumber = $this->db->get()->result_array();
 
         // ======================
-        // 3️⃣ HITUNG AIR PRODUKSI
+        // 3️⃣ HITUNG AIR PRODUKSI (total tahunan)
         // ======================
         $efisiensi = $this->getEfisiensi($tahun);
         $air_produksi = [];
         if ($total_air_terjual > 0 && count($sumber) == 1) {
-            // jika hanya satu sumber, ambil 100%
             $produksi_total = $total_air_terjual * 100 / $efisiensi;
             $air_produksi[] = [
                 'uraian' => $sumber[0]['uraian'],
@@ -186,7 +228,6 @@ class Model_produksi_air extends CI_Model
                 'produksi_total' => $produksi_total
             ];
         } elseif ($total_air_terjual > 0 && count($sumber) > 1) {
-            // jika lebih dari satu sumber
             $total_nilai = array_sum(array_column($sumber, 'nilai'));
             if ($total_nilai > 0) {
                 foreach ($sumber as $sb) {
@@ -204,19 +245,6 @@ class Model_produksi_air extends CI_Model
         }
 
         // ======================
-        // 4️⃣ NAMA UPK
-        // ======================
-        if (!empty($upk) && strtolower($upk) !== 'all') {
-            $nama_upk = $this->db
-                ->select('nama_upk')
-                ->where('id_upk', $upk)
-                ->get('rkap_nama_upk')
-                ->row('nama_upk');
-        } else {
-            $nama_upk = 'KONSOLIDASI';
-        }
-
-        // ======================
         // 4️⃣ NAMA UPK & REKAP KONSOLIDASI
         // ======================
         if (!empty($upk) && strtolower($upk) !== 'all') {
@@ -226,7 +254,6 @@ class Model_produksi_air extends CI_Model
                 ->get('rkap_nama_upk')
                 ->row('nama_upk');
         } else {
-            // 🔹 Ambil semua UPK
             $list_upk = $this->db->get('rkap_nama_upk')->result_array();
             $air_produksi = [];
 
@@ -234,7 +261,6 @@ class Model_produksi_air extends CI_Model
                 $id_upk = $u['id_upk'];
                 $nama_upk_item = $u['nama_upk'];
 
-                // Hitung total pelanggan akhir dan pola konsumsi per UPK
                 $sub = $this->db->select("
             SUM(p.jumlah) AS pelanggan_akhir,
             COALESCE(SUM(p.jumlah * pk.konsumsi_rata) / NULLIF(SUM(p.jumlah),0), 0) AS pola_konsumsi
@@ -288,7 +314,8 @@ class Model_produksi_air extends CI_Model
         return [
             'nama_upk' => $nama_upk,
             'air_terjual' => $air_terjual,
-            'air_produksi' => $air_produksi
+            'air_produksi' => $air_produksi,
+            'hari_tagihan' => $hari_tagihan
         ];
     }
 

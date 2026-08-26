@@ -65,30 +65,26 @@ class Model_proyeksi_upk extends CI_Model
 
     public function getPemakaian($tahun, $id_upk = null)
     {
-        $this->db->select("
-                p.bulan,
-                COALESCE(SUM(p.jumlah * pk.konsumsi_rata), 0) as pemakaian
-            ")
-            ->from('rkap_pelanggan p')
-            ->join('rkap_pola_konsumsi pk', 'pk.id_upk = p.id_upk AND pk.id_jp = p.id_jp AND pk.tahun = p.tahun', 'left')
-            ->where('p.tahun', $tahun)
-            ->where('p.id_kd', 6);
+        // Ambil data langsung dari Model_produksi_air agar hasilnya selaras
+        $this->load->model('Model_produksi_air');
+        $result = $this->Model_produksi_air->getDataProduksiAir($tahun, $id_upk);
+        $air_terjual = $result['air_terjual'];
 
-        if (!empty($id_upk)) {
-            $this->db->where('p.id_upk', $id_upk);
+        // Agregasi air_terjual per bulan (jumlahkan semua jenis pelanggan)
+        $pemakaian_per_bulan = array_fill(1, 12, 0);
+        foreach ($air_terjual as $jp => $bulanData) {
+            for ($m = 1; $m <= 12; $m++) {
+                $pemakaian_per_bulan[$m] += $bulanData[$m];
+            }
         }
 
-        $this->db->group_by('p.bulan')->order_by('p.bulan', 'ASC');
-        $rows = $this->db->get()->result();
-
-        // Sesuaikan pemakaian dengan jumlah hari per bulan (konsep arrears:
-        // bulan M memakai jumlah hari bulan M-1), konsisten dengan pendapatan_air.
-        $faktor = $this->getFaktorHariPerBulan($tahun);
-        foreach ($rows as $r) {
-            $bulan = (int)$r->bulan;
-            if (isset($faktor[$bulan])) {
-                $r->pemakaian = (float)$r->pemakaian * $faktor[$bulan];
-            }
+        // Format sesuai kebutuhan view (array of object dengan bulan & pemakaian)
+        $rows = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $rows[] = (object) [
+                'bulan'     => $m,
+                'pemakaian' => $pemakaian_per_bulan[$m]
+            ];
         }
 
         return $rows;
