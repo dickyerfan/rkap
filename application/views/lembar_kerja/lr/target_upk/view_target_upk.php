@@ -147,8 +147,7 @@
                                             $total_pend  += $pendapatan_map[$i] ?? 0;
                                             $total_pakai += $pemakaian_map[$i] ?? 0;
                                         }
-                                        $avg_rek = $total_rek / 12;
-                                        $pola_total = ($avg_rek > 0) ? $total_pakai / $avg_rek : 0;
+                                        $pola_total = ($total_rek > 0) ? $total_pakai / $total_rek : 0;
                                         ?>
                                         <tr>
                                             <td class="text-center">1</td>

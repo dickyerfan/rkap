@@ -157,9 +157,6 @@
                                                     $desimal = ($key == 'Pola Konsumsi') ? 2 : 0;
                                                     echo "<td class='text-end pe-1'>" . number_format($nilai, $desimal, ',', '.') . "</td>";
 
-                                                    if ($bulan == 12) {
-                                                        $grand = $nilai;
-                                                    }
                                                 } elseif ($key == 'Pelanggan Akhir') {
                                                     $totalBulan = 0;
                                                     foreach ($data_pendapatan_air as $blok) {
@@ -177,6 +174,20 @@
                                                     echo "<td class='text-end pe-1'>" . number_format($totalBulan, 0, ',', '.') . "</td>";
                                                     $grand += $totalBulan;
                                                 }
+                                            }
+
+                                            // Hitung TOTAL (JUMLAH) berdasarkan jenis
+                                            if ($key == 'Pola Konsumsi') {
+                                                // Rata-rata tertimbang: Σ(pelanggan × pola) / Σ(pelanggan)
+                                                $total_pola_tahun = 0;
+                                                $total_pel_tahun = 0;
+                                                for ($m = 1; $m <= 12; $m++) {
+                                                    $pel = $total_pendapatan_air['Pelanggan Akhir'][$m] ?? 0;
+                                                    $pola = $total_pendapatan_air['Pola Konsumsi'][$m] ?? 0;
+                                                    $total_pola_tahun += $pel * $pola;
+                                                    $total_pel_tahun += $pel;
+                                                }
+                                                $grand = ($total_pel_tahun > 0) ? $total_pola_tahun / $total_pel_tahun : 0;
                                             }
 
                                             $desimal_grand = ($key == 'Pola Konsumsi') ? 2 : 0;
