@@ -89,18 +89,19 @@
                             </thead>
                             <tbody>
                                 <?php
+                                // Mapping label tampil => key data di model
                                 $uraianList = [
-                                    'Pelanggan Akhir',
-                                    'Pola Konsumsi',
-                                    'Tarif Rata',
-                                    'Penjualan Air',
-                                    'Jasa Pemeliharaan',
-                                    'Jasa Administrasi',
-                                    'Tagihan Air'
+                                    'Pelanggan Akhir'   => 'Pelanggan Akhir',
+                                    'Pola Konsumsi'     => 'Pola Konsumsi',
+                                    'Tarif Rata'        => 'Tarif Rata',
+                                    'Penjualan Air'     => 'Penjualan Air',
+                                    'Biaya Pemeliharaan'=> 'Jasa Pemeliharaan',
+                                    'Biaya Administrasi'=> 'Jasa Administrasi',
+                                    'Tagihan Air'       => 'Tagihan Air'
                                 ];
 
-                                foreach ($uraianList as $judul) {
-                                    echo "<tr><td colspan='14'><b>{$judul}</b></td></tr>";
+                                foreach ($uraianList as $label => $key) {
+                                    echo "<tr><td colspan='14'><b>{$label}</b></td></tr>";
 
                                     // loop per jenis pelanggan
                                     foreach ($data_pendapatan_air as $jp => $blok) {
@@ -109,11 +110,11 @@
 
                                         $jumlahKolom = 0;
                                         for ($bulan = 1; $bulan <= 12; $bulan++) {
-                                            $nilai = isset($blok[$judul][$bulan]) ? $blok[$judul][$bulan] : 0;
-                                            $desimal = ($judul == 'Pola Konsumsi') ? 2 : 0;
+                                            $nilai = isset($blok[$key][$bulan]) ? $blok[$key][$bulan] : 0;
+                                            $desimal = ($key == 'Pola Konsumsi') ? 2 : 0;
                                             echo "<td class='text-end pe-1'>" . number_format($nilai, $desimal, ',', '.') . "</td>";
 
-                                            if (in_array($judul, ['Pelanggan Akhir', 'Pola Konsumsi', 'Tarif Rata'])) {
+                                            if (in_array($key, ['Pelanggan Akhir', 'Pola Konsumsi', 'Tarif Rata'])) {
                                                 if ($bulan == 12) {
                                                     $jumlahKolom = $nilai; // ambil Desember
                                                 }
@@ -121,45 +122,46 @@
                                                 $jumlahKolom += $nilai; // normal: sum
                                             }
                                         }
-                                        $desimal = ($judul == 'Pola Konsumsi') ? 2 : 0;
+                                        $desimal = ($key == 'Pola Konsumsi') ? 2 : 0;
                                         echo "<td class='text-end pe-1'><b>" . number_format($jumlahKolom, $desimal, ',', '.') . "</b></td>";
                                         echo "</tr>";
                                     }
 
                                     // ===== TOTAL BAWAH =====
                                     echo "<tr style='background:#eee;font-weight:bold;'>";
-                                    echo "<td>Jumlah {$judul}</td>";
+                                    echo "<td>Jumlah {$label}</td>";
 
                                     $grand = 0;
                                     for ($bulan = 1; $bulan <= 12; $bulan++) {
-                                        $totalBulan = 0;
-                                        $countJenis = count($data_pendapatan_air);
-
-                                        foreach ($data_pendapatan_air as $blok) {
-                                            $totalBulan += $blok[$judul][$bulan] ?? 0;
-                                        }
-
-                                        if (in_array($judul, ['Pola Konsumsi', 'Tarif Rata'])) {
-                                            // rata-rata per jenis pelanggan
-                                            $nilai = $countJenis > 0 ? $totalBulan / $countJenis : 0;
-                                            $desimal = ($judul == 'Pola Konsumsi') ? 2 : 0;
+                                        if (in_array($key, ['Pola Konsumsi', 'Tarif Rata'])) {
+                                            // Ambil dari total yang sudah dihitung rata-rata tertimbang di model
+                                            $nilai = $total_pendapatan_air[$key][$bulan] ?? 0;
+                                            $desimal = ($key == 'Pola Konsumsi') ? 2 : 0;
                                             echo "<td class='text-end pe-1'>" . number_format($nilai, $desimal, ',', '.') . "</td>";
 
                                             if ($bulan == 12) {
-                                                $grand = $nilai; // ambil Desember
+                                                $grand = $nilai;
                                             }
-                                        } elseif ($judul == 'Pelanggan Akhir') {
+                                        } elseif ($key == 'Pelanggan Akhir') {
+                                            $totalBulan = 0;
+                                            foreach ($data_pendapatan_air as $blok) {
+                                                $totalBulan += $blok[$key][$bulan] ?? 0;
+                                            }
                                             echo "<td class='text-end pe-1'>" . number_format($totalBulan, 0, ',', '.') . "</td>";
                                             if ($bulan == 12) {
-                                                $grand = $totalBulan; // ambil Desember
+                                                $grand = $totalBulan;
                                             }
                                         } else {
+                                            $totalBulan = 0;
+                                            foreach ($data_pendapatan_air as $blok) {
+                                                $totalBulan += $blok[$key][$bulan] ?? 0;
+                                            }
                                             echo "<td class='text-end pe-1'>" . number_format($totalBulan, 0, ',', '.') . "</td>";
-                                            $grand += $totalBulan; // normal sum
+                                            $grand += $totalBulan;
                                         }
                                     }
 
-                                    $desimal_grand = ($judul == 'Pola Konsumsi') ? 2 : 0;
+                                    $desimal_grand = ($key == 'Pola Konsumsi') ? 2 : 0;
                                     echo "<td class='text-end pe-1'>" . number_format($grand, $desimal_grand, ',', '.') . "</td>";
                                     echo "</tr>";
                                 }

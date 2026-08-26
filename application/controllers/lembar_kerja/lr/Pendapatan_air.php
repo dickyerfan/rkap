@@ -57,6 +57,7 @@ class Pendapatan_air extends MY_Controller
         if ($upk) {
             $result = $this->Model_pendapatan_air->getDataPendapatanAir($tahun, $upk);
             $data['data_pendapatan_air'] = $result['data'];
+            $data['total_pendapatan_air'] = $result['total'];
             $nama_upk = $result['nama_upk'];
             $data['title'] = 'RENCANA PENJUALAN AIR DAN UNSUR LAINNYA UPK '
                 . strtoupper($nama_upk) . ' <br> TAHUN ANGGARAN ';
@@ -65,6 +66,7 @@ class Pendapatan_air extends MY_Controller
         } else {
             $result = $this->Model_pendapatan_air->getDataPendapatanAir($tahun);
             $data['data_pendapatan_air'] = $result['data'];
+            $data['total_pendapatan_air'] = $result['total'];
             $data['title'] = 'RENCANA PENJUALAN AIR DAN UNSUR LAINNYA (KONSOLIDASI) <br> TAHUN ANGGARAN ';
             $data['title2'] = 'RENCANA PENJUALAN TANGKI AIR (KONSOLIDASI) <br> TAHUN ANGGARAN ';
         }
@@ -122,6 +124,7 @@ class Pendapatan_air extends MY_Controller
         if ($upk) {
             $result = $this->Model_pendapatan_air->getDataPendapatanAir($tahun, $upk);
             $data['data_pendapatan_air'] = $result['data'];
+            $data['total_pendapatan_air'] = $result['total'];
             $nama_upk = $result['nama_upk'];
             $data['title'] = 'RENCANA PENJUALAN AIR DAN UNSUR LAINNYA UPK '
                 . strtoupper($nama_upk) . ' <br> TAHUN ANGGARAN ';
@@ -130,6 +133,7 @@ class Pendapatan_air extends MY_Controller
         } else {
             $result = $this->Model_pendapatan_air->getDataPendapatanAir($tahun);
             $data['data_pendapatan_air'] = $result['data'];
+            $data['total_pendapatan_air'] = $result['total'];
             $data['title'] = 'RENCANA PENJUALAN AIR DAN UNSUR LAINNYA (KONSOLIDASI) <br> TAHUN ANGGARAN ';
             $data['title2'] = 'RENCANA PENJUALAN TANGKI AIR (KONSOLIDASI) <br> TAHUN ANGGARAN ';
         }
