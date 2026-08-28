@@ -83,6 +83,7 @@
                                             'persen_balik_nama' => 'Persentase Pelanggan Balik Nama',
                                             'nilai_balik_nama' => 'Biaya Balik Nama per Pelanggan',
                                             'biaya_psk' => 'Biaya Penyambungan Kembali per Pelanggan',
+                                            'persen_psk' => 'Persentase Pelanggan Penyambungan Kembali',
                                             'persen_telat' => 'Persentase Pelanggan Telat Bayar',
                                             'denda_per_pelanggan' => 'Denda per Pelanggan Telat',
                                         ];
@@ -94,6 +95,7 @@
                                             'persen_balik_nama' => 'table-success',
                                             'nilai_balik_nama' => 'table-success',
                                             'biaya_psk' => 'table-primary',
+                                            'persen_psk' => 'table-primary',
                                             'persen_telat' => 'table-danger',
                                             'denda_per_pelanggan' => 'table-danger',
                                         ];
@@ -105,6 +107,7 @@
                                             'persen_balik_nama' => 'pct',
                                             'nilai_balik_nama' => 'rp',
                                             'biaya_psk' => 'rp',
+                                            'persen_psk' => 'pct',
                                             'persen_telat' => 'pct',
                                             'denda_per_pelanggan' => 'rp',
                                         ];
@@ -130,10 +133,10 @@
                                                             <?php if ($is_empty) : ?>
                                                                 <span class="text-muted">-</span>
                                                             <?php elseif (isset($fmt[$p->parameter])) : ?>
-                                                                <?php if ($fmt[$p->parameter] == 'rp') : ?>
-                                                                    <?= 'Rp ' . number_format((float)$nilai, 0, ',', '.') ?>
-                                                                <?php elseif ($fmt[$p->parameter] == 'pct') : ?>
-                                                                    <?= number_format((float)$nilai * 100, 1, ',', '.') . '%' ?>
+                                        <?php if ($fmt[$p->parameter] == 'rp') : ?>
+                                            <?= 'Rp ' . number_format((float)$nilai, 0, ',', '.') ?>
+                                        <?php elseif ($fmt[$p->parameter] == 'pct') : ?>
+                                            <?= number_format((float)$nilai * 100, 4, ',', '.') . '%' ?>
                                                                 <?php else : ?>
                                                                     <?= htmlspecialchars($nilai) ?>
                                                                 <?php endif; ?>

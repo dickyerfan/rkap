@@ -304,6 +304,7 @@ class Pendapatan_non_air extends MY_Controller
         $persen_balik_nama  = $this->Model_pendapatan_non_air->getTarif($tahun, 'Pendapatan Balik Nama', 'persen_balik_nama');
         $nilai_balik_nama   = $this->Model_pendapatan_non_air->getTarif($tahun, 'Pendapatan Balik Nama', 'nilai_balik_nama');
         $biaya_psk          = $this->Model_pendapatan_non_air->getTarif($tahun, 'Pendapatan Penyambungan Kembali', 'biaya_psk');
+        $persen_psk         = $this->Model_pendapatan_non_air->getTarif($tahun, 'Pendapatan Penyambungan Kembali', 'persen_psk');
         $persen_telat       = $this->Model_pendapatan_non_air->getTarif($tahun, 'Pendapatan Denda', 'persen_telat');
         $denda_per_pelanggan = $this->Model_pendapatan_non_air->getTarif($tahun, 'Pendapatan Denda', 'denda_per_pelanggan');
 
@@ -328,16 +329,16 @@ class Pendapatan_non_air extends MY_Controller
         $idkd5 = $this->Model_pendapatan_non_air->getJumlahByKd($id_upk, $tahun, $bulan, 5);
 
         $rumus = ($idkd1 + $idkd2 - $idkd3 + $idkd4 - $idkd5);
-        $nilai_baliknama = $rumus * ($persen_balik_nama * $nilai_balik_nama);
+        $nilai_baliknama = round($rumus * $persen_balik_nama) * $nilai_balik_nama;
         $this->Model_pendapatan_non_air->savePendapatan($id_upk, $tahun, $bulan, 'Pendapatan Balik Nama', $rumus, $nilai_baliknama);
 
         // === 4. Penyambungan Kembali ===
         $jumlah_psk = $idkd4;
-        $nilai_psk = $jumlah_psk * $biaya_psk;
+        $nilai_psk = (round($rumus * $persen_psk) * $biaya_psk) + ($jumlah_psk * $biaya_psk);
         $this->Model_pendapatan_non_air->savePendapatan($id_upk, $tahun, $bulan, 'Pendapatan Penyambungan Kembali', $jumlah_psk, $nilai_psk);
 
         // === 5. Denda ===
-        $nilai_denda = $rumus * ($persen_telat * $denda_per_pelanggan);
+        $nilai_denda = round($rumus * $persen_telat) * $denda_per_pelanggan;
         $this->Model_pendapatan_non_air->savePendapatan($id_upk, $tahun, $bulan, 'Pendapatan Denda', $rumus, $nilai_denda);
 
         // === 6-8. Lainnya (d(input manual, tidak di-generate) ===

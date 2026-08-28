@@ -34,6 +34,9 @@
                             <?php if ($row->parameter == 'bulan_promo') : ?>
                                 <input type="text" name="nilai" class="form-control" value="<?= htmlspecialchars($row->nilai) ?>" required>
                                 <small class="text-muted">Isi nomor bulan pisah koma, contoh: 1,8</small>
+                            <?php elseif (in_array($row->parameter, ['persen_balik_nama', 'persen_psk', 'persen_telat'])) : ?>
+                                <input type="number" step="any" name="nilai" class="form-control" value="<?= $row->nilai ?>" required>
+                                <small class="text-muted">Isi dalam desimal, contoh: 0.0001 = 0,01%</small>
                             <?php else : ?>
                                 <input type="number" step="any" name="nilai" class="form-control" value="<?= number_format($row->nilai, 2, '.', '') ?>" required>
                             <?php endif; ?>
