@@ -5,6 +5,11 @@
                 <div class="card-header shadow">
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <!-- <a class="fw-bold text-dark pe-2" style="text-decoration:none;"><?= strtoupper($title) . ' ' . $tahun; ?></a> -->
+                        <div class="navbar-nav">
+                            <a class="nav-link fw-bold" target="_blank" href="<?= base_url('lembar_kerja/lr/beban_pengolahan/export_pdf_detail/' . $kode_akun) ?>" style="font-size: 0.8rem; color:black;">
+                                <button class="neumorphic-button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+                            </a>
+                        </div>
                         <div class="navbar-nav ms-auto">
                             <a class="nav-link fw-bold" href="<?= base_url('lembar_kerja/lr/beban_pengolahan?tahun_rkap=' . $tahun) ?>" style="font-size: 0.8rem; color:black;">
                                 <button class="neumorphic-button"><i class="fas fa-arrow-left"></i> Kembali</button>

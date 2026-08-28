@@ -479,4 +479,23 @@ class Beban_umum extends MY_Controller
             $this->load->view('templates/pengguna/footer');
         }
     }
+
+    public function export_pdf_detail($kode_akun)
+    {
+        $tahun = $this->session->userdata('tahun_rkap') ?: date('Y') + 1;
+
+        $akun = $this->db->where('kode', $kode_akun)->get('no_per')->row();
+        $nama_akun = $akun ? $akun->name : $kode_akun;
+
+        $data['detail'] = $this->Model_beban->get_detail_sumber($kode_akun, $tahun);
+        $data['kode_akun'] = $kode_akun;
+        $data['nama_akun'] = $nama_akun;
+        $data['tahun'] = $tahun;
+        $data['title'] = "DETAIL BIAYA UMUM & ADMINISTRASI - " . strtoupper($nama_akun) . " <br> TAHUN ANGGARAN ";
+
+        $this->pdf->setPaper('Folio', 'landscape');
+        $this->pdf->filename = "Lap_beban_umum_detail_{$kode_akun}_{$tahun}.pdf";
+
+        $this->pdf->generate('lembar_kerja/lr/beban_umum/laporan_pdf_detail', $data);
+    }
 }
