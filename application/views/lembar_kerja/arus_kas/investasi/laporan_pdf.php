@@ -3,219 +3,279 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RKAP</title>
-    <link href="<?= base_url(); ?>assets/datatables/bootstrap5/bootstrap.min.css" rel="stylesheet">
-
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            margin: 40pt 20pt 40pt 50pt;
         }
 
-        main {
-            font-size: 0.8rem;
+        header table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
         }
 
-        header p,
-        .text-center p {
+        header td {
+            border: none;
+            padding: 2px;
+            vertical-align: middle;
+        }
+
+        header p {
             margin: 0;
-            /* Menghilangkan margin pada teks */
+            font-size: 10pt;
         }
 
         hr {
-            height: 1px;
-            background-color: black !important;
+            border: none;
+            border-top: 1px solid #000;
+            margin: 4px 0;
         }
 
-        .tableUtama,
-        .tableUtama thead,
-        .tableUtama tr,
-        .tableUtama th,
-        .tableUtama td {
-            border: 1px solid black;
-            font-size: 0.6rem;
-            height: 15px;
+        .title {
+            text-align: center;
+            font-size: 9pt;
+            font-weight: bold;
+            margin: 6px 0;
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        table.data-table th,
+        table.data-table td {
+            border: 1px solid #000;
+            padding: 2px 4px;
             vertical-align: middle;
+            font-size: 6.5pt;
+        }
+
+        table.data-table th {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        table.data-table td.num {
+            text-align: right;
+        }
+
+        table.data-table td.num-bold {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        table.data-table td.center {
+            text-align: center;
+        }
+
+        table.data-table tfoot td {
+            font-weight: bold;
+            background-color: #e9ecef;
+            border-top: 2px solid #6c757d;
         }
     </style>
-
 </head>
 
 <body>
     <header>
-        <div class="container-fluid">
-            <table class="table table-borderless table-sm">
-                <tbody>
-                    <tr>
-                        <td width="5%">
-                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
-                        </td>
-                        <td>
-                            <p>Rencana Kerja & Anggaran Tahun <?= $tahun; ?></p>
-                            <p>Perumdam Ijen Tirta Bondowoso</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr>
-        </div>
+        <table>
+            <tr>
+                <td width="40">
+                    <?php
+                    $logo_path = FCPATH . 'assets/img/tirta.png';
+                    if (file_exists($logo_path)) :
+                        $logo_data = base64_encode(file_get_contents($logo_path));
+                        $logo_mime = mime_content_type($logo_path);
+                    ?>
+                        <img src="data:<?= $logo_mime; ?>;base64,<?= $logo_data; ?>" alt="Logo" width="40">
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <p>Rencana Kerja & Anggaran Tahun <?= $tahun; ?></p>
+                    <p>Perumdam Ijen Tirta Bondowoso</p>
+                </td>
+            </tr>
+        </table>
+        <hr>
     </header>
     <main>
-        <div class="container-fluid px-2 mt-2">
-            <div class="card-body">
-                <div class="row justify-content-center mb-2">
-                    <div class="col-lg-6 text-center">
-                        <p><?= $title . ' ' .  $tahun ?></p>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-lg-12">
-                        <table class="table table-sm table-bordered tableUtama">
-                            <thead class="text-center align-middle">
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Uraian</th>
-                                    <th>Lokasi</th>
-                                    <th>Vol</th>
-                                    <th>Sat</th>
-                                    <th>Nilai</th>
-                                    <th>Jan</th>
-                                    <th>Feb</th>
-                                    <th>Mar</th>
-                                    <th>Apr</th>
-                                    <th>Mei</th>
-                                    <th>Jun</th>
-                                    <th>Jul</th>
-                                    <th>Agu</th>
-                                    <th>Sep</th>
-                                    <th>Okt</th>
-                                    <th>Nov</th>
-                                    <th>Des</th>
-                                    <th>Jml</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                // 1. Inisialisasi Grand Total
-                                $grand_total = [
-                                    'jan' => 0, 'feb' => 0, 'mar' => 0, 'apr' => 0, 'mei' => 0, 'jun' => 0, 'jul' => 0,
-                                    'agu' => 0, 'sep' => 0, 'okt' => 0, 'nov' => 0, 'des' => 0, 'jumlah' => 0
-                                ];
-                                ?>
+        <p class="title"><?= $title . ' ' . $tahun ?></p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Kode</th>
+                    <th>Uraian</th>
+                    <th>Lokasi</th>
+                    <th>Vol</th>
+                    <th>Sat</th>
+                    <th>Nilai</th>
+                    <th>Jan</th>
+                    <th>Feb</th>
+                    <th>Mar</th>
+                    <th>Apr</th>
+                    <th>Mei</th>
+                    <th>Jun</th>
+                    <th>Jul</th>
+                    <th>Agu</th>
+                    <th>Sep</th>
+                    <th>Okt</th>
+                    <th>Nov</th>
+                    <th>Des</th>
+                    <th>Jml</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $grand_total = [
+                    'jan' => 0, 'feb' => 0, 'mar' => 0, 'apr' => 0, 'mei' => 0, 'jun' => 0, 'jul' => 0,
+                    'agu' => 0, 'sep' => 0, 'okt' => 0, 'nov' => 0, 'des' => 0, 'jumlah' => 0
+                ];
+                ?>
 
-                                <?php foreach ($biaya as $parent) : ?>
-                                    <tr class="bg-light fw-bold">
-                                        <td><?= $parent['kode']; ?></td>
-                                        <td><?= $parent['uraian']; ?></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
+                <?php foreach ($biaya as $parent) : ?>
+                    <tr style="font-weight: bold; background-color: #f8f9fa;">
+                        <td><?= $parent['kode']; ?></td>
+                        <td><?= $parent['uraian']; ?></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
 
-                                    <?php if (!empty($parent['children'])) : ?>
-                                        <?php foreach ($parent['children'] as $c) : ?>
-                                            <tr>
-                                                <td><?= $c['kode']; ?></td>
-                                                <td><?= $c['uraian']; ?></td>
-                                                <td><?= $c['upk']; ?></td>
-                                                <td class="text-center"><?= $c['vol']; ?></td>
-                                                <td class="text-center"><?= $c['sat']; ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['pagu'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['jan'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['feb'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['mar'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['apr'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['mei'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['jun'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['jul'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['agu'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['sep'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['okt'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['nov'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1"><?= number_format($c['des'], 0, ',', '.'); ?></td>
-                                                <td class="text-end pe-1 fw-bold"><?= number_format($c['total_tahun'], 0, ',', '.'); ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
+                    <?php if (!empty($parent['children'])) : ?>
+                        <?php foreach ($parent['children'] as $c) : ?>
+                            <tr>
+                                <td><?= $c['kode']; ?></td>
+                                <td><?= $c['uraian']; ?></td>
+                                <td><?= $c['upk']; ?></td>
+                                <td class="center"><?= $c['vol']; ?></td>
+                                <td class="center"><?= $c['sat']; ?></td>
+                                <td class="num"><?= number_format($c['pagu'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['jan'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['feb'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['mar'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['apr'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['mei'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['jun'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['jul'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['agu'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['sep'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['okt'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['nov'], 0, ',', '.'); ?></td>
+                                <td class="num"><?= number_format($c['des'], 0, ',', '.'); ?></td>
+                                <td class="num-bold"><?= number_format($c['total_tahun'], 0, ',', '.'); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
 
-                                        <?php
-                                        $sub = [
-                                            'jan' => 0, 'feb' => 0, 'mar' => 0, 'apr' => 0, 'mei' => 0, 'jun' => 0, 'jul' => 0,
-                                            'agu' => 0, 'sep' => 0, 'okt' => 0, 'nov' => 0, 'des' => 0, 'jumlah' => 0
-                                        ];
-                                        foreach ($parent['children'] as $c) {
+                        <?php
+                        $sub = [
+                            'jan' => 0, 'feb' => 0, 'mar' => 0, 'apr' => 0, 'mei' => 0, 'jun' => 0, 'jul' => 0,
+                            'agu' => 0, 'sep' => 0, 'okt' => 0, 'nov' => 0, 'des' => 0, 'jumlah' => 0
+                        ];
+                        foreach ($parent['children'] as $c) {
+                            foreach ($sub as $k => $_) {
+                                if (isset($c[$k])) {
+                                    $sub[$k] += $c[$k];
+                                }
+                            }
+                        }
+
+                        $has_child_in_biaya = false;
+                        foreach ($biaya as $check) {
+                            if ($check['kode'] !== $parent['kode'] && strpos($check['kode'], $parent['kode'] . '.') === 0) {
+                                $has_child_in_biaya = true;
+                                break;
+                            }
+                        }
+
+                        if ($has_child_in_biaya) {
+                            foreach ($biaya as $child_entry) {
+                                if ($child_entry['kode'] !== $parent['kode'] && strpos($child_entry['kode'], $parent['kode'] . '.') === 0) {
+                                    if (!empty($child_entry['children'])) {
+                                        foreach ($child_entry['children'] as $c) {
                                             foreach ($sub as $k => $_) {
                                                 if (isset($c[$k])) {
                                                     $sub[$k] += $c[$k];
                                                 }
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
 
-                                        // 2. Tambahkan Subtotal ke Grand Total
-                                        foreach ($grand_total as $k => $_) {
-                                            if (isset($sub[$k])) {
-                                                $grand_total[$k] += $sub[$k];
-                                            }
-                                        }
-                                        ?>
-                                        <tr class="fw-bold" style="background-color: #f0f0f0;">
-                                            <td colspan="6">Subtotal <?= $parent['uraian']; ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['jan'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['feb'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['mar'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['apr'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['mei'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['jun'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['jul'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['agu'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['sep'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['okt'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
-                                            <td class="text-end pe-1"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
-                                        </tr>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            </tbody>
+                        if (!$has_child_in_biaya) {
+                            foreach ($grand_total as $k => $_) {
+                                if (isset($sub[$k])) {
+                                    $grand_total[$k] += $sub[$k];
+                                }
+                            }
+                        }
+                        ?>
+                        <tr style="font-weight: bold; background-color: #f0f0f0;">
+                            <td colspan="6">Subtotal <?= $parent['uraian']; ?></td>
+                            <td class="num"><?= number_format($sub['jan'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['feb'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['mar'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['apr'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['mei'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['jun'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['jul'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['agu'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['sep'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['okt'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
+                            <td class="num"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </tbody>
 
-                            <tfoot class="fw-bold" style="background-color: #e9ecef; border-top: 2px solid #6c757d;">
-                                <tr>
-                                    <td colspan="6">TOTAL</td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['jan'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['feb'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['mar'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['apr'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['mei'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['jun'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['jul'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['agu'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['sep'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['okt'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['nov'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['des'], 0, ',', '.'); ?></td>
-                                    <td class="text-end pe-1"><?= number_format($grand_total['jumlah'], 0, ',', '.'); ?></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <tfoot>
+                <tr>
+                    <td colspan="6">TOTAL</td>
+                    <td class="num"><?= number_format($grand_total['jan'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['feb'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['mar'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['apr'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['mei'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['jun'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['jul'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['agu'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['sep'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['okt'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['nov'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['des'], 0, ',', '.'); ?></td>
+                    <td class="num"><?= number_format($grand_total['jumlah'], 0, ',', '.'); ?></td>
+                </tr>
+            </tfoot>
+        </table>
     </main>
-    <script src="<?= base_url() ?>assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

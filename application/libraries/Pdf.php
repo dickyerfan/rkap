@@ -41,8 +41,10 @@ class Pdf
     public function generate($view, $data = array())
     {
         $options = new Options();
-        // $options->set('defaultFont', 'courier');
-        $options->set('isRemoteEnabled', TRUE);
+        $options->set('isRemoteEnabled', FALSE);
+        $options->set('isFontSubsettingEnabled', TRUE);
+        $options->set('defaultFont', 'sans-serif');
+        $options->set('isHtml5ParserEnabled', TRUE);
 
         $dompdf = new Dompdf($options);
 

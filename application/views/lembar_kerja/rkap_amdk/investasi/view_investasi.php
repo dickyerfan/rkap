@@ -173,10 +173,38 @@
                                                     }
                                                 }
 
-                                                // 2. Tambahkan Subtotal ke Grand Total
-                                                foreach ($grand_total as $k => $_) {
-                                                    if (isset($sub[$k])) {
-                                                        $grand_total[$k] += $sub[$k];
+                                                // Cek apakah parent ini punya child accounts di dalam array $biaya
+                                                $has_child_in_biaya = false;
+                                                foreach ($biaya as $check) {
+                                                    if ($check['kode'] !== $parent['kode'] && strpos($check['kode'], $parent['kode'] . '.') === 0) {
+                                                        $has_child_in_biaya = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                // Jika punya child accounts, jumlahkan data dari semua child accounts
+                                                if ($has_child_in_biaya) {
+                                                    foreach ($biaya as $child_entry) {
+                                                        if ($child_entry['kode'] !== $parent['kode'] && strpos($child_entry['kode'], $parent['kode'] . '.') === 0) {
+                                                            if (!empty($child_entry['children'])) {
+                                                                foreach ($child_entry['children'] as $c) {
+                                                                    foreach ($sub as $k => $_) {
+                                                                        if (isset($c[$k])) {
+                                                                            $sub[$k] += $c[$k];
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                // 2. Tambahkan Subtotal ke Grand Total (hanya untuk leaf accounts, avoid double count)
+                                                if (!$has_child_in_biaya) {
+                                                    foreach ($grand_total as $k => $_) {
+                                                        if (isset($sub[$k])) {
+                                                            $grand_total[$k] += $sub[$k];
+                                                        }
                                                     }
                                                 }
                                                 ?>
