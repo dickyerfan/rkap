@@ -8,7 +8,7 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; margin: 40pt 20pt 40pt 50pt; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; margin: 20pt 20pt 30pt 80pt; }
         header table { width: 100%; border-collapse: collapse; border: none; }
         header td { border: none; padding: 2px; vertical-align: middle; }
         header p { margin: 0; font-size: 10pt; }
@@ -31,7 +31,7 @@
             <tr>
                 <td width="40">
                     <?php
-                    $logo_path = FCPATH . 'assets/img/logo.png';
+                    $logo_path = FCPATH . 'assets/img/tirta.png';
                     if (file_exists($logo_path)) :
                         $logo_data = base64_encode(file_get_contents($logo_path));
                         $logo_mime = mime_content_type($logo_path);
@@ -41,7 +41,7 @@
                 </td>
                 <td>
                     <p>Rencana Kerja & Anggaran Tahun <?= $tahun; ?></p>
-                    <p>PDAM Kabupaten Bondowoso</p>
+                    <p>Perumdam Ijen Tirta Bondowoso</p>
                 </td>
             </tr>
         </table>

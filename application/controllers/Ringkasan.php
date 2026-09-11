@@ -468,7 +468,7 @@ class Ringkasan extends CI_Controller
 
 
 		// Setting PDF
-		$this->pdf->setPaper('Folio', 'landscape');
+		$this->pdf->setPaper('Folio', 'portrait');
 		$this->pdf->filename = "ringkasan_rkap_{$tahun}.pdf";
 
 		// Generate dari view khusus PDF

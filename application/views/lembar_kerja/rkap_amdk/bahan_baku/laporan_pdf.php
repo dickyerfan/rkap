@@ -178,7 +178,7 @@ table.data-table tfoot td {
                         <!-- JUDUL PRODUK -->
                         <tr>
                             <td colspan="5" style="text-align:left;font-weight:bold;">BAHAN BAKU <?= strtoupper($produk_sekarang); ?></td>
-                            <td colspan="16"></td>
+                            <td colspan="13"></td>
                         </tr>
                     <?php endif; ?>
 
