@@ -7,20 +7,85 @@
     <title>RKAP</title>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; margin: 20pt 20pt 30pt 80pt; }
-        header table { width: 100%; border-collapse: collapse; border: none; }
-        header td { border: none; padding: 2px; vertical-align: middle; }
-        header p { margin: 0; font-size: 10pt; }
-        hr { border: none; border-top: 1px solid #000; margin: 4px 0; }
-        .title { text-align: center; font-size: 9pt; font-weight: bold; margin: 6px 0; }
-        table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        table.data-table th, table.data-table td { border: 1px solid #000; padding: 2px 4px; vertical-align: middle; font-size: 6.5pt; }
-        table.data-table th { text-align: center; font-weight: bold; }
-        table.data-table td.num { text-align: right; }
-        table.data-table td.num-bold { text-align: right; font-weight: bold; }
-        table.data-table td.center { text-align: center; }
-        table.data-table tfoot td { font-weight: bold; background-color: #e9ecef; border-top: 2px solid #6c757d; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            margin: 20pt 20pt 30pt 80pt;
+        }
+
+        header table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+        }
+
+        header td {
+            border: none;
+            padding: 2px;
+            vertical-align: middle;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 10pt;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #000;
+            margin: 4px 0;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 9pt;
+            font-weight: bold;
+            margin: 6px 0;
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        table.data-table th,
+        table.data-table td {
+            border: 1px solid #000;
+            padding: 2px 4px;
+            vertical-align: middle;
+            font-size: 6.5pt;
+        }
+
+        table.data-table th {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        table.data-table td.num {
+            text-align: right;
+        }
+
+        table.data-table td.num-bold {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        table.data-table td.center {
+            text-align: center;
+        }
+
+        table.data-table tfoot td {
+            font-weight: bold;
+            background-color: #e9ecef;
+            border-top: 2px solid #6c757d;
+        }
     </style>
 
 </head>
@@ -310,123 +375,123 @@
                         </tr>
 
                         <!-- Baris Januari..Desember (lembar dari rkap_pelanggan, tagihan dari aggregated tagihan_per_month) -->
-<?php for ($m = 1; $m <= 12; $m++) :
-                                            $label = $bulan_ind[$m];
-                                            $lembar = $ag['lembar_per_month'][$m] ?? 0;
-                                            $tagihan = $ag['tagihan_per_month'][$m] ?? 0.0;
-                                            $penerimaan_row = array_fill(1, 12, 0.0);
+                        <?php for ($m = 1; $m <= 12; $m++) :
+                            $label = $bulan_ind[$m];
+                            $lembar = $ag['lembar_per_month'][$m] ?? 0;
+                            $tagihan = $ag['tagihan_per_month'][$m] ?? 0.0;
+                            $penerimaan_row = array_fill(1, 12, 0.0);
 
-                                            // ============ KODE LAMA (tanpa efisiensi penagihan) ============
-                                            // if ($tagihan > 0 && $m < 12) {
-                                            //     $p1 = round($tagihan * 0.90, 2);
-                                            //     $p2 = round($tagihan * 0.10, 2);
-                                            //     $penerimaan_row[$m + 1] += $p1;
-                                            //     if ($m + 2 <= 12) $penerimaan_row[$m + 2] += $p2;
-                                            //     $row_total = $p1 + ($m + 2 <= 12 ? $p2 : 0.0);
-                                            // } else {
-                                            //     // m == 12 or tagihan == 0
-                                            //     $row_total = 0.0;
-                                            // }
-                                            // ============ END KODE LAMA ============
+                            // ============ KODE LAMA (tanpa efisiensi penagihan) ============
+                            // if ($tagihan > 0 && $m < 12) {
+                            //     $p1 = round($tagihan * 0.90, 2);
+                            //     $p2 = round($tagihan * 0.10, 2);
+                            //     $penerimaan_row[$m + 1] += $p1;
+                            //     if ($m + 2 <= 12) $penerimaan_row[$m + 2] += $p2;
+                            //     $row_total = $p1 + ($m + 2 <= 12 ? $p2 : 0.0);
+                            // } else {
+                            //     // m == 12 or tagihan == 0
+                            //     $row_total = 0.0;
+                            // }
+                            // ============ END KODE LAMA ============
 
-                                            // ============ KODE BARU ============
-                                            // Tahun >= 2027 : tagihan dikurangi efisiensi penagihan
-                                            // bulan tsb (efi_efektif[$m]) lalu dibagi sesuai
-                                            // $dist_tagihan (default 90% bulan B+1 / 10% bulan B+2).
-                                            // Kolom Rp tetap menampilkan tagihan penuh (yang ditagih).
-                                            if ($pakai_efisiensi) {
-                                                $tagihan_ef = $tagihan * ($efi_efektif[$m] / 100.0);
-                                                $p1 = round($tagihan_ef * $dist_tagihan['p1'], 2);
-                                                $p2 = round($tagihan_ef * $dist_tagihan['p2'], 2);
-                                            } else {
-                                                // KODE LAMA (tahun 2026 ke bawah) : 90/10 tanpa efisiensi.
-                                                // Nilainya TETAP seperti kode lama (tidak berubah).
-                                                $p1 = round($tagihan * 0.90, 2);
-                                                $p2 = round($tagihan * 0.10, 2);
-                                            }
-                                            if ($tagihan > 0 && $m < 12) {
-                                                $penerimaan_row[$m + 1] += $p1;
-                                                if ($m + 2 <= 12) $penerimaan_row[$m + 2] += $p2;
-                                                $row_total = $p1 + ($m + 2 <= 12 ? $p2 : 0.0);
-                                            } else {
-                                                // m == 12 or tagihan == 0
-                                                $row_total = 0.0;
-                                            }
-                                            // ============ END KODE BARU ============
-                                            ?>
-                                            <tr>
-                                                <td>&nbsp;&nbsp;- <?= $label ?></td>
-                                                <td class="num"><?= $lembar ? number_format($lembar) : '-' ?></td>
-                                                <td class="num"><?= $tagihan ? rupiah($tagihan) : '-' ?></td>
-                                                <?php for ($mm = 1; $mm <= 12; $mm++) : ?>
-                                                    <td class="num">
-                                                        <?= $penerimaan_row[$mm] != 0 ? rupiah($penerimaan_row[$mm]) : '-' ?>
-                                                    </td>
-                                                <?php endfor; ?>
-                                                <td class="num"><?= $row_total != 0 ? rupiah($row_total) : '-' ?></td>
-                                            </tr>
-                                        <?php endfor; ?>
+                            // ============ KODE BARU ============
+                            // Tahun >= 2027 : tagihan dikurangi efisiensi penagihan
+                            // bulan tsb (efi_efektif[$m]) lalu dibagi sesuai
+                            // $dist_tagihan (default 90% bulan B+1 / 10% bulan B+2).
+                            // Kolom Rp tetap menampilkan tagihan penuh (yang ditagih).
+                            if ($pakai_efisiensi) {
+                                $tagihan_ef = $tagihan * ($efi_efektif[$m] / 100.0);
+                                $p1 = round($tagihan_ef * $dist_tagihan['p1'], 2);
+                                $p2 = round($tagihan_ef * $dist_tagihan['p2'], 2);
+                            } else {
+                                // KODE LAMA (tahun 2026 ke bawah) : 90/10 tanpa efisiensi.
+                                // Nilainya TETAP seperti kode lama (tidak berubah).
+                                $p1 = round($tagihan * 0.90, 2);
+                                $p2 = round($tagihan * 0.10, 2);
+                            }
+                            if ($tagihan > 0 && $m < 12) {
+                                $penerimaan_row[$m + 1] += $p1;
+                                if ($m + 2 <= 12) $penerimaan_row[$m + 2] += $p2;
+                                $row_total = $p1 + ($m + 2 <= 12 ? $p2 : 0.0);
+                            } else {
+                                // m == 12 or tagihan == 0
+                                $row_total = 0.0;
+                            }
+                            // ============ END KODE BARU ============
+                        ?>
+                            <tr>
+                                <td>&nbsp;&nbsp;- <?= $label ?></td>
+                                <td class="num"><?= $lembar ? number_format($lembar) : '-' ?></td>
+                                <td class="num"><?= $tagihan ? rupiah($tagihan) : '-' ?></td>
+                                <?php for ($mm = 1; $mm <= 12; $mm++) : ?>
+                                    <td class="num">
+                                        <?= $penerimaan_row[$mm] != 0 ? rupiah($penerimaan_row[$mm]) : '-' ?>
+                                    </td>
+                                <?php endfor; ?>
+                                <td class="num"><?= $row_total != 0 ? rupiah($row_total) : '-' ?></td>
+                            </tr>
+                        <?php endfor; ?>
 
-                                        <!-- Baris Jumlah per jenis -->
-                                        <tr style="font-weight:bold;background-color:#e9ecef;">
-                                            <td>Jumlah <?= $ag['nama_jp'] ?></td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <?php for ($m = 1; $m <= 12; $m++) : ?>
-                                                <td class="num"><?= rupiah($ag['penerimaan'][$m]) ?></td>
-                                            <?php endfor; ?>
-                                            <td class="num"><?= rupiah($ag['total_penerimaan']) ?></td>
-                                        </tr>
+                        <!-- Baris Jumlah per jenis -->
+                        <tr style="font-weight:bold;background-color:#e9ecef;">
+                            <td>Jumlah <?= $ag['nama_jp'] ?></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <?php for ($m = 1; $m <= 12; $m++) : ?>
+                                <td class="num"><?= rupiah($ag['penerimaan'][$m]) ?></td>
+                            <?php endfor; ?>
+                            <td class="num"><?= rupiah($ag['total_penerimaan']) ?></td>
+                        </tr>
 
-                                    <?php endforeach; ?>
+                    <?php endforeach; ?>
 
-                                    <!-- TOTAL SEMUA JENIS -->
-                                    <tr style="font-weight:bold;background-color:#cff4fc;">
-                                        <td>TOTAL </td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <?php for ($m = 1; $m <= 12; $m++) : ?>
-                                            <td class="num"><?= rupiah($grand_per_month[$m]) ?></td>
-                                        <?php endfor; ?>
-                                        <td class="num"><?= rupiah($grand_sum_total) ?></td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                        <?php if ($upk == '') : ?>
-                            <p class="title">PENERIMAAN AIR LAINNYA</p>
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>URAIAN</th>
-                                        <th>Jan</th>
-                                        <th>Feb</th>
-                                        <th>Mar</th>
-                                        <th>Apr</th>
-                                        <th>Mei</th>
-                                        <th>Jun</th>
-                                        <th>Jul</th>
-                                        <th>Agu</th>
-                                        <th>Sep</th>
-                                        <th>Okt</th>
-                                        <th>Nov</th>
-                                        <th>Des</th>
-                                        <th>JUMLAH</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $uraian_list = [
-                                        'penggunaan_rata2' => 'Jumlah Penggunaan rata2',
-                                        'm3_rata2' => 'Jumlah M3 rata2',
-                                        'tarif_rata2' => 'Tarif rata2'
-                                    ];
+                    <!-- TOTAL SEMUA JENIS -->
+                    <tr style="font-weight:bold;background-color:#cff4fc;">
+                        <td>TOTAL </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <?php for ($m = 1; $m <= 12; $m++) : ?>
+                            <td class="num"><?= rupiah($grand_per_month[$m]) ?></td>
+                        <?php endfor; ?>
+                        <td class="num"><?= rupiah($grand_sum_total) ?></td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <?php if ($upk == '') : ?>
+            <p class="title">PENERIMAAN AIR LAINNYA</p>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>URAIAN</th>
+                        <th>Jan</th>
+                        <th>Feb</th>
+                        <th>Mar</th>
+                        <th>Apr</th>
+                        <th>Mei</th>
+                        <th>Jun</th>
+                        <th>Jul</th>
+                        <th>Agu</th>
+                        <th>Sep</th>
+                        <th>Okt</th>
+                        <th>Nov</th>
+                        <th>Des</th>
+                        <th>JUMLAH</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $uraian_list = [
+                        'penggunaan_rata2' => 'Jumlah Penggunaan rata2',
+                        'm3_rata2' => 'Jumlah M3 rata2',
+                        'tarif_rata2' => 'Tarif rata2'
+                    ];
 
-                                    foreach ($uraian_list as $key => $label) :
-                                        if (isset($tangki_air[$key])) :
-                                            $is_nilai_penjualan = ($key == 'nilai_penjualan');
-                                    ?>
-                                            <!-- <tr>
+                    foreach ($uraian_list as $key => $label) :
+                        if (isset($tangki_air[$key])) :
+                            $is_nilai_penjualan = ($key == 'nilai_penjualan');
+                    ?>
+                            <!-- <tr>
                                                     <td style="padding-left: 27px;"><?= $is_nilai_penjualan ? "<strong>{$label}</strong>" : $label; ?></td>
                                                     <?php for ($i = 1; $i <= 12; $i++) : ?>
                                                         <td class="num">
@@ -438,39 +503,39 @@
                                                         <?= $is_nilai_penjualan ? "<strong>" . number_format($tangki_air[$key]['total'], 0, ',', '.') . "</strong>" : number_format($tangki_air[$key]['total'], 0, ',', '.'); ?>
                                                     </td>
                                                 </tr> -->
-                                    <?php
-                                        endif;
-                                    endforeach;
-                                    ?>
-                                </tbody>
-                                <tfoot>
-                                    <tr style="background:#eee;font-weight:bold;">
-                                        <td>Penerimaan Air Lainnya (TA)</td>
-                                        <?php
-                                        $grand_total = 0;
-                                        for ($i = 1; $i <= 12; $i++) {
-                                            $total_bulan = $tangki_air['penggunaan_rata2'][$i] * $tangki_air['m3_rata2'][$i] * $tangki_air['tarif_rata2'][$i];
-                                            echo "<td class='num'>" . number_format($total_bulan, 0, ',', '.') . "</td>";
-                                            $grand_total += $total_bulan;
-                                        }
-                                        ?>
-                                        <td class="num"><?= number_format($grand_total, 0, ',', '.'); ?></td>
-                                    </tr>
-                                    <tr style="background-color:#e9ecef;font-weight:bold;">
-                                        <td>TOTAL PENERIMAAN AIR</td>
-                                        <?php
-                                        $grand_total_rkap = 0;
-                                        for ($i = 1; $i <= 12; $i++) {
-                                            $total_bulan_rkap = $grand_per_month[$i] + ($tangki_air['penggunaan_rata2'][$i] * $tangki_air['m3_rata2'][$i] * $tangki_air['tarif_rata2'][$i]);
-                                            echo "<td class='num'>" . number_format($total_bulan_rkap, 0, ',', '.') . "</td>";
-                                            $grand_total_rkap += $total_bulan_rkap;
-                                        }
-                                        ?>
-                                        <td class="num"><?= number_format($grand_total_rkap, 0, ',', '.'); ?></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        <?php endif; ?>
+                    <?php
+                        endif;
+                    endforeach;
+                    ?>
+                </tbody>
+                <tfoot>
+                    <tr style="background:#eee;font-weight:bold;">
+                        <td>Penerimaan Air Lainnya (TA)</td>
+                        <?php
+                        $grand_total = 0;
+                        for ($i = 1; $i <= 12; $i++) {
+                            $total_bulan = $tangki_air['penggunaan_rata2'][$i] * $tangki_air['m3_rata2'][$i] * $tangki_air['tarif_rata2'][$i];
+                            echo "<td class='num'>" . number_format($total_bulan, 0, ',', '.') . "</td>";
+                            $grand_total += $total_bulan;
+                        }
+                        ?>
+                        <td class="num"><?= number_format($grand_total, 0, ',', '.'); ?></td>
+                    </tr>
+                    <tr style="background-color:#e9ecef;font-weight:bold;">
+                        <td>TOTAL PENERIMAAN AIR</td>
+                        <?php
+                        $grand_total_rkap = 0;
+                        for ($i = 1; $i <= 12; $i++) {
+                            $total_bulan_rkap = $grand_per_month[$i] + ($tangki_air['penggunaan_rata2'][$i] * $tangki_air['m3_rata2'][$i] * $tangki_air['tarif_rata2'][$i]);
+                            echo "<td class='num'>" . number_format($total_bulan_rkap, 0, ',', '.') . "</td>";
+                            $grand_total_rkap += $total_bulan_rkap;
+                        }
+                        ?>
+                        <td class="num"><?= number_format($grand_total_rkap, 0, ',', '.'); ?></td>
+                    </tr>
+                </tfoot>
+            </table>
+        <?php endif; ?>
     </main>
 </body>
 

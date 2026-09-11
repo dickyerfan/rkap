@@ -128,26 +128,72 @@
                                         ?>
 
                                         <?php foreach ($biaya as $parent) : ?>
-                                            <tr class="bg-light fw-bold">
+                                            <?php
+                                            $sub = [
+                                                'jan' => 0, 'feb' => 0, 'mar' => 0, 'apr' => 0, 'mei' => 0, 'jun' => 0, 'jul' => 0,
+                                                'agu' => 0, 'sep' => 0, 'okt' => 0, 'nov' => 0, 'des' => 0, 'jumlah' => 0
+                                            ];
+                                            if (!empty($parent['children'])) {
+                                                foreach ($parent['children'] as $c) {
+                                                    foreach ($sub as $k => $_) {
+                                                        if (isset($c[$k])) {
+                                                            $sub[$k] += $c[$k];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            $has_child_in_biaya = false;
+                                            foreach ($biaya as $check) {
+                                                if ($check['kode'] !== $parent['kode'] && strpos($check['kode'], $parent['kode'] . '.') === 0) {
+                                                    $has_child_in_biaya = true;
+                                                    break;
+                                                }
+                                            }
+                                            if ($has_child_in_biaya) {
+                                                foreach ($biaya as $child_entry) {
+                                                    if ($child_entry['kode'] !== $parent['kode'] && strpos($child_entry['kode'], $parent['kode'] . '.') === 0) {
+                                                        if (!empty($child_entry['children'])) {
+                                                            foreach ($child_entry['children'] as $c) {
+                                                                foreach ($sub as $k => $_) {
+                                                                    if (isset($c[$k])) {
+                                                                        $sub[$k] += $c[$k];
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // Cek apakah ini parent sejati (tidak ada prefix lebih pendek di array)
+                                            $is_true_parent = true;
+                                            foreach ($biaya as $cek_parent) {
+                                                if ($cek_parent['kode'] !== $parent['kode'] && strpos($parent['kode'], $cek_parent['kode'] . '.') === 0) {
+                                                    $is_true_parent = false;
+                                                    break;
+                                                }
+                                            }
+                                            ?>
+                                            <tr class="fw-bold <?= $is_true_parent ? '' : '' ?>" <?= $is_true_parent ? 'style="background-color: #d3d3d3;"' : '' ?>>
                                                 <td><?= $parent['kode']; ?></td>
                                                 <td><?= $parent['uraian']; ?></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="text-end"><?= number_format($sub['jan'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['feb'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['mar'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['apr'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['mei'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['jun'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['jul'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['agu'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['sep'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['okt'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
+                                                <td class="text-end fw-bold"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
                                                 <td></td>
                                             </tr>
 
@@ -192,45 +238,6 @@
                                                 <?php endforeach; ?>
 
                                                 <?php
-                                                $sub = [
-                                                    'jan' => 0, 'feb' => 0, 'mar' => 0, 'apr' => 0, 'mei' => 0, 'jun' => 0, 'jul' => 0,
-                                                    'agu' => 0, 'sep' => 0, 'okt' => 0, 'nov' => 0, 'des' => 0, 'jumlah' => 0
-                                                ];
-                                                foreach ($parent['children'] as $c) {
-                                                    foreach ($sub as $k => $_) {
-                                                        if (isset($c[$k])) {
-                                                            $sub[$k] += $c[$k];
-                                                        }
-                                                    }
-                                                }
-
-                                                // Cek apakah parent ini punya child accounts di dalam array $biaya
-                                                $has_child_in_biaya = false;
-                                                foreach ($biaya as $check) {
-                                                    if ($check['kode'] !== $parent['kode'] && strpos($check['kode'], $parent['kode'] . '.') === 0) {
-                                                        $has_child_in_biaya = true;
-                                                        break;
-                                                    }
-                                                }
-
-                                                // Jika punya child accounts, jumlahkan data dari semua child accounts
-                                                if ($has_child_in_biaya) {
-                                                    foreach ($biaya as $child_entry) {
-                                                        if ($child_entry['kode'] !== $parent['kode'] && strpos($child_entry['kode'], $parent['kode'] . '.') === 0) {
-                                                            if (!empty($child_entry['children'])) {
-                                                                foreach ($child_entry['children'] as $c) {
-                                                                    foreach ($sub as $k => $_) {
-                                                                        if (isset($c[$k])) {
-                                                                            $sub[$k] += $c[$k];
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                // 2. Tambahkan Subtotal ke Grand Total (hanya untuk leaf accounts, avoid double count)
                                                 if (!$has_child_in_biaya) {
                                                     foreach ($grand_total as $k => $_) {
                                                         if (isset($sub[$k])) {
@@ -239,23 +246,6 @@
                                                     }
                                                 }
                                                 ?>
-                                                <tr class="fw-bold" style="background-color: #f0f0f0;">
-                                                    <td colspan="6">Subtotal <?= $parent['uraian']; ?></td>
-                                                    <td class="text-end"><?= number_format($sub['jan'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['feb'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['mar'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['apr'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['mei'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['jun'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['jul'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['agu'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['sep'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['okt'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
-                                                    <td class="text-end"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
-                                                    <td></td>
-                                                </tr>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </tbody>
