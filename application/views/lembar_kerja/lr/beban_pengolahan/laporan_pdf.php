@@ -14,7 +14,7 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 8pt;
-            margin: 40pt 20pt 40pt 50pt;
+            margin: 20pt 20pt 30pt 80pt;
         }
 
         header table {

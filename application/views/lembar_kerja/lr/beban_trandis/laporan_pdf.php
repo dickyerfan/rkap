@@ -14,7 +14,7 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 8pt;
-            margin: 40pt 20pt 40pt 50pt;
+            margin: 20pt 20pt 30pt 80pt;
         }
 
         header table {
@@ -264,6 +264,9 @@
         $hidden_upk_hpp = ['13', '23', '24', '25', '26', '27', '28'];
         if (!in_array($upk, $hidden_upk_hpp)) :
         ?>
+            <?php if ($upk == 'all' || $upk == ''): ?>
+                <div style="page-break-before: always;"></div>
+            <?php endif; ?>
             <p class="title"><?= $title2 . ' ' . $tahun; ?></p>
             <table class="data-table">
                 <thead>

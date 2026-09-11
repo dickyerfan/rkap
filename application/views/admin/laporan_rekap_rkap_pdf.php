@@ -5,139 +5,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RKAP</title>
-    <link href="<?= base_url(); ?>assets/datatables/bootstrap5/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        main {
-            font-size: 1.2rem;
-        }
-
-        header p,
-        .text-center p {
-            margin: 0;
-            /* Menghilangkan margin pada teks */
-        }
-
-        hr {
-            height: 1px;
-            background-color: black !important;
-        }
-
-        .tableUtama,
-        .tableUtama thead,
-        .tableUtama tr,
-        .tableUtama th,
-        .tableUtama td {
-            border: 1px solid black;
-            font-size: 1.2rem;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; margin: 40pt 20pt 40pt 50pt; }
+        header table { width: 100%; border-collapse: collapse; border: none; }
+        header td { border: none; padding: 2px; vertical-align: middle; }
+        header p { margin: 0; font-size: 10pt; }
+        hr { border: none; border-top: 1px solid #000; margin: 4px 0; }
+        .title { text-align: center; font-size: 11pt; font-weight: bold; margin: 6px 0; }
+        table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        table.data-table th, table.data-table td { border: 1px solid #000; padding: 2px 4px; vertical-align: middle; font-size: 9pt; }
+        table.data-table th { text-align: center; font-weight: bold; }
+        table.data-table td.num { text-align: right; }
+        table.data-table td.num-bold { text-align: right; font-weight: bold; }
+        table.data-table td.center { text-align: center; }
+        table.data-table tfoot td { font-weight: bold; background-color: #f8f9fa; border-top: 2px solid #6c757d; }
     </style>
 
 </head>
 
 <body>
     <header>
-        <div class="container-fluid">
-            <table class="table table-borderless table-sm">
-                <tbody>
-                    <tr>
-                        <td width="5%">
-                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
-                        </td>
-                        <td>
-                            <p>Rencana Kerja & Anggaran Tahun <?= $tahun + 1; ?></p>
-                            <p>Perumdam Ijen Tirta Bondowoso</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr>
-        </div>
+        <table>
+            <tr>
+                <td width="40">
+                    <?php
+                    $logo_path = FCPATH . 'assets/img/tirta.png';
+                    if (file_exists($logo_path)) :
+                        $logo_data = base64_encode(file_get_contents($logo_path));
+                        $logo_mime = mime_content_type($logo_path);
+                    ?>
+                        <img src="data:<?= $logo_mime; ?>;base64,<?= $logo_data; ?>" alt="Logo" width="40">
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <p>Rencana Kerja & Anggaran Tahun <?= $tahun + 1; ?></p>
+                    <p>Perumdam Ijen Tirta Bondowoso</p>
+                </td>
+            </tr>
+        </table>
+        <hr>
     </header>
     <main>
-        <div class="container-fluid">
-
-            <div class="card-body">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center mb-2">
-                        <p class="fw-bold"><?= $title . ' ' .  $tahun + 1; ?></p>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-lg-12">
-                        <table class="table table-sm table-bordered tableUtama">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Uraian</th>
-                                    <th class="text-center">Jumlah</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="ps-4 fw-bold">Pendapatan</td>
-                                    <td class="text-end pe-4"></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">Pendapatan Air</td>
-                                    <td class="text-end pe-4"><?= number_format($pendapatan_air_total, 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">Pendapatan Non Air</td>
-                                    <td class="text-end pe-4"><?= number_format($pendapatan_non_air, 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">Pendapatan AMDK</td>
-                                    <td class="text-end pe-4"><?= number_format($total_pend_amdk, 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4 fw-bold">Jumlah Pendapatan</td>
-                                    <td class="text-end pe-4 fw-bold"><?= number_format($total_pendapatan, 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4 fw-bold">Biaya</td>
-                                    <td class="text-end pe-4"></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">Biaya Usulan Barang</td>
-                                    <td class="text-end pe-4"><?= number_format($biayaUsulanBarang, 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">Biaya Usulan Investasi</td>
-                                    <td class="text-end pe-4"><?= number_format($biayaUsulanInvestasi, 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">Biaya Usulan Pemeliharaan</td>
-                                    <td class="text-end pe-4"><?= number_format($biayaUsulanPemeliharaan, 0, ',', '.'); ?></td>
-                                <tr>
-                                    <td class="ps-4">Biaya Usulan Pegawai & Umum</td>
-                                    <td class="text-end pe-4"><?= number_format($biayaUsulanUmum, 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">Biaya Usulan AMDK</td>
-                                    <td class="text-end pe-4"><?= number_format($total_biaya_amdk, 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4 fw-bold">Jumlah Biaya</td>
-                                    <td class="text-end pe-4 fw-bold"><?= number_format($total_biaya, 0, ',', '.'); ?></td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="table-light">
-                                <tr>
-                                    <th class=" fw-bold ps-4">LABA / RUGI</th>
-                                    <th class="text-end pe-4"><?= number_format($laba_rugi, 0, ',', '.'); ?></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <p class="title"><?= $title . ' ' .  $tahun + 1; ?></p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Uraian</th>
+                    <th>Jumlah</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding-left:16px;font-weight:bold;">Pendapatan</td>
+                    <td class="num"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;">Pendapatan Air</td>
+                    <td class="num"><?= number_format($pendapatan_air_total, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;">Pendapatan Non Air</td>
+                    <td class="num"><?= number_format($pendapatan_non_air, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;">Pendapatan AMDK</td>
+                    <td class="num"><?= number_format($total_pend_amdk, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;font-weight:bold;">Jumlah Pendapatan</td>
+                    <td class="num-bold"><?= number_format($total_pendapatan, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;font-weight:bold;">Biaya</td>
+                    <td class="num"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;">Biaya Usulan Barang</td>
+                    <td class="num"><?= number_format($biayaUsulanBarang, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;">Biaya Usulan Investasi</td>
+                    <td class="num"><?= number_format($biayaUsulanInvestasi, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;">Biaya Usulan Pemeliharaan</td>
+                    <td class="num"><?= number_format($biayaUsulanPemeliharaan, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;">Biaya Usulan Pegawai & Umum</td>
+                    <td class="num"><?= number_format($biayaUsulanUmum, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;">Biaya Usulan AMDK</td>
+                    <td class="num"><?= number_format($total_biaya_amdk, 0, ',', '.'); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px;font-weight:bold;">Jumlah Biaya</td>
+                    <td class="num-bold"><?= number_format($total_biaya, 0, ',', '.'); ?></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td style="font-weight:bold;padding-left:16px;">LABA / RUGI</td>
+                    <td class="num-bold"><?= number_format($laba_rugi, 0, ',', '.'); ?></td>
+                </tr>
+            </tfoot>
+        </table>
     </main>
-    <script src="<?= base_url() ?>assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

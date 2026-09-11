@@ -5,78 +5,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RKAP</title>
-    <link href="<?= base_url(); ?>assets/datatables/bootstrap5/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        header p,
-        .text-center p {
-            margin: 0;
-            /* Menghilangkan margin pada teks */
-        }
-
-        hr {
-            height: 1px;
-            background-color: black !important;
-        }
-
-        .tableUtama,
-        .tableUtama thead,
-        .tableUtama tr,
-        .tableUtama th,
-        .tableUtama td {
-            border: 1px solid black;
-            font-size: 0.7rem;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; margin: 20pt 20pt 30pt 80pt; }
+        header table { width: 100%; border-collapse: collapse; border: none; }
+        header td { border: none; padding: 2px; vertical-align: middle; }
+        header p { margin: 0; font-size: 10pt; }
+        hr { border: none; border-top: 1px solid #000; margin: 4px 0; }
+        .title { text-align: center; font-size: 9pt; font-weight: bold; margin: 6px 0; }
+        table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        table.data-table th, table.data-table td { border: 1px solid #000; padding: 2px 4px; vertical-align: middle; font-size: 6.5pt; }
+        table.data-table th { text-align: center; font-weight: bold; }
+        table.data-table td.num { text-align: right; }
+        table.data-table td.num-bold { text-align: right; font-weight: bold; }
+        table.data-table td.center { text-align: center; }
+        table.data-table tfoot td { font-weight: bold; background-color: #e9ecef; border-top: 2px solid #6c757d; }
     </style>
 
 </head>
 
 <body>
     <header>
-        <div class="container-fluid">
-            <table class="table table-borderless table-sm">
-                <tbody>
-                    <tr>
-                        <td width="5%">
-                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
-                        </td>
-                        <td>
-                            <?php foreach ($tahun as $row) :
-                            ?>
-                                <p>Rencana Kerja & Anggaran Tahun <?= $row->tahun_rkap + 1; ?></p>
-                                <p>Perumdam Ijen Tirta Bondowoso</p>
-                            <?php endforeach; ?>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr>
-        </div>
+        <table>
+            <tr>
+                <td width="40">
+                    <?php
+                    $logo_path = FCPATH . 'assets/img/tirta.png';
+                    if (file_exists($logo_path)) :
+                        $logo_data = base64_encode(file_get_contents($logo_path));
+                        $logo_mime = mime_content_type($logo_path);
+                    ?>
+                        <img src="data:<?= $logo_mime; ?>;base64,<?= $logo_data; ?>" alt="Logo" width="40">
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <?php foreach ($tahun as $row) :
+                    ?>
+                        <p>Rencana Kerja & Anggaran Tahun <?= $row->tahun_rkap + 1; ?></p>
+                        <p>Perumdam Ijen Tirta Bondowoso</p>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+        </table>
+        <hr>
     </header>
     <main>
-        <div class="container-fluid">
-            <div class="card-body">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center mb-2">
-                        <p><?= $title . ' ' .  date('Y') + 1 ?></p>
-                        <p><?= strtoupper($this->session->userdata('nama_pengguna'));  ?></p>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-lg-12">
-                        <table class="table table-sm table-bordered tableUtama" style="font-size: 0.7rem;">
+                <p class="title"><?= $title . ' ' .  date('Y') + 1 ?></p>
+                <p class="title"><?= strtoupper($this->session->userdata('nama_pengguna'));  ?></p>
+                        <table class="data-table">
                             <thead>
-                                <tr class="text-center">
-                                    <th rowspan="2" class="align-middle">No</th>
+                                <tr>
+                                    <th rowspan="2">No</th>
                                     <th colspan="2">Perkiraan</th>
-                                    <th colspan="4" class="align-middle">URAIAN TENTANG USULAN</th>
-                                    <th rowspan="2" class="align-middle">Keterangan</th>
+                                    <th colspan="4">URAIAN TENTANG USULAN</th>
+                                    <th rowspan="2">Keterangan</th>
                                 </tr>
-                                <tr class="text-center">
+                                <tr>
                                     <th>No Per</th>
                                     <th>Nama</th>
                                     <th>Latar Belakang</th>
@@ -96,33 +81,29 @@
                                     $jumlah = $harga * $satuan;
                                 ?>
                                     <tr>
-                                        <td class="text-end"><?= $no++ ?></td>
+                                        <td class="num"><?= $no++ ?></td>
                                         <td><?= $row->no_perkiraan ?></td>
                                         <td><?= $row->nama_perkiraan ?></td>
                                         <td><?= $row->latar_belakang ?></td>
                                         <td><?= $row->solusi ?></td>
-                                        <td class="text-end"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
-                                        <td class="text-end"><?= number_format($row->biaya, 0, ',', '.') ?></td>
-                                        <!-- <td class="text-center"><?= number_format($jumlah, 0, ',', '.') ?></td> -->
+                                        <td class="num"><?= number_format($row->volume, 0, ',', '.') ?> <?= $row->satuan ?></td>
+                                        <td class="num"><?= number_format($row->biaya, 0, ',', '.') ?></td>
+                                        <!-- <td class="center"><?= number_format($jumlah, 0, ',', '.') ?></td> -->
                                         <td><?= $row->ket ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <tfoot>
                                 <tr>
-                                    <th colspan="6" class="text-end">Total</th>
-                                    <th class="text-end"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
-                                    <!-- <th class="text-end"><?= number_format(array_sum(array_map(function ($item) {
+                                    <th colspan="6" class="num-bold">Total</th>
+                                    <th class="num-bold"><?= number_format(array_sum(array_column($tampil, 'biaya')), 0, ',', '.') ?></th>
+                                    <!-- <th class="num-bold"><?= number_format(array_sum(array_map(function ($item) {
                                                                     return $item->biaya * $item->volume;
                                                                 }, $tampil)), 0, ',', '.') ?></th> -->
                                     <th></th>
                                 </tr>
                             </tfoot>
                         </table>
-                    </div>
-                </div>
-            </div>
     </main>
-    <script src="<?= base_url() ?>assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

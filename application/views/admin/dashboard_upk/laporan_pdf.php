@@ -32,7 +32,14 @@
         <table>
             <tr>
                 <td width="50">
-                    <img src="<?= base_url('assets/img/tirta.png') ?>" width="40">
+                    <?php
+                    $logo_path = FCPATH . 'assets/img/tirta.png';
+                    if (file_exists($logo_path)) :
+                        $logo_data = base64_encode(file_get_contents($logo_path));
+                        $logo_mime = mime_content_type($logo_path);
+                    ?>
+                        <img src="data:<?= $logo_mime; ?>;base64,<?= $logo_data; ?>" width="40">
+                    <?php endif; ?>
                 </td>
                 <td>
                     <p>Rencana Kerja & Anggaran Tahun <?= $tahun_ini ?> / <?= $tahun_depan ?></p>

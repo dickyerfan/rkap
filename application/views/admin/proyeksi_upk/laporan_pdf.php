@@ -3,125 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <title>RKAP</title>
-    <link href="<?= base_url(); ?>assets/datatables/bootstrap5/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, Helvetica, sans-serif; font-size: 0.85rem; }
-        header p { margin: 0; }
-        hr { height: 1px; background-color: black !important; }
-        .tableUtama, .tableUtama thead, .tableUtama tr, .tableUtama th, .tableUtama td {
-            border: 1px solid black;
-            font-size: 0.85rem;
-        }
-        .tableUtama th, .tableUtama td { padding: 3px 6px; }
-        .text-center { text-align: center; }
-        .text-end { text-align: right; }
-        .fw-bold { font-weight: bold; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; margin: 20pt 20pt 30pt 80pt; }
+        header table { width: 100%; border-collapse: collapse; border: none; }
+        header td { border: none; padding: 2px; vertical-align: middle; }
+        header p { margin: 0; font-size: 10pt; }
+        hr { border: none; border-top: 1px solid #000; margin: 4px 0; }
+        .title { text-align: center; font-size: 9pt; font-weight: bold; margin: 6px 0; }
+        table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        table.data-table th, table.data-table td { border: 1px solid #000; padding: 2px 4px; vertical-align: middle; font-size: 6.5pt; }
+        table.data-table th { text-align: center; font-weight: bold; }
+        table.data-table td.num { text-align: right; }
+        table.data-table td.num-bold { text-align: right; font-weight: bold; }
+        table.data-table td.center { text-align: center; }
+        table.data-table tfoot td { font-weight: bold; background-color: #e9ecef; border-top: 2px solid #6c757d; }
     </style>
 </head>
 <body>
     <header>
-        <div class="container-fluid">
-            <table class="table table-borderless table-sm">
-                <tbody>
-                    <tr>
-                        <td width="8%">
-                            <img src="<?= base_url('assets/img/tirta.png'); ?>" alt="Logo" width="40">
-                        </td>
-                        <td>
-                            <p>Rencana Kerja &amp; Anggaran</p>
-                            <p>Perumdam Ijen Tirta Bondowoso</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr>
-        </div>
+        <table>
+            <tr>
+                <td width="40">
+                    <?php
+                    $logo_path = FCPATH . 'assets/img/tirta.png';
+                    if (file_exists($logo_path)) :
+                        $logo_data = base64_encode(file_get_contents($logo_path));
+                        $logo_mime = mime_content_type($logo_path);
+                    ?>
+                        <img src="data:<?= $logo_mime; ?>;base64,<?= $logo_data; ?>" alt="Logo" width="40">
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <p>Rencana Kerja &amp; Anggaran</p>
+                    <p>Perumdam Ijen Tirta Bondowoso</p>
+                </td>
+            </tr>
+        </table>
+        <hr>
     </header>
     <main>
-        <div class="container-fluid">
-            <?php
-            $bulan = [
-                1  => 'Jan', 2  => 'Feb', 3  => 'Mar', 4  => 'Apr',
-                5  => 'Mei', 6  => 'Jun', 7  => 'Jul', 8  => 'Agu',
-                9  => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
-            ];
-            ?>
-            <div class="card-body">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center mb-2">
-                        <p class="fw-bold"><?= $title ?></p>
-                        <p class="fw-bold"><?= strtoupper($judul_upk) ?></p>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-lg-12">
-                        <table class="table table-sm table-bordered tableUtama" width="100%">
-                            <thead>
-                                <tr class="text-center">
-                                    <th>No</th>
-                                    <th>Indikator</th>
-                                    <?php foreach ($bulan as $b) : ?>
-                                        <th><?= $b ?></th>
-                                    <?php endforeach; ?>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $indikator_list = [
-                                    'sr_baru'     => 'SR Baru',
-                                    'penutupan'   => 'Penutupan',
-                                    'pencabutan'  => 'Pencabutan',
-                                    'pembukaan'   => 'Pembukaan',
-                                    'tera_meter'  => 'Tera Meter',
-                                    'ganti_meter' => 'Ganti Meter',
-                                    'efi_tagih'   => 'Efisiensi Penagihan'
-                                ];
-                                $no = 1;
-                                ?>
-                                <?php foreach ($indikator_list as $key => $label) : ?>
-                                    <?php
-                                    $total = 0;
-                                    $jumlah_bulan = 0;
-                                    ?>
-                                    <tr>
-                                        <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $label ?></td>
-                                        <?php foreach ($bulan as $i => $b) : ?>
-                                            <?php
-                                            $nilai = 0;
-                                            foreach ($tampil as $row) {
-                                                if ($row->bulan == $i) {
-                                                    $nilai = $row->$key;
-                                                    break;
-                                                }
-                                            }
-                                            $total += $nilai;
-                                            if ($nilai != 0) $jumlah_bulan++;
-                                            ?>
-                                            <td class="text-end">
-                                                <?php if ($key === 'efi_tagih') : ?>
-                                                    <?= number_format($nilai, 2, ',', '.') ?>
-                                                <?php else : ?>
-                                                    <?= number_format($nilai) ?>
-                                                <?php endif; ?>
-                                            </td>
-                                        <?php endforeach; ?>
-                                        <td class="text-end fw-bold">
-                                            <?php if ($key === 'efi_tagih') : ?>
-                                                <?= number_format(($jumlah_bulan > 0) ? $total / $jumlah_bulan : 0, 2, ',', '.') ?>
-                                            <?php else : ?>
-                                                <?= number_format($total) ?>
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php
+        $bulan = [
+            1  => 'Jan', 2  => 'Feb', 3  => 'Mar', 4  => 'Apr',
+            5  => 'Mei', 6  => 'Jun', 7  => 'Jul', 8  => 'Agu',
+            9  => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
+        ];
+        ?>
+        <p class="title"><?= $title ?></p>
+        <p class="title"><?= strtoupper($judul_upk) ?></p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Indikator</th>
+                    <?php foreach ($bulan as $b) : ?>
+                        <th><?= $b ?></th>
+                    <?php endforeach; ?>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $indikator_list = [
+                    'sr_baru'     => 'SR Baru',
+                    'penutupan'   => 'Penutupan',
+                    'pencabutan'  => 'Pencabutan',
+                    'pembukaan'   => 'Pembukaan',
+                    'tera_meter'  => 'Tera Meter',
+                    'ganti_meter' => 'Ganti Meter',
+                    'efi_tagih'   => 'Efisiensi Penagihan'
+                ];
+                $no = 1;
+                ?>
+                <?php foreach ($indikator_list as $key => $label) : ?>
+                    <?php
+                    $total = 0;
+                    $jumlah_bulan = 0;
+                    ?>
+                    <tr>
+                        <td class="center"><?= $no++ ?></td>
+                        <td><?= $label ?></td>
+                        <?php foreach ($bulan as $i => $b) : ?>
+                            <?php
+                            $nilai = 0;
+                            foreach ($tampil as $row) {
+                                if ($row->bulan == $i) {
+                                    $nilai = $row->$key;
+                                    break;
+                                }
+                            }
+                            $total += $nilai;
+                            if ($nilai != 0) $jumlah_bulan++;
+                            ?>
+                            <td class="num">
+                                <?php if ($key === 'efi_tagih') : ?>
+                                    <?= number_format($nilai, 2, ',', '.') ?>
+                                <?php else : ?>
+                                    <?= number_format($nilai) ?>
+                                <?php endif; ?>
+                            </td>
+                        <?php endforeach; ?>
+                        <td class="num-bold">
+                            <?php if ($key === 'efi_tagih') : ?>
+                                <?= number_format(($jumlah_bulan > 0) ? $total / $jumlah_bulan : 0, 2, ',', '.') ?>
+                            <?php else : ?>
+                                <?= number_format($total) ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </main>
 </body>
 </html>
