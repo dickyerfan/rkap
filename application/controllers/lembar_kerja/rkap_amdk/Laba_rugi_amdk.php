@@ -185,7 +185,7 @@ class Laba_rugi_amdk extends CI_Controller
         $mapVar = [
             'pendapatan_air' => ['88.02.01', '88.02.02', '88.02.03', '88.02.04', '88.02.05', '88.02.06'],
             'pendapatan_non_air' => ['88.02.07'],
-            'pendapatan_usaha_lain' => ['88.02.08'],
+            'pendapatan_usaha_lainnya' => ['88.02.08'],
             'beban_pegawai' => ['98.02.01'],
             'beban_bbm' => ['98.02.02'],
             'beban_kantor' => ['98.02.03'],
@@ -202,7 +202,7 @@ class Laba_rugi_amdk extends CI_Controller
             'beban_sppd' => ['98.02.14'],
             'pajak_25' => ['97.01.01'],
             'pajak_kini' => ['97.01.02'],
-            'pajak_ditangguhkan' => ['97.01.03'],
+            'pajak_tangguh' => ['97.01.03'],
         ];
 
         foreach ($mapVar as $varName => $codeList) {
