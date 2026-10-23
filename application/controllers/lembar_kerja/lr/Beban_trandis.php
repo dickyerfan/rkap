@@ -695,4 +695,66 @@ class Beban_trandis extends MY_Controller
 
         $this->pdf->generate('lembar_kerja/lr/beban_trandis/laporan_pdf_detail', $data);
     }
+
+    // Detail HPP Sambungan Baru
+    public function detail_hpp($kode_akun)
+    {
+        $tahun = $this->input->get('tahun_rkap') ?: date('Y') + 1;
+        $this->session->set_userdata('tahun_rkap', $tahun);
+
+        $mapping_upk = [
+            '01' => 'Bondowoso', '02' => 'Sukosari 1', '03' => 'Maesan', '04' => 'Tegalampel',
+            '05' => 'Tapen', '06' => 'Prajekan', '07' => 'Tlogosari', '08' => 'Wringin',
+            '09' => 'Curahdami', '11' => 'Tamanan', '12' => 'Tenggarang', '13' => 'AMDK',
+            '14' => 'Tamankrocok', '15' => 'Wonosari', '16' => 'Klabang', '22' => 'Sukosari 2',
+            '23' => 'Umum', '24' => 'Keuangan', '25' => 'Langganan', '26' => 'Pemeliharaan',
+            '27' => 'Perencanaan', '28' => 'SPI'
+        ];
+
+        // Ambil nama akun dari tabel no_per
+        $akun = $this->db->where('kode', $kode_akun)->get('no_per')->row();
+        $nama_akun = $akun ? $akun->name : 'Beban (HPP) Sambungan Baru';
+
+        // Ambil detail HPP dari model
+        $data['detail'] = $this->Model_beban->get_detail_hpp($kode_akun, $tahun);
+        $data['kode_akun'] = $kode_akun;
+        $data['nama_akun'] = $nama_akun;
+        $data['tahun'] = $tahun;
+        $data['title'] = "DETAIL BEBAN HPP SAMBUNGAN BARU - " . strtoupper($nama_akun) . " <br> TAHUN ANGGARAN ";
+        $data['mapping_upk'] = $mapping_upk;
+
+        if ($this->session->userdata('level') == 'Admin') {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/navbar');
+            $this->load->view('templates/sidebar');
+            $this->load->view('lembar_kerja/lr/beban_trandis/detail_hpp', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $this->load->view('templates/pengguna/header', $data);
+            $this->load->view('templates/pengguna/navbar');
+            $this->load->view('templates/pengguna/sidebar');
+            $this->load->view('lembar_kerja/lr/beban_trandis/detail_hpp', $data);
+            $this->load->view('templates/pengguna/footer');
+        }
+    }
+
+    // Export PDF Detail HPP Sambungan Baru
+    public function export_pdf_detail_hpp($kode_akun)
+    {
+        $tahun = $this->session->userdata('tahun_rkap') ?: date('Y') + 1;
+
+        $akun = $this->db->where('kode', $kode_akun)->get('no_per')->row();
+        $nama_akun = $akun ? $akun->name : 'Beban (HPP) Sambungan Baru';
+
+        $data['detail'] = $this->Model_beban->get_detail_hpp($kode_akun, $tahun);
+        $data['kode_akun'] = $kode_akun;
+        $data['nama_akun'] = $nama_akun;
+        $data['tahun'] = $tahun;
+        $data['title'] = "DETAIL BEBAN HPP SAMBUNGAN BARU - " . strtoupper($nama_akun) . " <br> TAHUN ANGGARAN ";
+
+        $this->pdf->setPaper('Folio', 'landscape');
+        $this->pdf->filename = "Lap_hpp_sambungan_baru_detail_{$kode_akun}_{$tahun}.pdf";
+
+        $this->pdf->generate('lembar_kerja/lr/beban_trandis/laporan_pdf_detail_hpp', $data);
+    }
 }

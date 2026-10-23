@@ -178,9 +178,9 @@
 
                     if (!empty($parent['children'])) {
                         foreach ($parent['children'] as $c) {
-                            foreach ($sub as $k => $_) {
-                                if (isset($c[$k])) {
-                                    $sub[$k] += $c[$k];
+                            foreach (['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nov','des'] as $bulan) {
+                                if (isset($c[$bulan])) {
+                                    $sub[$bulan] += $c[$bulan];
                                 }
                             }
                         }
@@ -199,9 +199,9 @@
                             if ($child_entry['kode'] !== $parent['kode'] && strpos($child_entry['kode'], $parent['kode'] . '.') === 0) {
                                 if (!empty($child_entry['children'])) {
                                     foreach ($child_entry['children'] as $c) {
-                                        foreach ($sub as $k => $_) {
-                                            if (isset($c[$k])) {
-                                                $sub[$k] += $c[$k];
+                                        foreach (['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nov','des'] as $bulan) {
+                                            if (isset($c[$bulan])) {
+                                                $sub[$bulan] += $c[$bulan];
                                             }
                                         }
                                     }
@@ -210,8 +210,14 @@
                         }
                     }
 
+                    // Hitung sub['jumlah'] dari penjumlahan bulanan
+                    $sub['jumlah'] = array_sum([
+                        $sub['jan'], $sub['feb'], $sub['mar'], $sub['apr'], $sub['mei'], $sub['jun'],
+                        $sub['jul'], $sub['agu'], $sub['sep'], $sub['okt'], $sub['nov'], $sub['des']
+                    ]);
+
                     if (!$has_child_in_biaya) {
-                        foreach ($grand_total as $k => $_) {
+                        foreach (['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nov','des','jumlah'] as $k) {
                             if (isset($sub[$k])) {
                                 $grand_total[$k] += $sub[$k];
                             }
@@ -334,47 +340,35 @@
 
                         if (!empty($parent['children'])) {
                             foreach ($parent['children'] as $c) {
-                                foreach ($sub as $k => $_) {
-                                    if (isset($c[$k])) {
-                                        $sub[$k] += $c[$k];
+                                foreach (['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nov','des'] as $bulan) {
+                                    if (isset($c[$bulan])) {
+                                        $sub[$bulan] += $c[$bulan];
                                     }
                                 }
                             }
+                            // Hitung jumlah dari penjumlahan bulanan
+                            $sub['jumlah'] = array_sum([
+                                $sub['jan'], $sub['feb'], $sub['mar'], $sub['apr'], $sub['mei'], $sub['jun'],
+                                $sub['jul'], $sub['agu'], $sub['sep'], $sub['okt'], $sub['nov'], $sub['des']
+                            ]);
                         }
 
-                        $has_child_in_biaya = false;
-                        foreach ($biaya as $check) {
-                            if ($check['kode'] !== $parent['kode'] && strpos($check['kode'], $parent['kode'] . '.') === 0) {
-                                $has_child_in_biaya = true;
-                                break;
-                            }
-                        }
-
-                        if ($has_child_in_biaya) {
-                            foreach ($biaya as $child_entry) {
-                                if ($child_entry['kode'] !== $parent['kode'] && strpos($child_entry['kode'], $parent['kode'] . '.') === 0) {
-                                    if (!empty($child_entry['children'])) {
-                                        foreach ($child_entry['children'] as $c) {
-                                            foreach ($sub as $k => $_) {
-                                                if (isset($c[$k])) {
-                                                    $sub[$k] += $c[$k];
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!$has_child_in_biaya) {
-                            foreach ($grand_total as $k => $_) {
-                                if (isset($sub[$k])) {
-                                    $grand_total[$k] += $sub[$k];
-                                }
+                        // Untuk HPP, langsung tambahkan ke grand total karena tidak ada hierarchy
+                        foreach ($grand_total as $k => $_) {
+                            if (isset($sub[$k])) {
+                                $grand_total[$k] += $sub[$k];
                             }
                         }
                         ?>
                     <?php endforeach; ?>
+                    <?php
+                    // Hitung grand_total['jumlah'] dari penjumlahan bulanan
+                    $grand_total['jumlah'] = array_sum([
+                        $grand_total['jan'], $grand_total['feb'], $grand_total['mar'], $grand_total['apr'],
+                        $grand_total['mei'], $grand_total['jun'], $grand_total['jul'], $grand_total['agu'],
+                        $grand_total['sep'], $grand_total['okt'], $grand_total['nov'], $grand_total['des']
+                    ]);
+                    ?>
                 </tbody>
                 <tfoot>
                     <tr>

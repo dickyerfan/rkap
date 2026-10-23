@@ -1,4 +1,4 @@
-<div id="layoutSidenav">
+﻿<div id="layoutSidenav">
     <div id="layoutSidenav_nav">
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
             <div class="sb-sidenav-menu">
@@ -128,6 +128,19 @@
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/pembelian_bahan') ?>" style="font-size: 0.8rem;">Pembelian Bahan</a>
                                 <a class="nav-link" href="<?= base_url('lembar_kerja/arus_kas/investasi') ?>" style="font-size: 0.8rem;">Investasi</a>
                                 <!-- <a class="nav-link" href="" style="font-size: 0.8rem;">Inventaris Bagian</a> -->
+                            </nav>
+                        </div>
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#posisi_keuangan" aria-expanded="false" aria-controls="posisi_keuangan">
+                            <div class="sb-nav-link-icon ps-2"><i class="fa-fw fa fa-circle fa-xs"></i></div>
+                            <div style="font-size: 0.8rem;"> Posisi Keuangan</div>
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="posisi_keuangan" aria-labelledby="headingOne" data-bs-parent="#posisi_keuangan">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/neraca/input_growth') ?>" style="font-size: 0.8rem;">Input Neraca Awal</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/jurnal_rkap') ?>" style="font-size: 0.8rem;">Jurnal RKAP</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/neraca/neraca_lajur') ?>" style="font-size: 0.8rem;">Neraca Lajur</a>
+                                <a class="nav-link" href="<?= base_url('lembar_kerja/neraca') ?>" style="font-size: 0.8rem;">Laporan Posisi Keuangan</a>
                             </nav>
                         </div>
                         <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#dataPendukung" aria-expanded="false" aria-controls="dataPendukung">

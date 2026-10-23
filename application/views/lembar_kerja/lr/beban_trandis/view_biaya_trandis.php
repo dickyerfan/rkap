@@ -354,7 +354,7 @@
                                                 <?php endif; ?>
 
                                                 <?php
-                                                // hitung subtotal tetap jalan di dua kondisi (karena dipakai juga untuk grand total)
+                                                // hitung subtotal dari children (untuk HPP, parent_code = 95.01 dst)
                                                 $sub = [
                                                     'jan' => 0, 'feb' => 0, 'mar' => 0, 'apr' => 0, 'mei' => 0, 'jun' => 0, 'jul' => 0,
                                                     'agu' => 0, 'sep' => 0, 'okt' => 0, 'nov' => 0, 'des' => 0, 'jumlah' => 0
@@ -362,70 +362,63 @@
 
                                                 if (!empty($parent['children'])) {
                                                     foreach ($parent['children'] as $c) {
-                                                        foreach ($sub as $k => $_) {
-                                                            if (isset($c[$k])) {
-                                                                $sub[$k] += $c[$k];
+                                                        foreach (['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nov','des'] as $bulan) {
+                                                            if (isset($c[$bulan])) {
+                                                                $sub[$bulan] += $c[$bulan];
                                                             }
                                                         }
                                                     }
-                                                }
-                                                // Cek apakah parent ini punya child accounts di dalam array $biaya
-                                                $has_child_in_biaya = false;
-                                                foreach ($biaya as $check) {
-                                                    if ($check['kode'] !== $parent['kode'] && strpos($check['kode'], $parent['kode'] . '.') === 0) {
-                                                        $has_child_in_biaya = true;
-                                                        break;
-                                                    }
+                                                    // Hitung jumlah dari penjumlahan bulanan
+                                                    $sub['jumlah'] = array_sum([
+                                                        $sub['jan'], $sub['feb'], $sub['mar'], $sub['apr'], $sub['mei'], $sub['jun'],
+                                                        $sub['jul'], $sub['agu'], $sub['sep'], $sub['okt'], $sub['nov'], $sub['des']
+                                                    ]);
                                                 }
 
-                                                // Jika punya child accounts, jumlahkan data dari semua child accounts
-                                                if ($has_child_in_biaya) {
-                                                    foreach ($biaya as $child_entry) {
-                                                        if ($child_entry['kode'] !== $parent['kode'] && strpos($child_entry['kode'], $parent['kode'] . '.') === 0) {
-                                                            if (!empty($child_entry['children'])) {
-                                                                foreach ($child_entry['children'] as $c) {
-                                                                    foreach ($sub as $k => $_) {
-                                                                        if (isset($c[$k])) {
-                                                                            $sub[$k] += $c[$k];
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                // 2. Tambahkan Subtotal ke Grand Total (hanya untuk leaf accounts, avoid double count)
-                                                if (!$has_child_in_biaya) {
-                                                    foreach ($grand_total as $k => $_) {
-                                                        if (isset($sub[$k])) {
-                                                            $grand_total[$k] += $sub[$k];
-                                                        }
+                                                // Untuk HPP, parent_code adalah 95.01 dst - selalu tambahkan ke grand total
+                                                // karena tidak ada hierarchy di dalam array $hpp itu sendiri
+                                                foreach ($grand_total as $k => $_) {
+                                                    if (isset($sub[$k])) {
+                                                        $grand_total[$k] += $sub[$k];
                                                     }
                                                 }
                                                 ?>
 
                                                 <!-- SUBTOTAL (selalu tampil) -->
-                                                <!-- <tr class="fw-bold">
-                                                <td><?= $parent['kode']; ?></td>
-                                                <td><?= $parent['uraian']; ?></td>
-                                                <td class="text-end"><?= number_format($sub['jan'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['feb'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['mar'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['apr'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['mei'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['jun'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['jul'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['agu'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['sep'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['okt'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
-                                                <td class="text-end"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
-                                                <td></td>
-                                            </tr> -->
+                                                <tr class="fw-bold">
+                                                    <td><?= $parent['kode']; ?></td>
+                                                    <td><?= $parent['uraian']; ?></td>
+                                                    <td class="text-end"><?= number_format($sub['jan'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['feb'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['mar'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['apr'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['mei'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['jun'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['jul'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['agu'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['sep'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['okt'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['nov'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['des'], 0, ',', '.'); ?></td>
+                                                    <td class="text-end"><?= number_format($sub['jumlah'], 0, ',', '.'); ?></td>
+                                                    <td class="text-center">
+                                                        <?php if ($upk == 'all' || $upk == '') : ?>
+                                                            <a href="<?= base_url('lembar_kerja/lr/beban_trandis/detail_hpp/' . urlencode($parent['kode']) . '?tahun_rkap=' . $tahun) ?>" title="Lihat Detail HPP">
+                                                                <i class="fas fa-search-plus"></i>
+                                                            </a>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                </tr>
 
                                             <?php endforeach; ?>
+                                            <?php
+                                            // Hitung grand_total['jumlah'] dari penjumlahan bulanan
+                                            $grand_total['jumlah'] = array_sum([
+                                                $grand_total['jan'], $grand_total['feb'], $grand_total['mar'], $grand_total['apr'],
+                                                $grand_total['mei'], $grand_total['jun'], $grand_total['jul'], $grand_total['agu'],
+                                                $grand_total['sep'], $grand_total['okt'], $grand_total['nov'], $grand_total['des']
+                                            ]);
+                                            ?>
                                         </tbody>
                                         <tfoot class="fw-bold" style="background-color: #e9ecef; border-top: 2px solid #6c757d;">
                                             <tr>
