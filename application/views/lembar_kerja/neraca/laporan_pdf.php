@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $raw = function ($kode) use ($lajur) {
     return isset($lajur[$kode]) ? (float)$lajur[$kode]["neraca_rkap"] : 0;
 };

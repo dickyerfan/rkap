@@ -1,4 +1,4 @@
-﻿<?php if ($this->session->userdata("level") != "Admin") redirect("auth"); ?>
+<?php if ($this->session->userdata("level") != "Admin") redirect("auth"); ?>
 <div id="layoutSidenav_content" class="latar">
     <main>
         <div class="container-fluid px-2 mt-2">

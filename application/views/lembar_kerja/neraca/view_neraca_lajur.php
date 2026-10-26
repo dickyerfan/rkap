@@ -1,4 +1,4 @@
-﻿<div id="layoutSidenav_content" class="latar">
+<div id="layoutSidenav_content" class="latar">
     <main>
         <div class="container-fluid px-2 mt-2">
             <div class="card mb-1">
